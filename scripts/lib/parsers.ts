@@ -44,6 +44,15 @@ function mapHeaders(
     });
 }
 
+/**
+ * Auto-detect delimiter: if the first line contains tabs, use tab (real HJKS
+ * downloads are TSV); otherwise fall back to comma (test fixtures).
+ */
+function detectDelimiter(text: string): string {
+  const firstLine = text.split("\n")[0];
+  return firstLine.includes("\t") ? "\t" : ",";
+}
+
 export function parseOutagesCsv(csvText: string): RawOutageRecord[] {
   if (!csvText.trim()) {
     throw new Error("Empty CSV input");
@@ -51,9 +60,12 @@ export function parseOutagesCsv(csvText: string): RawOutageRecord[] {
 
   const records = parse(csvText, {
     columns: mapHeaders(OUTAGE_HEADER_MAP),
+    delimiter: detectDelimiter(csvText),
+    quote: '"',
     skip_empty_lines: true,
     trim: true,
     relax_column_count: true,
+    relax_quotes: true,
   }) as RawOutageRecord[];
 
   return records;
@@ -66,9 +78,12 @@ export function parseUnitsCsv(csvText: string): RawUnitRecord[] {
 
   const records = parse(csvText, {
     columns: mapHeaders(UNIT_HEADER_MAP),
+    delimiter: detectDelimiter(csvText),
+    quote: '"',
     skip_empty_lines: true,
     trim: true,
     relax_column_count: true,
+    relax_quotes: true,
   }) as RawUnitRecord[];
 
   return records;
@@ -110,7 +125,8 @@ export function parseTopPageHtml(html: string): RawOutageRecord[] {
     const cells: string[] = [];
     let cellMatch: RegExpExecArray | null;
     while ((cellMatch = cellRegex.exec(rowMatch[1])) !== null) {
-      cells.push(cellMatch[1].trim());
+      const stripTags = (html: string) => html.replace(/<[^>]+>/g, "").trim();
+      cells.push(stripTags(cellMatch[1]));
     }
 
     if (cells.length >= fields.length) {

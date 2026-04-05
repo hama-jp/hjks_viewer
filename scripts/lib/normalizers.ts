@@ -24,13 +24,24 @@ function generateId(plantcd: string, unitname: string, startdt: string): string 
 
 function toNumberOrNull(value: string): number | null {
   if (!value || value.trim() === "") return null;
-  const cleaned = value.replace(/,/g, "");
+  // Strip commas and normalize full-width digits to half-width
+  const cleaned = value
+    .replace(/,/g, "")
+    .replace(/[０-９]/g, (c) => String.fromCharCode(c.charCodeAt(0) - 0xfee0));
   const num = Number(cleaned);
   return isNaN(num) ? null : num;
 }
 
 function toNullableString(value: string): string | null {
   return value.trim() === "" ? null : value.trim();
+}
+
+/**
+ * Normalize full-width parentheses to half-width so that reverse lookups
+ * work for both `火力(石炭)` and `火力（石炭）`.
+ */
+function normalizeParens(s: string): string {
+  return s.replace(/（/g, "(").replace(/）/g, ")");
 }
 
 /**
@@ -43,7 +54,12 @@ function resolveCode(
 ): string {
   // Already a code?
   if (/^\d+$/.test(displayName)) return displayName;
-  return reverseMap[displayName] ?? displayName;
+  // Try exact match first, then normalized (full-width → half-width parens)
+  return (
+    reverseMap[displayName] ??
+    reverseMap[normalizeParens(displayName)] ??
+    displayName
+  );
 }
 
 export function normalizeOutages(
@@ -84,7 +100,7 @@ export function normalizeOutages(
       startdt: r.startdt,
       restartschdt: toNullableString(r.restartschdt),
       outlook: r.outlook,
-      factor: r.factor,
+      factor: r.factor.replace(/\n/g, " / ").trim(),
       upddt: r.upddt,
       fetchedAt: ts,
     };

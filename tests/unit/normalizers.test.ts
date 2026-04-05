@@ -153,6 +153,43 @@ describe("normalizeOutages", () => {
     const results = normalizeOutages([]);
     expect(results).toHaveLength(0);
   });
+
+  it("should normalize record with full-width parentheses in format", () => {
+    const raw = {
+      ...RAW_OUTAGE,
+      format: "火力（石炭）",
+      maxcapacity: "500,000",
+      downcapacity: "123,000",
+    };
+    const results = normalizeOutages([raw]);
+    expect(results).toHaveLength(1);
+    expect(results[0].formatName).toBe("火力(石炭)");
+    expect(results[0].maxcapacity).toBe(500000);
+    expect(results[0].downcapacity).toBe(123000);
+  });
+
+  it("should normalize full-width digits in numeric fields", () => {
+    const raw = {
+      ...RAW_OUTAGE,
+      maxcapacity: "５７９０００",
+      downcapacity: "５７９０００",
+    };
+    const results = normalizeOutages([raw]);
+    expect(results).toHaveLength(1);
+    expect(results[0].maxcapacity).toBe(579000);
+  });
+
+  it("should normalize newlines in factor field", () => {
+    const raw = {
+      ...RAW_OUTAGE,
+      factor: "確認試験\n最大低下量：350,000kW\n最小低下量：0kW",
+    };
+    const results = normalizeOutages([raw]);
+    expect(results).toHaveLength(1);
+    expect(results[0].factor).toBe(
+      "確認試験 / 最大低下量：350,000kW / 最小低下量：0kW"
+    );
+  });
 });
 
 // --- normalizeUnits ---

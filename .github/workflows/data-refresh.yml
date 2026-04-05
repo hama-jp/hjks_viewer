@@ -39,7 +39,7 @@ jobs:
         run: npm ci
 
       - name: Fetch outages
-        run: npx tsx scripts/fetch-outages.ts --mode ${{ inputs.mode || 'daily' }}
+        run: npx tsx scripts/fetch-outages.ts --mode "${{ inputs.mode || 'daily' }}"
 
       - name: Fetch units
         run: npx tsx scripts/fetch-units.ts

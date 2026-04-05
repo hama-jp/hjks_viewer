@@ -1,6 +1,7 @@
 // HjksClient — session + CSRF management for HJKS site
 
 const HJKS_BASE = "https://hjks.jepx.or.jp/hjks";
+const ALLOWED_HOST = "hjks.jepx.or.jp";
 
 // --- Error classes ---
 
@@ -154,6 +155,18 @@ export class HjksClient {
           const redirectUrl = location.startsWith("http")
             ? location
             : `${HJKS_BASE}${location.startsWith("/") ? "" : "/"}${location}`;
+
+          // Validate redirect stays on allowed host
+          try {
+            const parsedUrl = new URL(redirectUrl);
+            if (parsedUrl.hostname !== ALLOWED_HOST) {
+              throw new NetworkError(`Redirect to external host rejected: ${parsedUrl.hostname}`);
+            }
+          } catch (e) {
+            if (e instanceof NetworkError) throw e;
+            throw new NetworkError(`Invalid redirect URL: ${redirectUrl}`);
+          }
+
           await this.rateLimit();
           const res2 = await fetch(redirectUrl, {
             method: "GET",

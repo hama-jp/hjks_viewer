@@ -154,8 +154,12 @@ function loadExisting(): NormalizedOutage[] {
   if (!existsSync(OUTPUT_FILE)) return [];
   try {
     const content = readFileSync(OUTPUT_FILE, "utf-8");
-    const parsed = JSON.parse(content) as OutageFile;
-    return parsed.records ?? [];
+    const parsed = OutageFileSchema.safeParse(JSON.parse(content));
+    if (!parsed.success) {
+      console.warn("Existing data failed validation, starting fresh");
+      return [];
+    }
+    return parsed.data.records;
   } catch {
     console.warn("Could not load existing data, starting fresh");
     return [];

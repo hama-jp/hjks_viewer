@@ -10,8 +10,13 @@ export function useTableState() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const sortKey = (searchParams.get("sort") as SortKey) ?? "startdt";
-  const sortDir = (searchParams.get("dir") as SortDir) ?? "desc";
+  const VALID_SORT_KEYS: SortKey[] = ["areaName", "company", "name", "unitname", "maxcapacity", "maintemodeName", "assortmentName", "startdt", "outlook"];
+  const VALID_SORT_DIRS: SortDir[] = ["asc", "desc"];
+
+  const rawSort = searchParams.get("sort");
+  const sortKey: SortKey = VALID_SORT_KEYS.includes(rawSort as SortKey) ? (rawSort as SortKey) : "startdt";
+  const rawDir = searchParams.get("dir");
+  const sortDir: SortDir = VALID_SORT_DIRS.includes(rawDir as SortDir) ? (rawDir as SortDir) : "desc";
   const currentPage = parseInt(searchParams.get("page") ?? "1", 10) || 1;
   const pageSize = DEFAULT_PAGE_SIZE;
 

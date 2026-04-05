@@ -82,6 +82,15 @@ describe("parseOutagesCsv", () => {
   it("should throw on completely empty input", () => {
     expect(() => parseOutagesCsv("")).toThrow();
   });
+
+  it("should parse tab-separated CSV (real HJKS format)", () => {
+    const tsv = `"エリア"\t"発電事業者"\t"発電所コード"\t"発電所名"\t"発電形式"\t"ユニット名"\t"認可出力(kW)"\t"停止区分"\t"種別"\t"低下量(kW)"\t"停止日時"\t"復旧見通し"\t"復旧予定日"\t"停止原因"\t"最終更新日時"\n"四国"\t"四国電力(株)"\t"80701-1"\t"西条発電所"\t"火力（石炭）"\t"１号機"\t"500,000"\t"出力低下"\t"低下・その他"\t"123,000"\t"2026/03/23 21:30"\t"あり"\t"2026/04/30"\t"確認試験"\t"2026/03/30 09:32"`;
+    const records = parseOutagesCsv(tsv);
+    expect(records).toHaveLength(1);
+    expect(records[0].name).toBe("西条発電所");
+    expect(records[0].maxcapacity).toBe("500,000");
+    expect(records[0].maintemode).toBe("出力低下");
+  });
 });
 
 // --- parseUnitsCsv ---
