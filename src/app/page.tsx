@@ -10,7 +10,6 @@ import ErrorBoundary from "@/components/common/ErrorBoundary";
 import EmptyState from "@/components/common/EmptyState";
 import type { NormalizedOutage, OutageFile } from "@/types/outage";
 import type { EChartsOption } from "echarts";
-import MonthlyTrendChart from "@/components/charts/MonthlyTrendChart";
 import AssortmentTreemap from "@/components/charts/AssortmentTreemap";
 import CapacityByAreaChart from "@/components/charts/CapacityByAreaChart";
 import OutageTimelineChart from "@/components/charts/OutageTimelineChart";
@@ -331,15 +330,7 @@ export default function DashboardPage() {
               <OutageTimelineChart records={records} maxItems={20} />
             </div>
 
-            {/* Row 5: monthly trend (full width) */}
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
-              <h2 className="text-base font-semibold text-slate-700 mb-4">
-                月別停止トレンド
-              </h2>
-              <MonthlyTrendChart records={records} />
-            </div>
-
-            {/* Row 6: assortment treemap (full width) */}
+            {/* Row 5: assortment treemap (full width) */}
             <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
               <h2 className="text-base font-semibold text-slate-700 mb-4">
                 種別内訳
