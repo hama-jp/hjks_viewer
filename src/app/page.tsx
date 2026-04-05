@@ -92,7 +92,21 @@ export default function DashboardPage() {
     });
   };
 
-  const { loading, error, records, meta } = state;
+  const { loading, error, records: allRecords, meta } = state;
+
+  // Filter to currently active outages (started & not yet restarted)
+  const records = useMemo(() => {
+    const now = Date.now();
+    return allRecords.filter((r) => {
+      const parts = r.startdt.split(/[/ :]/);
+      const start = new Date(+parts[0], +parts[1] - 1, +parts[2], +parts[3] || 0, +parts[4] || 0).getTime();
+      if (start > now) return false;
+      if (!r.restartschdt) return true;
+      const rp = r.restartschdt.split(/[/ :]/);
+      const end = new Date(+rp[0], +rp[1] - 1, +rp[2], +rp[3] || 0, +rp[4] || 0).getTime();
+      return end > now;
+    });
+  }, [allRecords]);
 
   // Summary stats
   const totalOutages = records.length;
