@@ -10,7 +10,8 @@ const ReactECharts = dynamic(() => import("echarts-for-react"), { ssr: false });
 type OutageTimelineChartProps = {
   records: NormalizedOutage[];
   maxItems?: number;
-  excludePlanned?: boolean; // true = 計画停止を除外（ダッシュボード用）
+  excludePlanned?: boolean;
+  rangeMonths?: number; // X軸の前後表示範囲（月数）。デフォルト12
 };
 
 const MAINTEMODE_COLORS: Record<string, string> = {
@@ -40,6 +41,7 @@ export default function OutageTimelineChart({
   records,
   maxItems = 20,
   excludePlanned = false,
+  rangeMonths = 12,
 }: OutageTimelineChartProps) {
   const [now] = useState(() => Date.now());
 
@@ -137,7 +139,8 @@ export default function OutageTimelineChart({
     },
     xAxis: {
       type: "time",
-      max: now + 365 * 24 * 60 * 60 * 1000, // 1 year from now
+      min: now - rangeMonths * 30.44 * 24 * 60 * 60 * 1000,
+      max: now + rangeMonths * 30.44 * 24 * 60 * 60 * 1000,
       axisLabel: {
         fontSize: 11,
       },
