@@ -2,9 +2,16 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import { format, parseISO } from "date-fns";
+import { ja } from "date-fns/locale";
 import { loadOutagesCurrent } from "@/lib/data-loader";
+import ErrorBoundary from "@/components/common/ErrorBoundary";
+import EmptyState from "@/components/common/EmptyState";
 import type { NormalizedOutage, OutageFile } from "@/types/outage";
 import type { EChartsOption } from "echarts";
+import MonthlyTrendChart from "@/components/charts/MonthlyTrendChart";
+import AssortmentTreemap from "@/components/charts/AssortmentTreemap";
+import CapacityByAreaChart from "@/components/charts/CapacityByAreaChart";
 
 const EChartWrapper = dynamic(
   () => import("@/components/charts/EChartWrapper"),
@@ -165,27 +172,31 @@ export default function DashboardPage() {
   if (error && records.length === 0) {
     return (
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <div className="rounded-xl bg-white p-8 shadow-sm border border-slate-200 text-center">
-          <p className="text-slate-500 mb-4">データがありません</p>
-          <p className="text-sm text-slate-400 mb-6">{error}</p>
-          <button
-            onClick={handleRetry}
-            className="inline-flex items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
-          >
-            再読み込み
-          </button>
-        </div>
+        <EmptyState
+          message="データがありません"
+          action={{ label: "再読み込み", onClick: handleRetry }}
+        />
+        <p className="text-sm text-slate-400 text-center mt-2">{error}</p>
       </div>
     );
   }
 
   return (
+    <ErrorBoundary>
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900">ダッシュボード</h1>
         {meta && (
           <p className="text-sm text-slate-500 mt-1">
-            最終更新: {meta.generatedAt} / 取得元: {meta.source}
+            最終更新:{" "}
+            {(() => {
+              try {
+                return format(parseISO(meta.generatedAt), "yyyy年M月d日 HH:mm", { locale: ja });
+              } catch {
+                return meta.generatedAt;
+              }
+            })()}{" "}
+            / 取得元: {meta.source}
           </p>
         )}
       </div>
@@ -225,57 +236,90 @@ export default function DashboardPage() {
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="space-y-6">
         {loading ? (
-          <>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <SkeletonChart />
             <SkeletonChart />
             <SkeletonChart />
-          </>
+            <SkeletonChart />
+            <div className="lg:col-span-2"><SkeletonChart /></div>
+            <div className="lg:col-span-2"><SkeletonChart /></div>
+          </div>
         ) : (
           <>
+            {/* Row 2: area bar + format bar */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
+                <h2 className="text-base font-semibold text-slate-700 mb-4">
+                  エリア別停止件数
+                </h2>
+                {records.length > 0 ? (
+                  <EChartWrapper option={areaChartOption} />
+                ) : (
+                  <p className="text-slate-400 text-sm py-20 text-center">
+                    データがありません
+                  </p>
+                )}
+              </div>
+              <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
+                <h2 className="text-base font-semibold text-slate-700 mb-4">
+                  発電形式別停止件数
+                </h2>
+                {records.length > 0 ? (
+                  <EChartWrapper option={formatChartOption} />
+                ) : (
+                  <p className="text-slate-400 text-sm py-20 text-center">
+                    データがありません
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Row 3: maintemode pie + capacity by area stacked bar */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
+                <h2 className="text-base font-semibold text-slate-700 mb-4">
+                  停止区分別件数
+                </h2>
+                {records.length > 0 ? (
+                  <EChartWrapper
+                    option={pieChartOption}
+                    style={{ height: 400 }}
+                  />
+                ) : (
+                  <p className="text-slate-400 text-sm py-20 text-center">
+                    データがありません
+                  </p>
+                )}
+              </div>
+              <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
+                <h2 className="text-base font-semibold text-slate-700 mb-4">
+                  エリア別停止容量 (MW)
+                </h2>
+                <CapacityByAreaChart records={records} />
+              </div>
+            </div>
+
+            {/* Row 4: monthly trend (full width) */}
             <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
               <h2 className="text-base font-semibold text-slate-700 mb-4">
-                エリア別停止件数
+                月別停止トレンド
               </h2>
-              {records.length > 0 ? (
-                <EChartWrapper option={areaChartOption} />
-              ) : (
-                <p className="text-slate-400 text-sm py-20 text-center">
-                  データがありません
-                </p>
-              )}
+              <MonthlyTrendChart records={records} />
             </div>
+
+            {/* Row 5: assortment treemap (full width) */}
             <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
               <h2 className="text-base font-semibold text-slate-700 mb-4">
-                発電形式別停止件数
+                種別内訳
               </h2>
-              {records.length > 0 ? (
-                <EChartWrapper option={formatChartOption} />
-              ) : (
-                <p className="text-slate-400 text-sm py-20 text-center">
-                  データがありません
-                </p>
-              )}
-            </div>
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200 lg:col-span-2">
-              <h2 className="text-base font-semibold text-slate-700 mb-4">
-                停止区分別件数
-              </h2>
-              {records.length > 0 ? (
-                <EChartWrapper
-                  option={pieChartOption}
-                  style={{ height: 400 }}
-                />
-              ) : (
-                <p className="text-slate-400 text-sm py-20 text-center">
-                  データがありません
-                </p>
-              )}
+              <AssortmentTreemap records={records} />
             </div>
           </>
         )}
       </div>
     </div>
+    </ErrorBoundary>
   );
 }

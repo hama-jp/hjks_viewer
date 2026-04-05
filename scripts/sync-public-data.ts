@@ -70,8 +70,32 @@ function main(): void {
   const unitsDest = resolve(PUBLIC_DATA_DIR, "units.json");
   const hasUnits = copyIfExists(unitsSrc, unitsDest);
 
-  // Find archive files (outages-YYYY*.json pattern)
+  // Find archive files in outages-archive/ directory (YYYY-QN.json)
   const archives: { path: string; period: string; recordCount: number }[] = [];
+  const archiveDir = resolve(NORMALIZED_DIR, "outages-archive");
+  if (existsSync(archiveDir)) {
+    const publicArchiveDir = resolve(PUBLIC_DATA_DIR, "outages-archive");
+    mkdirSync(publicArchiveDir, { recursive: true });
+
+    const files = readdirSync(archiveDir);
+    for (const file of files) {
+      if (file.endsWith(".json")) {
+        const src = resolve(archiveDir, file);
+        const dest = resolve(publicArchiveDir, file);
+        copyIfExists(src, dest);
+
+        // Extract period from filename (e.g., 2025-Q4.json -> 2025-Q4)
+        const period = file.replace(/\.json$/, "");
+        archives.push({
+          path: `data/outages-archive/${file}`,
+          period,
+          recordCount: getRecordCount(src),
+        });
+      }
+    }
+  }
+
+  // Also check for legacy flat archive files (outages-YYYY*.json in normalized dir)
   if (existsSync(NORMALIZED_DIR)) {
     const files = readdirSync(NORMALIZED_DIR);
     for (const file of files) {
@@ -84,7 +108,6 @@ function main(): void {
         const dest = resolve(PUBLIC_DATA_DIR, file);
         copyIfExists(src, dest);
 
-        // Extract period from filename (e.g., outages-2024-01.json -> 2024-01)
         const periodMatch = file.match(/outages-(.+)\.json/);
         archives.push({
           path: `data/${file}`,

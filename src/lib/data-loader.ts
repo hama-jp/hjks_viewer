@@ -47,6 +47,26 @@ export async function loadOutagesCurrent(): Promise<LoadResult<OutageFile["recor
   }
 }
 
+export async function loadOutageArchive(period: string): Promise<LoadResult<OutageFile["records"]> & { meta?: OutageFile["meta"] }> {
+  try {
+    // Try outages-archive/ subdirectory first, then flat path
+    let res = await fetch(`${getBasePath()}/data/outages-archive/${period}.json`);
+    if (!res.ok) {
+      // Fallback: try flat file (legacy format)
+      res = await fetch(`${getBasePath()}/data/outages-${period}.json`);
+    }
+    if (!res.ok) {
+      return { ok: false, error: `HTTP ${res.status}: ${res.statusText}`, data: null };
+    }
+    const json = await res.json();
+    const parsed = OutageFileSchema.parse(json);
+    return { ok: true, data: parsed.records, meta: parsed.meta };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Unknown error";
+    return { ok: false, error: message, data: null };
+  }
+}
+
 export async function loadUnits(): Promise<LoadResult<NormalizedUnit[]>> {
   try {
     const res = await fetch(`${getBasePath()}/data/units.json`);
@@ -54,7 +74,9 @@ export async function loadUnits(): Promise<LoadResult<NormalizedUnit[]>> {
       return { ok: false, error: `HTTP ${res.status}: ${res.statusText}`, data: null };
     }
     const json = await res.json();
-    const parsed = z.array(NormalizedUnitSchema).parse(json);
+    // Support both { records: [...] } wrapper and raw array formats
+    const records = Array.isArray(json) ? json : json.records;
+    const parsed = z.array(NormalizedUnitSchema).parse(records);
     return { ok: true, data: parsed };
   } catch (e) {
     const message = e instanceof Error ? e.message : "Unknown error";

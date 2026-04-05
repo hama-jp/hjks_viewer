@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "generatedAt": "2026-04-05T01:09:56.594Z",
+    "recordCount": 1,
+    "source": "csv"
+  },
+  "records": [
+    {
+      "id": "hist0002a1b2c3d402",
+      "area": "6",
+      "areaName": "関西",
+      "company": "関西電力",
+      "plantcd": "06020",
+      "name": "高浜発電所",
+      "format": "1",
+      "formatName": "原子力",
+      "unitname": "4号機",
+      "maxcapacity": 870000,
+      "downcapacity": 870000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "1",
+      "assortmentName": "停止・定期検査等",
+      "startdt": "2025/09/01 00:00",
+      "restartschdt": "2026/01/20 00:00",
+      "outlook": "1月下旬",
+      "factor": "定期検査",
+      "upddt": "2026/01/20 09:00",
+      "fetchedAt": "2026-04-05T06:00:00Z"
+    }
+  ]
+}

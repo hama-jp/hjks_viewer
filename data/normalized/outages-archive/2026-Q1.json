@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "generatedAt": "2026-04-05T01:09:56.594Z",
+    "recordCount": 2,
+    "source": "csv"
+  },
+  "records": [
+    {
+      "id": "hist0003a1b2c3d403",
+      "area": "9",
+      "areaName": "九州",
+      "company": "九州電力",
+      "plantcd": "09020",
+      "name": "松浦火力発電所",
+      "format": "2",
+      "formatName": "火力(石炭)",
+      "unitname": "1号機",
+      "maxcapacity": 700000,
+      "downcapacity": 700000,
+      "maintemode": "2",
+      "maintemodeName": "計画外停止",
+      "assortment": "2",
+      "assortmentName": "停止・設備故障",
+      "startdt": "2026/01/05 12:00",
+      "restartschdt": "2026/02/28 00:00",
+      "outlook": "2月末",
+      "factor": "復水器チューブリーク",
+      "upddt": "2026/02/28 09:00",
+      "fetchedAt": "2026-04-05T06:00:00Z"
+    },
+    {
+      "id": "hist0004a1b2c3d404",
+      "area": "2",
+      "areaName": "東北",
+      "company": "東北電力",
+      "plantcd": "02015",
+      "name": "能代火力発電所",
+      "format": "2",
+      "formatName": "火力(石炭)",
+      "unitname": "1号機",
+      "maxcapacity": 600000,
+      "downcapacity": 300000,
+      "maintemode": "3",
+      "maintemodeName": "出力低下",
+      "assortment": "7",
+      "assortmentName": "低下・設備故障",
+      "startdt": "2026/02/10 06:00",
+      "restartschdt": "2026/03/01 00:00",
+      "outlook": "3月上旬",
+      "factor": "排煙処理装置不具合",
+      "upddt": "2026/03/01 09:00",
+      "fetchedAt": "2026-04-05T06:00:00Z"
+    }
+  ]
+}

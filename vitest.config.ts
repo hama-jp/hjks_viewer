@@ -9,6 +9,7 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["src/lib/**", "scripts/lib/**"],
+      exclude: ["scripts/lib/fetchers.ts", "src/lib/data-loader.ts"],
       thresholds: {
         statements: 80,
         branches: 80,

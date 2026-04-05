@@ -15,6 +15,7 @@ import {
   normalizeOutages,
   deduplicateOutages,
 } from "./lib/normalizers";
+import { archiveOutages } from "./lib/archiver";
 import { OutageFileSchema } from "@/lib/schemas";
 import type { NormalizedOutage, OutageFile } from "@/types/outage";
 
@@ -221,6 +222,10 @@ async function main(): Promise<void> {
   mkdirSync(NORMALIZED_DIR, { recursive: true });
   writeFileSync(OUTPUT_FILE, JSON.stringify(outageFile, null, 2), "utf-8");
   console.log(`Written ${records.length} records to ${OUTPUT_FILE}`);
+
+  // Archive historical records (restartschdt in the past) into quarterly files
+  console.log("\nRunning archive step...");
+  archiveOutages(NORMALIZED_DIR);
 }
 
 main().catch((err) => {
