@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
+import ThemeToggle from "@/components/common/ThemeToggle";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -27,67 +28,78 @@ export default function RootLayout({
     <html
       lang="ja"
       className={`${geistSans.variable} ${geistMono.variable} h-full`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 font-[family-name:var(--font-geist-sans)]">
-        <header className="bg-white border-b border-slate-200 shadow-sm">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||(t!=='light'&&matchMedia('(prefers-color-scheme:dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})()`,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 font-[family-name:var(--font-geist-sans)]">
+        <header className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-sm">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center gap-8">
-                <Link href="/" className="text-lg font-bold text-blue-700">
+                <Link href="/" className="text-lg font-bold text-blue-700 dark:text-blue-400">
                   HJKS 停止情報ビューア
                 </Link>
                 <nav className="hidden sm:flex items-center gap-6">
                   <Link
                     href="/"
-                    className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors"
+                    className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors"
                   >
                     ダッシュボード
                   </Link>
                   <Link
                     href="/timeline"
-                    className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors"
+                    className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors"
                   >
                     タイムライン
                   </Link>
                   <Link
                     href="/outages"
-                    className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors"
+                    className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors"
                   >
                     停止情報一覧
                   </Link>
                 </nav>
               </div>
-              {/* Mobile nav */}
-              <nav className="flex sm:hidden items-center gap-4">
-                <Link
-                  href="/"
-                  className="text-sm font-medium text-slate-600 hover:text-blue-700"
-                >
-                  ダッシュボード
-                </Link>
-                <Link
-                  href="/timeline"
-                  className="text-sm font-medium text-slate-600 hover:text-blue-700"
-                >
-                  タイムライン
-                </Link>
-                <Link
-                  href="/outages"
-                  className="text-sm font-medium text-slate-600 hover:text-blue-700"
-                >
-                  一覧
-                </Link>
-              </nav>
+              <div className="flex items-center gap-2">
+                <ThemeToggle />
+                {/* Mobile nav */}
+                <nav className="flex sm:hidden items-center gap-4">
+                  <Link
+                    href="/"
+                    className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400"
+                  >
+                    ダッシュボード
+                  </Link>
+                  <Link
+                    href="/timeline"
+                    className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400"
+                  >
+                    タイムライン
+                  </Link>
+                  <Link
+                    href="/outages"
+                    className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400"
+                  >
+                    一覧
+                  </Link>
+                </nav>
+              </div>
             </div>
           </div>
         </header>
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-slate-200 bg-white mt-12">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-xs text-slate-500 space-y-2">
+        <footer className="border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 mt-12">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-xs text-slate-500 dark:text-slate-400 space-y-2">
             <p>
               本サイトに掲載している停止情報は、
               <a href="https://hjks.jepx.or.jp/hjks/outages" target="_blank" rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 underline">
+                className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline">
                 発電情報公開システム（HJKS）
               </a>
               より取得したデータに基づいています。

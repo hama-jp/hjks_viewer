@@ -75,7 +75,7 @@ export default function OutageTimelineChart({
 
   if (displayed.length === 0) {
     return (
-      <p className="text-slate-400 text-sm py-20 text-center">
+      <p className="text-slate-400 dark:text-slate-500 text-sm py-20 text-center">
         データがありません
       </p>
     );
@@ -244,11 +244,11 @@ export default function OutageTimelineChart({
         notMerge
         lazyUpdate
       />
-      <p className="text-xs text-slate-400 text-right mt-1">
+      <p className="text-xs text-slate-400 dark:text-slate-500 text-right mt-1">
         {combined.length}件表示中
         {filtered.length > maxItems && `（全${filtered.length}件中）`}
       </p>
-      <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
+      <div className="flex items-center gap-4 mt-2 text-xs text-slate-500 dark:text-slate-400">
         {!excludePlanned && (
           <span className="flex items-center gap-1">
             <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: "#3b82f6" }} />
