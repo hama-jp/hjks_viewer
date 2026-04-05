@@ -52,14 +52,14 @@ export default function OutageTimelineChart({
     return end > now; // restart is still in the future
   });
 
-  // Sort by restart date ascending (soonest recovery first, 未定 at bottom)
+  // Sort by upddt descending (most recently changed first)
   const sorted = [...active].sort((a, b) => {
-    const aEnd = a.restartschdt ? parseOutageDate(a.restartschdt) : Infinity;
-    const bEnd = b.restartschdt ? parseOutageDate(b.restartschdt) : Infinity;
-    return aEnd - bEnd;
+    const aUpd = parseOutageDate(a.upddt);
+    const bUpd = parseOutageDate(b.upddt);
+    return bUpd - aUpd;
   }).slice(0, maxItems);
 
-  // Reverse for chart display (soonest recovery at top of y-axis)
+  // Reverse for chart display (most recent update at top of y-axis)
   const displayed = [...sorted].reverse();
 
   if (displayed.length === 0) {
@@ -233,7 +233,7 @@ export default function OutageTimelineChart({
       />
       <p className="text-xs text-slate-400 text-right mt-1">
         {active.length > maxItems
-          ? `復旧予定が近い${maxItems}件を表示（現在停止中 ${active.length}件）`
+          ? `最近更新された${maxItems}件を表示（現在停止中 ${active.length}件）`
           : `現在停止中 ${active.length}件`}
       </p>
       <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
