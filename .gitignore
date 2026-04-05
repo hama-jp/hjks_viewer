@@ -43,3 +43,7 @@ next-env.d.ts
 
 # raw data (kept as GitHub Actions artifacts only)
 data/raw/
+
+# playwright
+playwright-report/
+test-results/

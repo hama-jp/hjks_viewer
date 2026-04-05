@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { format, parseISO } from "date-fns";
 import { ja } from "date-fns/locale";
 import { loadOutagesCurrent } from "@/lib/data-loader";
@@ -12,6 +13,7 @@ import type { EChartsOption } from "echarts";
 import MonthlyTrendChart from "@/components/charts/MonthlyTrendChart";
 import AssortmentTreemap from "@/components/charts/AssortmentTreemap";
 import CapacityByAreaChart from "@/components/charts/CapacityByAreaChart";
+import OutageTimelineChart from "@/components/charts/OutageTimelineChart";
 
 const EChartWrapper = dynamic(
   () => import("@/components/charts/EChartWrapper"),
@@ -315,6 +317,22 @@ export default function DashboardPage() {
                 種別内訳
               </h2>
               <AssortmentTreemap records={records} />
+            </div>
+
+            {/* Row 6: outage timeline (full width) */}
+            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-semibold text-slate-700">
+                  停止タイムライン（直近20件）
+                </h2>
+                <Link
+                  href="/timeline"
+                  className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                >
+                  タイムラインを詳しく見る &rarr;
+                </Link>
+              </div>
+              <OutageTimelineChart records={records} maxItems={20} />
             </div>
           </>
         )}

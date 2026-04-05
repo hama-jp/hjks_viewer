@@ -44,6 +44,12 @@ export default function RootLayout({
                     ダッシュボード
                   </Link>
                   <Link
+                    href="/timeline"
+                    className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors"
+                  >
+                    タイムライン
+                  </Link>
+                  <Link
                     href="/outages"
                     className="text-sm font-medium text-slate-600 hover:text-blue-700 transition-colors"
                   >
@@ -58,6 +64,12 @@ export default function RootLayout({
                   className="text-sm font-medium text-slate-600 hover:text-blue-700"
                 >
                   ダッシュボード
+                </Link>
+                <Link
+                  href="/timeline"
+                  className="text-sm font-medium text-slate-600 hover:text-blue-700"
+                >
+                  タイムライン
                 </Link>
                 <Link
                   href="/outages"
