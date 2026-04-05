@@ -212,20 +212,20 @@ export default function DashboardPage() {
     <ErrorBoundary>
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-900">ダッシュボード</h1>
-        {meta && (
-          <p className="text-sm text-slate-500 mt-1">
-            最終更新:{" "}
-            {(() => {
-              try {
-                return format(parseISO(meta.generatedAt), "yyyy年M月d日 HH:mm", { locale: ja });
-              } catch {
-                return meta.generatedAt;
-              }
-            })()}{" "}
-            / 取得元: {meta.source}
-          </p>
-        )}
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <h1 className="text-2xl font-bold text-slate-900">ダッシュボード</h1>
+          {meta && (
+            <p className="text-lg font-semibold text-blue-700">
+              {(() => {
+                try {
+                  return format(parseISO(meta.generatedAt), "yyyy年M月d日 H時 現在", { locale: ja });
+                } catch {
+                  return meta.generatedAt;
+                }
+              })()}
+            </p>
+          )}
+        </div>
       </div>
 
       {/* Summary cards */}
