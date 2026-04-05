@@ -10,42 +10,44 @@ import LoadingSpinner from "@/components/common/LoadingSpinner";
 import EmptyState from "@/components/common/EmptyState";
 import type { NormalizedOutage, OutageFile } from "@/types/outage";
 
+const PAGE_SIZE = 50;
+
 function parseSet(param: string | null): Set<string> {
   return new Set(param?.split(",").filter(Boolean) ?? []);
+}
+
+function parseOutageDate(dateStr: string): number {
+  const [date, time] = dateStr.split(" ");
+  const [y, m, d] = date.split("/").map(Number);
+  const [h, min] = (time || "00:00").split(":").map(Number);
+  return new Date(y, m - 1, d, h, min).getTime();
 }
 
 function TimelineContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [records, setRecords] = useState<NormalizedOutage[]>([]);
+  const [allRecords, setAllRecords] = useState<NormalizedOutage[]>([]);
   const [meta, setMeta] = useState<OutageFile["meta"] | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [nowMs] = useState(() => Date.now());
 
   // Parse filters from URL
-  const areas = useMemo(
-    () => parseSet(searchParams.get("areas")),
-    [searchParams]
-  );
-  const formats = useMemo(
-    () => parseSet(searchParams.get("formats")),
-    [searchParams]
-  );
-  const maintemodes = useMemo(
-    () => parseSet(searchParams.get("maintemodes")),
-    [searchParams]
-  );
+  const areas = useMemo(() => parseSet(searchParams.get("areas")), [searchParams]);
+  const formats = useMemo(() => parseSet(searchParams.get("formats")), [searchParams]);
+  const maintemodes = useMemo(() => parseSet(searchParams.get("maintemodes")), [searchParams]);
+  const currentPage = parseInt(searchParams.get("page") ?? "1", 10) || 1;
 
-  const updateParam = useCallback(
-    (key: string, value: Set<string>) => {
+  const updateParams = useCallback(
+    (updates: Record<string, string | null>) => {
       const params = new URLSearchParams(searchParams.toString());
-      const serialized = [...value].join(",");
-      if (serialized) {
-        params.set(key, serialized);
-      } else {
-        params.delete(key);
+      for (const [key, value] of Object.entries(updates)) {
+        if (value === null || value === "") {
+          params.delete(key);
+        } else {
+          params.set(key, value);
+        }
       }
       router.push(`?${params.toString()}`, { scroll: false });
     },
@@ -57,43 +59,48 @@ function TimelineContent() {
     loadOutagesCurrent().then((result) => {
       if (cancelled) return;
       if (result.ok) {
-        setRecords(result.data);
+        setAllRecords(result.data);
         setMeta(result.meta ?? null);
       } else {
         setError(result.error);
-        setRecords([]);
+        setAllRecords([]);
       }
       setLoading(false);
     });
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
 
-  // Apply filters
+  // Filter to currently active + apply user filters
   const filtered = useMemo(() => {
-    let data = records;
-    if (areas.size > 0) {
-      data = data.filter((r) => areas.has(r.area));
-    }
-    if (formats.size > 0) {
-      data = data.filter((r) => formats.has(r.format));
-    }
-    if (maintemodes.size > 0) {
-      data = data.filter((r) => maintemodes.has(r.maintemode));
-    }
-    return data;
-  }, [records, areas, formats, maintemodes]);
+    const twoYearsAgo = nowMs - 2 * 365.25 * 24 * 60 * 60 * 1000;
+    let data = allRecords.filter((r) => {
+      const start = parseOutageDate(r.startdt);
+      if (start > nowMs || start < twoYearsAgo) return false;
+      if (!r.restartschdt) return true;
+      return parseOutageDate(r.restartschdt) > nowMs;
+    });
+    if (areas.size > 0) data = data.filter((r) => areas.has(r.area));
+    if (formats.size > 0) data = data.filter((r) => formats.has(r.format));
+    if (maintemodes.size > 0) data = data.filter((r) => maintemodes.has(r.maintemode));
+    // Sort by area, then startdt
+    return data.sort((a, b) => {
+      const areaDiff = Number(a.area) - Number(b.area);
+      if (areaDiff !== 0) return areaDiff;
+      return parseOutageDate(a.startdt) - parseOutageDate(b.startdt);
+    });
+  }, [allRecords, areas, formats, maintemodes, nowMs]);
 
-  if (error && records.length === 0) {
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+  const pageRecords = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  if (error && allRecords.length === 0) {
     return (
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
         <EmptyState
           message="データがありません"
-          action={{
-            label: "再読み込み",
-            onClick: () => window.location.reload(),
-          }}
+          action={{ label: "再読み込み", onClick: () => window.location.reload() }}
         />
         <p className="text-sm text-slate-400 text-center mt-2">{error}</p>
       </div>
@@ -103,188 +110,149 @@ function TimelineContent() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">
-          停止タイムライン
-        </h1>
+        <h1 className="text-2xl font-bold text-slate-900">停止タイムライン</h1>
         {meta && (
           <p className="text-sm text-slate-500 mt-1">
-            最終更新: {meta.generatedAt} / {records.length}件
+            最終更新: {meta.generatedAt} / 現在停止中 {filtered.length}件
           </p>
         )}
       </div>
 
       {/* Filters */}
       <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200 mb-6">
-        <h2 className="text-sm font-semibold text-slate-700 mb-4">
-          フィルター
-        </h2>
+        <h2 className="text-sm font-semibold text-slate-700 mb-4">フィルター</h2>
         <div className="space-y-4">
-          <CheckboxGroup
-            label="エリア"
-            options={AREAS}
-            selected={areas}
-            onChange={(s) => updateParam("areas", s)}
-          />
-          <CheckboxGroup
-            label="発電形式"
-            options={FORMATS}
-            selected={formats}
-            onChange={(s) => updateParam("formats", s)}
-          />
-          <CheckboxGroup
-            label="停止区分"
-            options={MAINTEMODES}
-            selected={maintemodes}
-            onChange={(s) => updateParam("maintemodes", s)}
-          />
+          <CheckboxGroup label="エリア" options={AREAS} selected={areas}
+            onChange={(s) => updateParams({ areas: [...s].join(",") || null, page: null })} />
+          <CheckboxGroup label="発電形式" options={FORMATS} selected={formats}
+            onChange={(s) => updateParams({ formats: [...s].join(",") || null, page: null })} />
+          <CheckboxGroup label="停止区分" options={MAINTEMODES} selected={maintemodes}
+            onChange={(s) => updateParams({ maintemodes: [...s].join(",") || null, page: null })} />
           {(areas.size > 0 || formats.size > 0 || maintemodes.size > 0) && (
-            <button
-              onClick={() => router.push("/timeline", { scroll: false })}
-              className="text-sm text-blue-600 hover:text-blue-800 underline"
-            >
+            <button onClick={() => router.push("/timeline", { scroll: false })}
+              className="text-sm text-blue-600 hover:text-blue-800 underline">
               フィルターをリセット
             </button>
           )}
         </div>
       </div>
 
-      {/* Timeline Chart */}
+      {/* Pagination controls */}
+      {totalPages > 1 && (
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-sm text-slate-500">
+            {filtered.length}件中 {(safePage - 1) * PAGE_SIZE + 1}〜{Math.min(safePage * PAGE_SIZE, filtered.length)}件
+          </p>
+          <div className="flex items-center gap-2">
+            <button disabled={safePage <= 1}
+              onClick={() => updateParams({ page: String(safePage - 1) })}
+              className="px-3 py-1 text-sm rounded border border-slate-300 disabled:opacity-40 hover:bg-slate-50">
+              前へ
+            </button>
+            <span className="text-sm text-slate-600">{safePage} / {totalPages}</span>
+            <button disabled={safePage >= totalPages}
+              onClick={() => updateParams({ page: String(safePage + 1) })}
+              className="px-3 py-1 text-sm rounded border border-slate-300 disabled:opacity-40 hover:bg-slate-50">
+              次へ
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Timeline Chart — current page only */}
       <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200 mb-6">
-        <h2 className="text-base font-semibold text-slate-700 mb-4">
-          タイムライン（直近40件）
-        </h2>
         {loading ? (
           <LoadingSpinner message="読み込み中..." />
         ) : (
-          <OutageTimelineChart records={filtered} maxItems={40} />
+          <OutageTimelineChart records={pageRecords} maxItems={PAGE_SIZE} />
         )}
       </div>
 
-      {/* Detail Table */}
-      {!loading && filtered.length > 0 && (
+      {/* Detail Table — current page only */}
+      {!loading && pageRecords.length > 0 && (
         <div className="rounded-xl bg-white shadow-sm border border-slate-200 overflow-hidden">
           <div className="px-6 py-4 border-b border-slate-200">
             <h2 className="text-base font-semibold text-slate-700">
-              停止詳細一覧（{filtered.length}件）
+              停止詳細一覧
             </h2>
           </div>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-slate-200 text-sm">
               <thead className="bg-slate-50">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">
-                    発電所 / ユニット
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">
-                    停止区分
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">
-                    停止日時
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">
-                    復旧予定
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">
-                    停止期間
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">
-                    低下量 (MW)
-                  </th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">
-                    停止原因
-                  </th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600">発電所 / ユニット</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600">停止区分</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600">停止日時</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600">復旧予定</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600">停止期間</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600">低下量 (MW)</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600">停止原因</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
-                {[...filtered]
-                  .sort((a, b) => {
-                    const at = new Date(a.startdt.replace(/\//g, "-")).getTime();
-                    const bt = new Date(b.startdt.replace(/\//g, "-")).getTime();
-                    return bt - at;
-                  })
-                  .map((r) => {
-                    const startMs = new Date(
-                      r.startdt.replace(/\//g, "-")
-                    ).getTime();
-                    const endMs = r.restartschdt
-                      ? new Date(
-                          r.restartschdt.replace(/\//g, "-")
-                        ).getTime()
-                      : nowMs;
-                    const diffMs = endMs - startMs;
-                    const days = Math.floor(
-                      diffMs / (1000 * 60 * 60 * 24)
-                    );
-                    const hours = Math.floor(
-                      (diffMs % (1000 * 60 * 60 * 24)) /
-                        (1000 * 60 * 60)
-                    );
-                    const durationStr = `${days}日${hours}時間`;
-                    const ongoing = !r.restartschdt;
+                {pageRecords.map((r) => {
+                  const startMs = parseOutageDate(r.startdt);
+                  const endMs = r.restartschdt ? parseOutageDate(r.restartschdt) : nowMs;
+                  const diffMs = endMs - startMs;
+                  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+                  const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                  const ongoing = !r.restartschdt;
 
-                    return (
-                      <tr
-                        key={r.id}
-                        className="hover:bg-slate-50 transition-colors"
-                      >
-                        <td className="px-4 py-3">
-                          <div className="font-medium text-slate-900">
-                            {r.name}
-                          </div>
-                          <div className="text-slate-500 text-xs">
-                            {r.unitname} / {r.areaName}
-                          </div>
-                        </td>
-                        <td className="px-4 py-3">
-                          <span
-                            className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
-                            style={{
-                              backgroundColor:
-                                r.maintemode === "1"
-                                  ? "#dbeafe"
-                                  : r.maintemode === "2"
-                                  ? "#fee2e2"
-                                  : "#fef3c7",
-                              color:
-                                r.maintemode === "1"
-                                  ? "#1d4ed8"
-                                  : r.maintemode === "2"
-                                  ? "#b91c1c"
-                                  : "#92400e",
-                            }}
-                          >
-                            {r.maintemodeName}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-slate-700 whitespace-nowrap">
-                          {r.startdt}
-                        </td>
-                        <td className="px-4 py-3 text-slate-700 whitespace-nowrap">
-                          {r.restartschdt || (
-                            <span className="text-amber-600">
-                              未定{r.outlook ? `（${r.outlook}）` : ""}
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-slate-700 whitespace-nowrap">
-                          {durationStr}
-                          {ongoing && (
-                            <span className="text-amber-600 text-xs ml-1">
-                              (継続中)
-                            </span>
-                          )}
-                        </td>
-                        <td className="px-4 py-3 text-slate-700 text-right">
-                          {(r.downcapacity / 1000).toFixed(1)}
-                        </td>
-                        <td className="px-4 py-3 text-slate-600 max-w-[200px] truncate">
-                          {r.factor || "―"}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                  return (
+                    <tr key={r.id} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-slate-900">{r.name}</div>
+                        <div className="text-slate-500 text-xs">{r.unitname} / {r.areaName}</div>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
+                          style={{
+                            backgroundColor: r.maintemode === "1" ? "#dbeafe" : r.maintemode === "2" ? "#fee2e2" : "#fef3c7",
+                            color: r.maintemode === "1" ? "#1d4ed8" : r.maintemode === "2" ? "#b91c1c" : "#92400e",
+                          }}>
+                          {r.maintemodeName}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-slate-700 whitespace-nowrap">{r.startdt}</td>
+                      <td className="px-4 py-3 text-slate-700 whitespace-nowrap">
+                        {r.restartschdt || (
+                          <span className="text-amber-600">未定{r.outlook ? `（${r.outlook}）` : ""}</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-3 text-slate-700 whitespace-nowrap">
+                        {days}日{hours}時間
+                        {ongoing && <span className="text-amber-600 text-xs ml-1">(継続中)</span>}
+                      </td>
+                      <td className="px-4 py-3 text-slate-700 text-right">
+                        {(r.downcapacity / 1000).toFixed(1)}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600 max-w-[200px] truncate">
+                        {r.factor || "―"}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Bottom pagination */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-6">
+          <div className="flex items-center gap-2">
+            <button disabled={safePage <= 1}
+              onClick={() => updateParams({ page: String(safePage - 1) })}
+              className="px-3 py-1 text-sm rounded border border-slate-300 disabled:opacity-40 hover:bg-slate-50">
+              前へ
+            </button>
+            <span className="text-sm text-slate-600">{safePage} / {totalPages}</span>
+            <button disabled={safePage >= totalPages}
+              onClick={() => updateParams({ page: String(safePage + 1) })}
+              className="px-3 py-1 text-sm rounded border border-slate-300 disabled:opacity-40 hover:bg-slate-50">
+              次へ
+            </button>
           </div>
         </div>
       )}

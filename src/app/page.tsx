@@ -341,7 +341,7 @@ export default function DashboardPage() {
                   タイムラインを詳しく見る &rarr;
                 </Link>
               </div>
-              <OutageTimelineChart records={records} maxItems={20} />
+              <OutageTimelineChart records={records} maxItems={20} excludePlanned />
             </div>
 
             {/* Row 5: assortment treemap (full width) */}

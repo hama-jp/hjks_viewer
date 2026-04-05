@@ -10,6 +10,7 @@ const ReactECharts = dynamic(() => import("echarts-for-react"), { ssr: false });
 type OutageTimelineChartProps = {
   records: NormalizedOutage[];
   maxItems?: number;
+  excludePlanned?: boolean; // true = 計画停止を除外（ダッシュボード用）
 };
 
 const MAINTEMODE_COLORS: Record<string, string> = {
@@ -38,6 +39,7 @@ function formatDuration(startMs: number, endMs: number): string {
 export default function OutageTimelineChart({
   records,
   maxItems = 20,
+  excludePlanned = false,
 }: OutageTimelineChartProps) {
   const [now] = useState(() => Date.now());
 
@@ -52,14 +54,19 @@ export default function OutageTimelineChart({
     return end > now;
   });
 
-  // 計画外停止(2)・出力低下(3) のみ表示（計画停止は除外）
-  const combined = active
-    .filter((r) => r.maintemode === "2" || r.maintemode === "3")
+  // Optionally exclude planned outages (dashboard mode)
+  const filtered = excludePlanned
+    ? active.filter((r) => r.maintemode === "2" || r.maintemode === "3")
+    : active;
+
+  // Sort by area, then startdt; limit to maxItems
+  const combined = filtered
     .sort((a, b) => {
-    const areaDiff = Number(a.area) - Number(b.area);
-    if (areaDiff !== 0) return areaDiff;
-    return parseOutageDate(a.startdt) - parseOutageDate(b.startdt);
-  });
+      const areaDiff = Number(a.area) - Number(b.area);
+      if (areaDiff !== 0) return areaDiff;
+      return parseOutageDate(a.startdt) - parseOutageDate(b.startdt);
+    })
+    .slice(0, maxItems);
 
   // Reverse so area 1 (北海道) is at top of y-axis
   const displayed = [...combined].reverse();
@@ -236,26 +243,25 @@ export default function OutageTimelineChart({
       />
       <p className="text-xs text-slate-400 text-right mt-1">
         {combined.length}件表示中
+        {filtered.length > maxItems && `（全${filtered.length}件中）`}
       </p>
       <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
+        {!excludePlanned && (
+          <span className="flex items-center gap-1">
+            <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: "#3b82f6" }} />
+            計画停止
+          </span>
+        )}
         <span className="flex items-center gap-1">
-          <span
-            className="inline-block w-3 h-3 rounded-sm"
-            style={{ backgroundColor: "#ef4444" }}
-          />
+          <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: "#ef4444" }} />
           計画外停止
         </span>
         <span className="flex items-center gap-1">
-          <span
-            className="inline-block w-3 h-3 rounded-sm"
-            style={{ backgroundColor: "#f59e0b" }}
-          />
+          <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: "#f59e0b" }} />
           出力低下
         </span>
         <span className="flex items-center gap-1">
-          <span
-            className="inline-block w-3 h-3 rounded-sm opacity-60 border border-dashed border-slate-400"
-          />
+          <span className="inline-block w-3 h-3 rounded-sm opacity-60 border border-dashed border-slate-400" />
           停止中
         </span>
       </div>
