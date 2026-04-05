@@ -59,11 +59,14 @@ export default function OutageTimelineChart({
     .sort((a, b) => parseOutageDate(b.upddt) - parseOutageDate(a.upddt))
     .slice(0, Math.max(0, maxItems - unplanned.length));
 
-  const combined = [...unplanned, ...planned].sort(
-    (a, b) => parseOutageDate(b.upddt) - parseOutageDate(a.upddt)
-  );
+  // Sort by area code, then by startdt within same area
+  const combined = [...unplanned, ...planned].sort((a, b) => {
+    const areaDiff = Number(a.area) - Number(b.area);
+    if (areaDiff !== 0) return areaDiff;
+    return parseOutageDate(a.startdt) - parseOutageDate(b.startdt);
+  });
 
-  // Reverse for chart display (most recent update at top of y-axis)
+  // Reverse so area 1 (北海道) is at top of y-axis
   const displayed = [...combined].reverse();
 
   if (displayed.length === 0) {
