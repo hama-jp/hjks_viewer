@@ -32,7 +32,8 @@ function toNumberOrNull(value: string): number | null {
   return isNaN(num) ? null : num;
 }
 
-function toNullableString(value: string): string | null {
+function toNullableString(value: string | undefined | null): string | null {
+  if (value == null) return null;
   return value.trim() === "" ? null : value.trim();
 }
 
