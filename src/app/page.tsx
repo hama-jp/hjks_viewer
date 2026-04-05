@@ -338,7 +338,7 @@ export default function DashboardPage() {
                   href="/timeline"
                   className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
                 >
-                  タイムラインを詳しく見る &rarr;
+                  タイムライン（計画停止を含む）を詳しく見る &rarr;
                 </Link>
               </div>
               <OutageTimelineChart records={records} maxItems={9999} excludePlanned rangeMonths={3} />
