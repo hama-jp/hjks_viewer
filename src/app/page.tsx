@@ -303,23 +303,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Row 4: monthly trend (full width) */}
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
-              <h2 className="text-base font-semibold text-slate-700 mb-4">
-                月別停止トレンド
-              </h2>
-              <MonthlyTrendChart records={records} />
-            </div>
-
-            {/* Row 5: assortment treemap (full width) */}
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
-              <h2 className="text-base font-semibold text-slate-700 mb-4">
-                種別内訳
-              </h2>
-              <AssortmentTreemap records={records} />
-            </div>
-
-            {/* Row 6: outage timeline (full width) */}
+            {/* Row 4: outage timeline (full width) */}
             <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-semibold text-slate-700">
@@ -333,6 +317,22 @@ export default function DashboardPage() {
                 </Link>
               </div>
               <OutageTimelineChart records={records} maxItems={20} />
+            </div>
+
+            {/* Row 5: monthly trend (full width) */}
+            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
+              <h2 className="text-base font-semibold text-slate-700 mb-4">
+                月別停止トレンド
+              </h2>
+              <MonthlyTrendChart records={records} />
+            </div>
+
+            {/* Row 6: assortment treemap (full width) */}
+            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
+              <h2 className="text-base font-semibold text-slate-700 mb-4">
+                種別内訳
+              </h2>
+              <AssortmentTreemap records={records} />
             </div>
           </>
         )}

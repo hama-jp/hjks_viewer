@@ -84,7 +84,7 @@ export default function OutageTimelineChart({
     };
   });
 
-  const chartHeight = Math.max(300, displayed.length * 32 + 80);
+  const chartHeight = Math.max(350, displayed.length * 32 + 120);
 
   const option: EChartsOption = {
     tooltip: {
@@ -114,7 +114,8 @@ export default function OutageTimelineChart({
       left: 180,
       right: 40,
       top: 20,
-      bottom: 40,
+      bottom: 60,
+      containLabel: false,
     },
     xAxis: {
       type: "time",
@@ -170,13 +171,45 @@ export default function OutageTimelineChart({
           y: 0,
         },
         data: seriesData,
+        clip: true,
+      },
+      // Current time marker line
+      {
+        type: "line",
+        markLine: {
+          silent: true,
+          symbol: "none",
+          label: {
+            formatter: "現在",
+            position: "insideStartTop",
+            fontSize: 11,
+            color: "#dc2626",
+          },
+          lineStyle: {
+            color: "#dc2626",
+            width: 2,
+            type: "solid",
+          },
+          data: [{ xAxis: now }],
+        },
+        data: [],
       },
     ],
     dataZoom: [
       {
         type: "inside",
         xAxisIndex: 0,
-        filterMode: "weakFilter",
+        filterMode: "none",
+      },
+      {
+        type: "slider",
+        xAxisIndex: 0,
+        filterMode: "none",
+        height: 20,
+        bottom: 5,
+        borderColor: "#e2e8f0",
+        fillerColor: "rgba(59,130,246,0.15)",
+        handleSize: "80%",
       },
     ],
   };
