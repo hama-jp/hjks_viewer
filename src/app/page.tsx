@@ -26,15 +26,6 @@ type DashboardState = {
   meta: OutageFile["meta"] | null;
 };
 
-function SkeletonCard() {
-  return (
-    <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200 animate-pulse">
-      <div className="h-4 w-24 bg-slate-200 rounded mb-3" />
-      <div className="h-8 w-16 bg-slate-200 rounded" />
-    </div>
-  );
-}
-
 function SkeletonChart() {
   return (
     <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200 animate-pulse">
@@ -107,11 +98,6 @@ export default function DashboardPage() {
       return end > nowMs;
     });
   }, [allRecords, nowMs]);
-
-  // Summary stats
-  const totalOutages = records.length;
-  const unplannedOutages = records.filter((r) => r.maintemode === "2").length;
-  const uniqueAreas = new Set(records.map((r) => r.area)).size;
 
   // Chart data: outages by area
   const areaChartOption = useMemo<EChartsOption>(() => {
@@ -211,7 +197,7 @@ export default function DashboardPage() {
   return (
     <ErrorBoundary>
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
+      <div className="mb-6">
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
           <h1 className="text-2xl font-bold text-slate-900">ダッシュボード</h1>
           {meta && (
@@ -228,53 +214,37 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Summary cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        {loading ? (
-          <>
-            <SkeletonCard />
-            <SkeletonCard />
-            <SkeletonCard />
-          </>
-        ) : (
-          <>
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
-              <p className="text-sm font-medium text-slate-500">停止中件数</p>
-              <p className="mt-2 text-3xl font-bold text-blue-700">
-                {totalOutages}
-              </p>
-            </div>
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
-              <p className="text-sm font-medium text-slate-500">
-                計画外停止件数
-              </p>
-              <p className="mt-2 text-3xl font-bold text-red-600">
-                {unplannedOutages}
-              </p>
-            </div>
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
-              <p className="text-sm font-medium text-slate-500">エリア数</p>
-              <p className="mt-2 text-3xl font-bold text-emerald-600">
-                {uniqueAreas}
-              </p>
-            </div>
-          </>
-        )}
-      </div>
-
       {/* Charts */}
       <div className="space-y-6">
         {loading ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <>
             <SkeletonChart />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <SkeletonChart />
+              <SkeletonChart />
+              <SkeletonChart />
+              <SkeletonChart />
+            </div>
             <SkeletonChart />
-            <SkeletonChart />
-            <SkeletonChart />
-            <div className="lg:col-span-2"><SkeletonChart /></div>
-            <div className="lg:col-span-2"><SkeletonChart /></div>
-          </div>
+          </>
         ) : (
           <>
+            {/* Row 1: outage timeline (full width, right below title) */}
+            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-base font-semibold text-slate-700">
+                  現在の停止状況（計画停止除く）
+                </h2>
+                <Link
+                  href="/timeline"
+                  className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                >
+                  タイムライン（計画停止を含む）を詳しく見る &rarr;
+                </Link>
+              </div>
+              <OutageTimelineChart records={records} maxItems={9999} excludePlanned rangeMonths={3} />
+            </div>
+
             {/* Row 2: area bar + format bar */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
@@ -328,23 +298,7 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Row 4: outage timeline (full width) */}
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-semibold text-slate-700">
-                  現在の停止状況（計画停止除く）
-                </h2>
-                <Link
-                  href="/timeline"
-                  className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
-                >
-                  タイムライン（計画停止を含む）を詳しく見る &rarr;
-                </Link>
-              </div>
-              <OutageTimelineChart records={records} maxItems={9999} excludePlanned rangeMonths={3} />
-            </div>
-
-            {/* Row 5: assortment treemap (full width) */}
+            {/* Row 4: assortment treemap (full width) */}
             <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
               <h2 className="text-base font-semibold text-slate-700 mb-4">
                 種別内訳
