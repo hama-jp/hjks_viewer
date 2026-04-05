@@ -76,10 +76,11 @@ export function normalizeOutages(
     const assortmentCode = resolveCode(r.assortment, ASSORTMENTS_REVERSE);
 
     const maxcapacity = toNumberOrNull(r.maxcapacity);
-    const downcapacity = toNumberOrNull(r.downcapacity);
+    // downcapacity is empty for full outages (計画停止/計画外停止) — default to maxcapacity
+    const downcapacity = toNumberOrNull(r.downcapacity) ?? maxcapacity ?? 0;
 
-    // Skip records with invalid numeric fields
-    if (maxcapacity === null || downcapacity === null) continue;
+    // Skip records with invalid maxcapacity
+    if (maxcapacity === null) continue;
 
     const candidate = {
       id: generateId(r.plantcd, r.unitname, r.startdt),
@@ -100,7 +101,7 @@ export function normalizeOutages(
       startdt: r.startdt,
       restartschdt: toNullableString(r.restartschdt),
       outlook: r.outlook,
-      factor: r.factor.replace(/\n/g, " / ").trim(),
+      factor: r.factor.replace(/\r?\n/g, " / ").replace(/\r/g, "").trim(),
       upddt: r.upddt,
       fetchedAt: ts,
     };
