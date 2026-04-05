@@ -52,15 +52,10 @@ export default function OutageTimelineChart({
     return end > now;
   });
 
-  // 計画外停止(2)・出力低下(3) は全件表示、計画停止(1) は最近更新順で残り枠分
-  const unplanned = active.filter((r) => r.maintemode === "2" || r.maintemode === "3");
-  const planned = active
-    .filter((r) => r.maintemode === "1")
-    .sort((a, b) => parseOutageDate(b.upddt) - parseOutageDate(a.upddt))
-    .slice(0, Math.max(0, maxItems - unplanned.length));
-
-  // Sort by area code, then by startdt within same area
-  const combined = [...unplanned, ...planned].sort((a, b) => {
+  // 計画外停止(2)・出力低下(3) のみ表示（計画停止は除外）
+  const combined = active
+    .filter((r) => r.maintemode === "2" || r.maintemode === "3")
+    .sort((a, b) => {
     const areaDiff = Number(a.area) - Number(b.area);
     if (areaDiff !== 0) return areaDiff;
     return parseOutageDate(a.startdt) - parseOutageDate(b.startdt);
@@ -240,19 +235,9 @@ export default function OutageTimelineChart({
         lazyUpdate
       />
       <p className="text-xs text-slate-400 text-right mt-1">
-        計画外停止・出力低下 {unplanned.length}件 / 計画停止 {planned.length}件
-        {planned.length < active.filter((r) => r.maintemode === "1").length &&
-          `（全${active.filter((r) => r.maintemode === "1").length}件中）`}
-        {" "}表示中
+        {combined.length}件表示中
       </p>
       <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
-        <span className="flex items-center gap-1">
-          <span
-            className="inline-block w-3 h-3 rounded-sm"
-            style={{ backgroundColor: "#3b82f6" }}
-          />
-          計画停止
-        </span>
         <span className="flex items-center gap-1">
           <span
             className="inline-block w-3 h-3 rounded-sm"

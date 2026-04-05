@@ -332,7 +332,7 @@ export default function DashboardPage() {
             <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-base font-semibold text-slate-700">
-                  現在の停止状況
+                  現在の停止状況（計画停止除く）
                 </h2>
                 <Link
                   href="/timeline"
