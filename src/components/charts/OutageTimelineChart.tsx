@@ -70,8 +70,8 @@ export default function OutageTimelineChart({
     })
     .slice(0, maxItems);
 
-  // Reverse so area 1 (北海道) is at top of y-axis
-  const displayed = [...combined].reverse();
+  // combined is sorted area asc (北海道=1 first), inverse:true on yAxis puts index 0 at top
+  const displayed = combined;
 
   if (displayed.length === 0) {
     return (
