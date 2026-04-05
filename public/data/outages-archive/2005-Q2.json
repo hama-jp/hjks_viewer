@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "generatedAt": "2026-04-05T01:58:36.087Z",
+    "recordCount": 2,
+    "source": "csv"
+  },
+  "records": [
+    {
+      "id": "5ab91125240c129c",
+      "area": "6",
+      "areaName": "関西",
+      "company": "関西電力株式会社",
+      "plantcd": "62B41",
+      "name": "多奈川第二発電所",
+      "format": "4",
+      "formatName": "火力(石油)",
+      "unitname": "１号機",
+      "maxcapacity": 600000,
+      "downcapacity": 600000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "",
+      "assortmentName": "不明",
+      "startdt": "2005/04/01 00:00",
+      "restartschdt": "2020/04/01",
+      "outlook": "あり",
+      "factor": "長期計画停止",
+      "upddt": "2020/04/01 11:36",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    },
+    {
+      "id": "ad385436422f8a25",
+      "area": "6",
+      "areaName": "関西",
+      "company": "関西電力株式会社",
+      "plantcd": "62B42",
+      "name": "多奈川第二発電所",
+      "format": "4",
+      "formatName": "火力(石油)",
+      "unitname": "２号機",
+      "maxcapacity": 600000,
+      "downcapacity": 600000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "",
+      "assortmentName": "不明",
+      "startdt": "2005/04/01 00:00",
+      "restartschdt": "2020/04/01",
+      "outlook": "あり",
+      "factor": "長期計画停止",
+      "upddt": "2020/04/01 11:36",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "generatedAt": "2026-04-05T01:58:36.087Z",
+    "recordCount": 2,
+    "source": "csv"
+  },
+  "records": [
+    {
+      "id": "1926b40758ab4dda",
+      "area": "6",
+      "areaName": "関西",
+      "company": "関西電力株式会社",
+      "plantcd": "63B54",
+      "name": "大飯発電所",
+      "format": "1",
+      "formatName": "原子力",
+      "unitname": "４号機",
+      "maxcapacity": 1180000,
+      "downcapacity": 1180000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "",
+      "assortmentName": "不明",
+      "startdt": "2013/09/15 23:00",
+      "restartschdt": "2018/06/05",
+      "outlook": "あり",
+      "factor": "震災",
+      "upddt": "2018/05/21 15:07",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    },
+    {
+      "id": "48145bd5de120ce0",
+      "area": "6",
+      "areaName": "関西",
+      "company": "関西電力株式会社",
+      "plantcd": "63B53",
+      "name": "大飯発電所",
+      "format": "1",
+      "formatName": "原子力",
+      "unitname": "３号機",
+      "maxcapacity": 1180000,
+      "downcapacity": 1180000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "",
+      "assortmentName": "不明",
+      "startdt": "2013/09/02 23:00",
+      "restartschdt": "2018/04/10",
+      "outlook": "あり",
+      "factor": "震災",
+      "upddt": "2018/03/19 17:14",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    }
+  ]
+}

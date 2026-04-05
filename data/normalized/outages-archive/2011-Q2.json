@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "generatedAt": "2026-04-05T01:58:36.087Z",
+    "recordCount": 2,
+    "source": "csv"
+  },
+  "records": [
+    {
+      "id": "7337f6aefd720ffc",
+      "area": "6",
+      "areaName": "関西",
+      "company": "関西電力株式会社",
+      "plantcd": "63A53",
+      "name": "美浜発電所",
+      "format": "1",
+      "formatName": "原子力",
+      "unitname": "３号機",
+      "maxcapacity": 826000,
+      "downcapacity": 826000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "",
+      "assortmentName": "不明",
+      "startdt": "2011/05/14 11:00",
+      "restartschdt": "2021/06/29",
+      "outlook": "あり",
+      "factor": "震災",
+      "upddt": "2021/05/21 15:40",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    },
+    {
+      "id": "f26a3e7ef915cd29",
+      "area": "8",
+      "areaName": "四国",
+      "company": "四国電力(株)",
+      "plantcd": "81803",
+      "name": "四国電力　伊方発電所",
+      "format": "1",
+      "formatName": "原子力",
+      "unitname": "３号機",
+      "maxcapacity": 890000,
+      "downcapacity": 890000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "",
+      "assortmentName": "不明",
+      "startdt": "2011/04/29 16:30",
+      "restartschdt": "2016/08/15",
+      "outlook": "あり",
+      "factor": "定期検査（2011/04/29～） / 2016年８月15日並列",
+      "upddt": "2016/08/05 15:39",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    }
+  ]
+}

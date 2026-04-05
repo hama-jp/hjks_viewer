@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "generatedAt": "2026-04-05T01:58:36.087Z",
+    "recordCount": 2,
+    "source": "csv"
+  },
+  "records": [
+    {
+      "id": "528a1566c7aa424e",
+      "area": "3",
+      "areaName": "東京",
+      "company": "株式会社JERA",
+      "plantcd": "GB623",
+      "name": "鹿島火力発電所４号機",
+      "format": "4",
+      "formatName": "火力(石油)",
+      "unitname": "鹿島４号",
+      "maxcapacity": 600000,
+      "downcapacity": 600000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "4",
+      "assortmentName": "停止・長期計画停止",
+      "startdt": "2014/04/01 00:00",
+      "restartschdt": "2023/03/31",
+      "outlook": "あり",
+      "factor": "長期計画停止",
+      "upddt": "2023/03/17 14:24",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    },
+    {
+      "id": "23957c9eee3c66c6",
+      "area": "3",
+      "areaName": "東京",
+      "company": "株式会社JERA",
+      "plantcd": "GB623",
+      "name": "鹿島火力発電所３号機",
+      "format": "4",
+      "formatName": "火力(石油)",
+      "unitname": "鹿島３号",
+      "maxcapacity": 600000,
+      "downcapacity": 600000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "4",
+      "assortmentName": "停止・長期計画停止",
+      "startdt": "2014/04/01 00:00",
+      "restartschdt": "2023/03/31",
+      "outlook": "あり",
+      "factor": "長期計画停止",
+      "upddt": "2023/03/17 14:23",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    }
+  ]
+}

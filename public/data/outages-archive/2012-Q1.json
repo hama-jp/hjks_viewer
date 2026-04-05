@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "generatedAt": "2026-04-05T01:58:36.087Z",
+    "recordCount": 2,
+    "source": "csv"
+  },
+  "records": [
+    {
+      "id": "3362f8393c11b5d7",
+      "area": "3",
+      "areaName": "東京",
+      "company": "東京電力ホールディングス株式会社",
+      "plantcd": "31202",
+      "name": "東京柏崎刈羽",
+      "format": "1",
+      "formatName": "原子力",
+      "unitname": "柏崎刈羽6号機",
+      "maxcapacity": 1356000,
+      "downcapacity": 1356000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "6",
+      "assortmentName": "停止・その他",
+      "startdt": "2012/03/25 23:59",
+      "restartschdt": "2026/02/16",
+      "outlook": "あり",
+      "factor": "当初2月15日復旧の予定を設備点検のため延期",
+      "upddt": "2026/02/16 02:33",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    },
+    {
+      "id": "b9dc7a2f07349a13",
+      "area": "7",
+      "areaName": "中国",
+      "company": "中国電力株式会社",
+      "plantcd": "78101",
+      "name": "島根原子力発電所第２号機",
+      "format": "1",
+      "formatName": "原子力",
+      "unitname": "単独",
+      "maxcapacity": 820000,
+      "downcapacity": 820000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "1",
+      "assortmentName": "停止・定期検査等",
+      "startdt": "2012/01/27 01:00",
+      "restartschdt": "2024/12/23",
+      "outlook": "あり",
+      "factor": "定期検査　　　　　　 / (仮並列期間は除く)",
+      "upddt": "2024/12/20 13:32",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    }
+  ]
+}

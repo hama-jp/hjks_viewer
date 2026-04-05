@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "generatedAt": "2026-04-05T01:58:36.087Z",
+    "recordCount": 2,
+    "source": "csv"
+  },
+  "records": [
+    {
+      "id": "6b5756fe78df142f",
+      "area": "1",
+      "areaName": "北海道",
+      "company": "北海道電力株式会社",
+      "plantcd": "10204",
+      "name": "苫小牧発電所",
+      "format": "4",
+      "formatName": "火力(石油)",
+      "unitname": "単独",
+      "maxcapacity": 250000,
+      "downcapacity": 250000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "",
+      "assortmentName": "不明",
+      "startdt": "2012/05/31 08:00",
+      "restartschdt": "2018/06/01",
+      "outlook": "あり",
+      "factor": "",
+      "upddt": "2018/05/29 17:38",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    },
+    {
+      "id": "611368a2fafba445",
+      "area": "1",
+      "areaName": "北海道",
+      "company": "北海道電力株式会社",
+      "plantcd": "10204",
+      "name": "苫小牧発電所",
+      "format": "4",
+      "formatName": "火力(石油)",
+      "unitname": "単独",
+      "maxcapacity": 250000,
+      "downcapacity": 250000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "",
+      "assortmentName": "不明",
+      "startdt": "2012/05/30 08:00",
+      "restartschdt": "2018/05/31",
+      "outlook": "あり",
+      "factor": "",
+      "upddt": "2018/05/29 17:38",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    }
+  ]
+}

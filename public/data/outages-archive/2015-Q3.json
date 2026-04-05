@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "generatedAt": "2026-04-05T01:58:36.087Z",
+    "recordCount": 2,
+    "source": "csv"
+  },
+  "records": [
+    {
+      "id": "2bc9bda341cf27e7",
+      "area": "3",
+      "areaName": "東京",
+      "company": "株式会社JERA",
+      "plantcd": "34046",
+      "name": "富津火力発電所",
+      "format": "3",
+      "formatName": "火力(ガス)",
+      "unitname": "富津４－１号",
+      "maxcapacity": 507000,
+      "downcapacity": 507000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "",
+      "assortmentName": "不明",
+      "startdt": "2015/08/16 18:00",
+      "restartschdt": "2016/12/18",
+      "outlook": "あり",
+      "factor": "GT点検",
+      "upddt": "2016/11/24 11:17",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    },
+    {
+      "id": "37cee2f84a7f06c4",
+      "area": "8",
+      "areaName": "四国",
+      "company": "四国電力(株)",
+      "plantcd": "81102",
+      "name": "四国電力　坂出発電所",
+      "format": "3",
+      "formatName": "火力(ガス)",
+      "unitname": "２号機",
+      "maxcapacity": 289000,
+      "downcapacity": 289000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "",
+      "assortmentName": "不明",
+      "startdt": "2015/08/14 00:00",
+      "restartschdt": "2016/05/16",
+      "outlook": "あり",
+      "factor": "２号機リプレースによる新設設備建設",
+      "upddt": "2016/05/13 17:57",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    }
+  ]
+}

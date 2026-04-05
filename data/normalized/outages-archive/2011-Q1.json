@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "generatedAt": "2026-04-05T01:58:36.087Z",
+    "recordCount": 1,
+    "source": "csv"
+  },
+  "records": [
+    {
+      "id": "3518d87f6fdabd2e",
+      "area": "6",
+      "areaName": "関西",
+      "company": "関西電力株式会社",
+      "plantcd": "63D51",
+      "name": "高浜発電所",
+      "format": "1",
+      "formatName": "原子力",
+      "unitname": "１号機",
+      "maxcapacity": 826000,
+      "downcapacity": 826000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "1",
+      "assortmentName": "停止・定期検査等",
+      "startdt": "2011/01/10 10:03",
+      "restartschdt": "2023/08/02",
+      "outlook": "あり",
+      "factor": "特重工事による停止",
+      "upddt": "2023/06/21 16:32",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    }
+  ]
+}

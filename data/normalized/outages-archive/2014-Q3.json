@@ -1,0 +1,32 @@
+{
+  "meta": {
+    "generatedAt": "2026-04-05T01:58:36.087Z",
+    "recordCount": 1,
+    "source": "csv"
+  },
+  "records": [
+    {
+      "id": "8b16b1f1335eeeb5",
+      "area": "3",
+      "areaName": "東京",
+      "company": "株式会社JERA",
+      "plantcd": "GB623",
+      "name": "鹿島火力発電所１号機",
+      "format": "4",
+      "formatName": "火力(石油)",
+      "unitname": "鹿島１号",
+      "maxcapacity": 600000,
+      "downcapacity": 600000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "4",
+      "assortmentName": "停止・長期計画停止",
+      "startdt": "2014/09/01 00:00",
+      "restartschdt": "2023/03/31",
+      "outlook": "あり",
+      "factor": "長期計画停止",
+      "upddt": "2023/03/17 14:22",
+      "fetchedAt": "2026-04-05T01:58:35.409Z"
+    }
+  ]
+}

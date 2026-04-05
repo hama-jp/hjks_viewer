@@ -1,26 +1,291 @@
 {
-  "lastUpdated": "2026-04-05T01:10:22.630Z",
+  "lastUpdated": "2026-04-05T01:59:03.045Z",
   "files": {
     "current": {
       "path": "data/outages-current.json",
-      "recordCount": 30,
-      "sizeBytes": 20995
+      "recordCount": 4673,
+      "sizeBytes": 3357831
     },
     "archives": [
       {
+        "path": "data/outages-archive/2005-Q2.json",
+        "period": "2005-Q2",
+        "recordCount": 2
+      },
+      {
+        "path": "data/outages-archive/2010-Q4.json",
+        "period": "2010-Q4",
+        "recordCount": 3
+      },
+      {
+        "path": "data/outages-archive/2011-Q1.json",
+        "period": "2011-Q1",
+        "recordCount": 1
+      },
+      {
+        "path": "data/outages-archive/2011-Q2.json",
+        "period": "2011-Q2",
+        "recordCount": 2
+      },
+      {
+        "path": "data/outages-archive/2011-Q3.json",
+        "period": "2011-Q3",
+        "recordCount": 1
+      },
+      {
+        "path": "data/outages-archive/2011-Q4.json",
+        "period": "2011-Q4",
+        "recordCount": 3
+      },
+      {
+        "path": "data/outages-archive/2012-Q1.json",
+        "period": "2012-Q1",
+        "recordCount": 2
+      },
+      {
+        "path": "data/outages-archive/2012-Q2.json",
+        "period": "2012-Q2",
+        "recordCount": 2
+      },
+      {
+        "path": "data/outages-archive/2013-Q3.json",
+        "period": "2013-Q3",
+        "recordCount": 2
+      },
+      {
+        "path": "data/outages-archive/2014-Q2.json",
+        "period": "2014-Q2",
+        "recordCount": 2
+      },
+      {
+        "path": "data/outages-archive/2014-Q3.json",
+        "period": "2014-Q3",
+        "recordCount": 1
+      },
+      {
+        "path": "data/outages-archive/2014-Q4.json",
+        "period": "2014-Q4",
+        "recordCount": 1
+      },
+      {
+        "path": "data/outages-archive/2015-Q3.json",
+        "period": "2015-Q3",
+        "recordCount": 2
+      },
+      {
+        "path": "data/outages-archive/2015-Q4.json",
+        "period": "2015-Q4",
+        "recordCount": 6
+      },
+      {
+        "path": "data/outages-archive/2016-Q1.json",
+        "period": "2016-Q1",
+        "recordCount": 28
+      },
+      {
+        "path": "data/outages-archive/2016-Q2.json",
+        "period": "2016-Q2",
+        "recordCount": 514
+      },
+      {
+        "path": "data/outages-archive/2016-Q3.json",
+        "period": "2016-Q3",
+        "recordCount": 423
+      },
+      {
+        "path": "data/outages-archive/2016-Q4.json",
+        "period": "2016-Q4",
+        "recordCount": 602
+      },
+      {
+        "path": "data/outages-archive/2017-Q1.json",
+        "period": "2017-Q1",
+        "recordCount": 396
+      },
+      {
+        "path": "data/outages-archive/2017-Q2.json",
+        "period": "2017-Q2",
+        "recordCount": 560
+      },
+      {
+        "path": "data/outages-archive/2017-Q3.json",
+        "period": "2017-Q3",
+        "recordCount": 464
+      },
+      {
+        "path": "data/outages-archive/2017-Q4.json",
+        "period": "2017-Q4",
+        "recordCount": 792
+      },
+      {
+        "path": "data/outages-archive/2018-Q1.json",
+        "period": "2018-Q1",
+        "recordCount": 842
+      },
+      {
+        "path": "data/outages-archive/2018-Q2.json",
+        "period": "2018-Q2",
+        "recordCount": 1278
+      },
+      {
+        "path": "data/outages-archive/2018-Q3.json",
+        "period": "2018-Q3",
+        "recordCount": 895
+      },
+      {
+        "path": "data/outages-archive/2018-Q4.json",
+        "period": "2018-Q4",
+        "recordCount": 1014
+      },
+      {
+        "path": "data/outages-archive/2019-Q1.json",
+        "period": "2019-Q1",
+        "recordCount": 705
+      },
+      {
+        "path": "data/outages-archive/2019-Q2.json",
+        "period": "2019-Q2",
+        "recordCount": 973
+      },
+      {
+        "path": "data/outages-archive/2019-Q3.json",
+        "period": "2019-Q3",
+        "recordCount": 770
+      },
+      {
+        "path": "data/outages-archive/2019-Q4.json",
+        "period": "2019-Q4",
+        "recordCount": 1004
+      },
+      {
+        "path": "data/outages-archive/2020-Q1.json",
+        "period": "2020-Q1",
+        "recordCount": 784
+      },
+      {
+        "path": "data/outages-archive/2020-Q2.json",
+        "period": "2020-Q2",
+        "recordCount": 1173
+      },
+      {
+        "path": "data/outages-archive/2020-Q3.json",
+        "period": "2020-Q3",
+        "recordCount": 827
+      },
+      {
+        "path": "data/outages-archive/2020-Q4.json",
+        "period": "2020-Q4",
+        "recordCount": 1406
+      },
+      {
+        "path": "data/outages-archive/2021-Q1.json",
+        "period": "2021-Q1",
+        "recordCount": 1242
+      },
+      {
+        "path": "data/outages-archive/2021-Q2.json",
+        "period": "2021-Q2",
+        "recordCount": 1380
+      },
+      {
+        "path": "data/outages-archive/2021-Q3.json",
+        "period": "2021-Q3",
+        "recordCount": 949
+      },
+      {
+        "path": "data/outages-archive/2021-Q4.json",
+        "period": "2021-Q4",
+        "recordCount": 1499
+      },
+      {
+        "path": "data/outages-archive/2022-Q1.json",
+        "period": "2022-Q1",
+        "recordCount": 1154
+      },
+      {
+        "path": "data/outages-archive/2022-Q2.json",
+        "period": "2022-Q2",
+        "recordCount": 1792
+      },
+      {
+        "path": "data/outages-archive/2022-Q3.json",
+        "period": "2022-Q3",
+        "recordCount": 1197
+      },
+      {
+        "path": "data/outages-archive/2022-Q4.json",
+        "period": "2022-Q4",
+        "recordCount": 1562
+      },
+      {
+        "path": "data/outages-archive/2023-Q1.json",
+        "period": "2023-Q1",
+        "recordCount": 1080
+      },
+      {
+        "path": "data/outages-archive/2023-Q2.json",
+        "period": "2023-Q2",
+        "recordCount": 2304
+      },
+      {
+        "path": "data/outages-archive/2023-Q3.json",
+        "period": "2023-Q3",
+        "recordCount": 1309
+      },
+      {
+        "path": "data/outages-archive/2023-Q4.json",
+        "period": "2023-Q4",
+        "recordCount": 2129
+      },
+      {
+        "path": "data/outages-archive/2024-Q1.json",
+        "period": "2024-Q1",
+        "recordCount": 1304
+      },
+      {
+        "path": "data/outages-archive/2024-Q2.json",
+        "period": "2024-Q2",
+        "recordCount": 2478
+      },
+      {
+        "path": "data/outages-archive/2024-Q3.json",
+        "period": "2024-Q3",
+        "recordCount": 1742
+      },
+      {
+        "path": "data/outages-archive/2024-Q4.json",
+        "period": "2024-Q4",
+        "recordCount": 2416
+      },
+      {
+        "path": "data/outages-archive/2025-Q1.json",
+        "period": "2025-Q1",
+        "recordCount": 1448
+      },
+      {
+        "path": "data/outages-archive/2025-Q2.json",
+        "period": "2025-Q2",
+        "recordCount": 2216
+      },
+      {
         "path": "data/outages-archive/2025-Q3.json",
         "period": "2025-Q3",
-        "recordCount": 1
+        "recordCount": 1579
       },
       {
         "path": "data/outages-archive/2025-Q4.json",
         "period": "2025-Q4",
-        "recordCount": 1
+        "recordCount": 2158
       },
       {
         "path": "data/outages-archive/2026-Q1.json",
         "period": "2026-Q1",
-        "recordCount": 2
+        "recordCount": 1300
+      },
+      {
+        "path": "data/outages-archive/2026-Q2.json",
+        "period": "2026-Q2",
+        "recordCount": 125
       }
     ],
     "units": {
