@@ -41,26 +41,30 @@ export default function OutageTimelineChart({
 }: OutageTimelineChartProps) {
   const [now] = useState(() => Date.now());
 
-  // Filter to currently active outages (started within past 2 years):
+  // Filter to currently active outages (started in past, not yet restarted):
   const twoYearsAgo = now - 2 * 365.25 * 24 * 60 * 60 * 1000;
   const active = records.filter((r) => {
     const start = parseOutageDate(r.startdt);
-    if (start > now) return false; // not started yet
-    if (start < twoYearsAgo) return false; // too old
-    if (!r.restartschdt) return true; // ongoing, no restart date
+    if (start > now) return false;
+    if (start < twoYearsAgo) return false;
+    if (!r.restartschdt) return true;
     const end = parseOutageDate(r.restartschdt);
-    return end > now; // restart is still in the future
+    return end > now;
   });
 
-  // Sort by upddt descending (most recently changed first)
-  const sorted = [...active].sort((a, b) => {
-    const aUpd = parseOutageDate(a.upddt);
-    const bUpd = parseOutageDate(b.upddt);
-    return bUpd - aUpd;
-  }).slice(0, maxItems);
+  // 計画外停止(2)・出力低下(3) は全件表示、計画停止(1) は最近更新順で残り枠分
+  const unplanned = active.filter((r) => r.maintemode === "2" || r.maintemode === "3");
+  const planned = active
+    .filter((r) => r.maintemode === "1")
+    .sort((a, b) => parseOutageDate(b.upddt) - parseOutageDate(a.upddt))
+    .slice(0, Math.max(0, maxItems - unplanned.length));
+
+  const combined = [...unplanned, ...planned].sort(
+    (a, b) => parseOutageDate(b.upddt) - parseOutageDate(a.upddt)
+  );
 
   // Reverse for chart display (most recent update at top of y-axis)
-  const displayed = [...sorted].reverse();
+  const displayed = [...combined].reverse();
 
   if (displayed.length === 0) {
     return (
@@ -232,9 +236,10 @@ export default function OutageTimelineChart({
         lazyUpdate
       />
       <p className="text-xs text-slate-400 text-right mt-1">
-        {active.length > maxItems
-          ? `最近更新された${maxItems}件を表示（現在停止中 ${active.length}件）`
-          : `現在停止中 ${active.length}件`}
+        計画外停止・出力低下 {unplanned.length}件 / 計画停止 {planned.length}件
+        {planned.length < active.filter((r) => r.maintemode === "1").length &&
+          `（全${active.filter((r) => r.maintemode === "1").length}件中）`}
+        {" "}表示中
       </p>
       <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
         <span className="flex items-center gap-1">
