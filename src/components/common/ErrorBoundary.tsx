@@ -32,9 +32,9 @@ export default class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback;
       }
       return (
-        <div className="rounded-xl bg-white p-8 shadow-sm border border-slate-200 text-center">
-          <p className="text-slate-500 mb-4">表示中にエラーが発生しました</p>
-          <p className="text-sm text-slate-400 mb-6">
+        <div className="rounded-xl bg-white dark:bg-slate-800 p-8 shadow-sm border border-slate-200 dark:border-slate-700 text-center">
+          <p className="text-slate-500 dark:text-slate-400 mb-4">表示中にエラーが発生しました</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500 mb-6">
             {this.state.error?.message ?? "不明なエラー"}
           </p>
           <button

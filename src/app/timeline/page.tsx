@@ -102,7 +102,7 @@ function TimelineContent() {
           message="データがありません"
           action={{ label: "再読み込み", onClick: () => window.location.reload() }}
         />
-        <p className="text-sm text-slate-400 text-center mt-2">{error}</p>
+        <p className="text-sm text-slate-400 dark:text-slate-500 text-center mt-2">{error}</p>
       </div>
     );
   }
@@ -110,17 +110,17 @@ function TimelineContent() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">停止タイムライン</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">停止タイムライン</h1>
         {meta && (
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 mt-1">
             最終更新: {meta.generatedAt} / 現在停止中 {filtered.length}件
           </p>
         )}
       </div>
 
       {/* Filters */}
-      <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200 mb-6">
-        <h2 className="text-sm font-semibold text-slate-700 mb-4">フィルター</h2>
+      <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700 mb-6">
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200 mb-4">フィルター</h2>
         <div className="space-y-4">
           <CheckboxGroup label="エリア" options={AREAS} selected={areas}
             onChange={(s) => updateParams({ areas: [...s].join(",") || null, page: null })} />
@@ -130,7 +130,7 @@ function TimelineContent() {
             onChange={(s) => updateParams({ maintemodes: [...s].join(",") || null, page: null })} />
           {(areas.size > 0 || formats.size > 0 || maintemodes.size > 0) && (
             <button onClick={() => router.push("/timeline", { scroll: false })}
-              className="text-sm text-blue-600 hover:text-blue-800 underline">
+              className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline">
               フィルターをリセット
             </button>
           )}
@@ -140,19 +140,19 @@ function TimelineContent() {
       {/* Pagination controls */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between mb-4">
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             {filtered.length}件中 {(safePage - 1) * PAGE_SIZE + 1}〜{Math.min(safePage * PAGE_SIZE, filtered.length)}件
           </p>
           <div className="flex items-center gap-2">
             <button disabled={safePage <= 1}
               onClick={() => updateParams({ page: String(safePage - 1) })}
-              className="px-3 py-1 text-sm rounded border border-slate-300 disabled:opacity-40 hover:bg-slate-50">
+              className="px-3 py-1 text-sm rounded border border-slate-300 dark:border-slate-600 disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-slate-700">
               前へ
             </button>
-            <span className="text-sm text-slate-600">{safePage} / {totalPages}</span>
+            <span className="text-sm text-slate-600 dark:text-slate-300">{safePage} / {totalPages}</span>
             <button disabled={safePage >= totalPages}
               onClick={() => updateParams({ page: String(safePage + 1) })}
-              className="px-3 py-1 text-sm rounded border border-slate-300 disabled:opacity-40 hover:bg-slate-50">
+              className="px-3 py-1 text-sm rounded border border-slate-300 dark:border-slate-600 disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-slate-700">
               次へ
             </button>
           </div>
@@ -160,7 +160,7 @@ function TimelineContent() {
       )}
 
       {/* Timeline Chart — current page only */}
-      <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200 mb-6">
+      <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700 mb-6">
         {loading ? (
           <LoadingSpinner message="読み込み中..." />
         ) : (
@@ -170,26 +170,26 @@ function TimelineContent() {
 
       {/* Detail Table — current page only */}
       {!loading && pageRecords.length > 0 && (
-        <div className="rounded-xl bg-white shadow-sm border border-slate-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-slate-200">
-            <h2 className="text-base font-semibold text-slate-700">
+        <div className="rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+          <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-700">
+            <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200">
               停止詳細一覧
             </h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200 text-sm">
-              <thead className="bg-slate-50">
+            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700 text-sm">
+              <thead className="bg-slate-50 dark:bg-slate-700/50">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">発電所 / ユニット</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">停止区分</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">停止日時</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">復旧予定</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">停止期間</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">低下量 (MW)</th>
-                  <th className="px-4 py-3 text-left font-medium text-slate-600">停止原因</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600 dark:text-slate-300">発電所 / ユニット</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600 dark:text-slate-300">停止区分</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600 dark:text-slate-300">停止日時</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600 dark:text-slate-300">復旧予定</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600 dark:text-slate-300">停止期間</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600 dark:text-slate-300">低下量 (MW)</th>
+                  <th className="px-4 py-3 text-left font-medium text-slate-600 dark:text-slate-300">停止原因</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100">
+              <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                 {pageRecords.map((r) => {
                   const startMs = parseOutageDate(r.startdt);
                   const endMs = r.restartschdt ? parseOutageDate(r.restartschdt) : nowMs;
@@ -199,10 +199,10 @@ function TimelineContent() {
                   const ongoing = !r.restartschdt;
 
                   return (
-                    <tr key={r.id} className="hover:bg-slate-50 transition-colors">
+                    <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
                       <td className="px-4 py-3">
-                        <div className="font-medium text-slate-900">{r.name}</div>
-                        <div className="text-slate-500 text-xs">{r.unitname} / {r.areaName}</div>
+                        <div className="font-medium text-slate-900 dark:text-slate-100">{r.name}</div>
+                        <div className="text-slate-500 dark:text-slate-400 text-xs">{r.unitname} / {r.areaName}</div>
                       </td>
                       <td className="px-4 py-3">
                         <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
@@ -213,20 +213,20 @@ function TimelineContent() {
                           {r.maintemodeName}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-slate-700 whitespace-nowrap">{r.startdt}</td>
-                      <td className="px-4 py-3 text-slate-700 whitespace-nowrap">
+                      <td className="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">{r.startdt}</td>
+                      <td className="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">
                         {r.restartschdt || (
                           <span className="text-amber-600">未定{r.outlook ? `（${r.outlook}）` : ""}</span>
                         )}
                       </td>
-                      <td className="px-4 py-3 text-slate-700 whitespace-nowrap">
+                      <td className="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">
                         {days}日{hours}時間
                         {ongoing && <span className="text-amber-600 text-xs ml-1">(継続中)</span>}
                       </td>
-                      <td className="px-4 py-3 text-slate-700 text-right">
+                      <td className="px-4 py-3 text-slate-700 dark:text-slate-300 text-right">
                         {(r.downcapacity / 1000).toFixed(1)}
                       </td>
-                      <td className="px-4 py-3 text-slate-600 max-w-[200px] truncate">
+                      <td className="px-4 py-3 text-slate-600 dark:text-slate-400 max-w-[200px] truncate">
                         {r.factor || "―"}
                       </td>
                     </tr>
@@ -244,13 +244,13 @@ function TimelineContent() {
           <div className="flex items-center gap-2">
             <button disabled={safePage <= 1}
               onClick={() => updateParams({ page: String(safePage - 1) })}
-              className="px-3 py-1 text-sm rounded border border-slate-300 disabled:opacity-40 hover:bg-slate-50">
+              className="px-3 py-1 text-sm rounded border border-slate-300 dark:border-slate-600 disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-slate-700">
               前へ
             </button>
-            <span className="text-sm text-slate-600">{safePage} / {totalPages}</span>
+            <span className="text-sm text-slate-600 dark:text-slate-300">{safePage} / {totalPages}</span>
             <button disabled={safePage >= totalPages}
               onClick={() => updateParams({ page: String(safePage + 1) })}
-              className="px-3 py-1 text-sm rounded border border-slate-300 disabled:opacity-40 hover:bg-slate-50">
+              className="px-3 py-1 text-sm rounded border border-slate-300 dark:border-slate-600 disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-slate-700">
               次へ
             </button>
           </div>
@@ -263,15 +263,15 @@ function TimelineContent() {
 function TimelineLoading() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-      <div className="h-8 w-48 bg-slate-200 rounded animate-pulse mb-6" />
-      <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200 mb-6 animate-pulse">
+      <div className="h-8 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-6" />
+      <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700 mb-6 animate-pulse">
         <div className="space-y-3">
-          <div className="h-4 w-32 bg-slate-200 rounded" />
-          <div className="h-10 w-80 bg-slate-100 rounded" />
+          <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" />
+          <div className="h-10 w-80 bg-slate-100 dark:bg-slate-600 rounded" />
         </div>
       </div>
-      <div className="rounded-xl bg-white shadow-sm border border-slate-200 p-8 animate-pulse">
-        <div className="h-[400px] bg-slate-100 rounded" />
+      <div className="rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 p-8 animate-pulse">
+        <div className="h-[400px] bg-slate-100 dark:bg-slate-700 rounded" />
       </div>
     </div>
   );

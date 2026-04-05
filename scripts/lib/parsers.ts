@@ -32,9 +32,13 @@ const UNIT_HEADER_MAP: Record<string, keyof RawUnitRecord> = {
   認可出力: "maxcapacity",
   "変更後認可出力(kW)": "nextmaxcapacity",
   変更後認可出力: "nextmaxcapacity",
+  "認可出力（変更後）": "nextmaxcapacity",
   変更後認可出力適用日: "nextmaxcapacitystartdt",
+  適用開始日: "nextmaxcapacitystartdt",
   稼動開始日: "startdt",
+  稼働開始日: "startdt",
   稼動終了日: "enddt",
+  稼働終了日: "enddt",
   最終更新日時: "upddt",
 };
 

@@ -257,17 +257,44 @@ export class HjksClient {
   }
 
   /**
+   * GET /hjks/unit to obtain a page-specific CSRF token for the unit endpoint.
+   */
+  private async fetchUnitCsrf(): Promise<string> {
+    const res = await fetch(`${HJKS_BASE}/unit`, {
+      method: "GET",
+      redirect: "follow",
+      headers: {
+        "User-Agent": "hjks-viewer/1.0",
+        Cookie: this.cookieHeader(),
+        Accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+      },
+    });
+
+    this.parseCookies(res.headers);
+    const html = await res.text();
+    const csrf = this.extractCsrf(html);
+    if (!csrf) {
+      throw new CsrfError("Failed to extract CSRF token from /unit page");
+    }
+    return csrf;
+  }
+
+  /**
    * POST /hjks/unit with csv=csv to download unit CSV data.
    */
   async downloadUnitsCsv(): Promise<string> {
     return this.withRetry("downloadUnitsCsv", async () => {
-      if (!this.csrfToken) {
+      if (!this.cookies.has("JSESSIONID")) {
         throw new SessionError("Session not initialized. Call initSession() first.");
       }
 
+      // Fetch a CSRF token specific to the /unit page
+      await this.rateLimit();
+      const unitCsrf = await this.fetchUnitCsrf();
+
       const body = new URLSearchParams();
       body.set("csv", "csv");
-      body.set("_csrf", this.csrfToken);
+      body.set("_csrf", unitCsrf);
 
       const res = await fetch(`${HJKS_BASE}/unit`, {
         method: "POST",

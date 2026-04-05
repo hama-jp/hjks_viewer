@@ -28,9 +28,9 @@ type DashboardState = {
 
 function SkeletonChart() {
   return (
-    <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200 animate-pulse">
-      <div className="h-4 w-40 bg-slate-200 rounded mb-4" />
-      <div className="h-[350px] bg-slate-100 rounded" />
+    <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700 animate-pulse">
+      <div className="h-4 w-40 bg-slate-200 dark:bg-slate-700 rounded mb-4" />
+      <div className="h-[350px] bg-slate-100 dark:bg-slate-700 rounded" />
     </div>
   );
 }
@@ -189,7 +189,7 @@ export default function DashboardPage() {
           message="データがありません"
           action={{ label: "再読み込み", onClick: handleRetry }}
         />
-        <p className="text-sm text-slate-400 text-center mt-2">{error}</p>
+        <p className="text-sm text-slate-400 dark:text-slate-500 text-center mt-2">{error}</p>
       </div>
     );
   }
@@ -199,9 +199,9 @@ export default function DashboardPage() {
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6">
         <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <h1 className="text-2xl font-bold text-slate-900">ダッシュボード</h1>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">ダッシュボード</h1>
           {meta && (
-            <p className="text-lg font-semibold text-blue-700">
+            <p className="text-lg font-semibold text-blue-700 dark:text-blue-400">
               {(() => {
                 try {
                   return format(parseISO(meta.generatedAt), "yyyy年M月d日 H時 現在", { locale: ja });
@@ -230,14 +230,14 @@ export default function DashboardPage() {
         ) : (
           <>
             {/* Row 1: outage timeline (full width, right below title) */}
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
+            <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-semibold text-slate-700">
+                <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200">
                   現在の停止状況（計画停止除く）
                 </h2>
                 <Link
                   href="/timeline"
-                  className="text-sm text-blue-600 hover:text-blue-800 transition-colors"
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
                 >
                   タイムライン（計画停止を含む）を詳しく見る &rarr;
                 </Link>
@@ -247,26 +247,26 @@ export default function DashboardPage() {
 
             {/* Row 2: area bar + format bar */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
-                <h2 className="text-base font-semibold text-slate-700 mb-4">
+              <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+                <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200 mb-4">
                   エリア別停止件数
                 </h2>
                 {records.length > 0 ? (
                   <EChartWrapper option={areaChartOption} />
                 ) : (
-                  <p className="text-slate-400 text-sm py-20 text-center">
+                  <p className="text-slate-400 dark:text-slate-500 text-sm py-20 text-center">
                     データがありません
                   </p>
                 )}
               </div>
-              <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
-                <h2 className="text-base font-semibold text-slate-700 mb-4">
+              <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+                <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200 mb-4">
                   発電形式別停止件数
                 </h2>
                 {records.length > 0 ? (
                   <EChartWrapper option={formatChartOption} />
                 ) : (
-                  <p className="text-slate-400 text-sm py-20 text-center">
+                  <p className="text-slate-400 dark:text-slate-500 text-sm py-20 text-center">
                     データがありません
                   </p>
                 )}
@@ -275,8 +275,8 @@ export default function DashboardPage() {
 
             {/* Row 3: maintemode pie + capacity by area stacked bar */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
-                <h2 className="text-base font-semibold text-slate-700 mb-4">
+              <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+                <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200 mb-4">
                   停止区分別件数
                 </h2>
                 {records.length > 0 ? (
@@ -285,13 +285,13 @@ export default function DashboardPage() {
                     style={{ height: 400 }}
                   />
                 ) : (
-                  <p className="text-slate-400 text-sm py-20 text-center">
+                  <p className="text-slate-400 dark:text-slate-500 text-sm py-20 text-center">
                     データがありません
                   </p>
                 )}
               </div>
-              <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
-                <h2 className="text-base font-semibold text-slate-700 mb-4">
+              <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+                <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200 mb-4">
                   エリア別停止容量 (MW)
                 </h2>
                 <CapacityByAreaChart records={records} />
@@ -299,8 +299,8 @@ export default function DashboardPage() {
             </div>
 
             {/* Row 4: assortment treemap (full width) */}
-            <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200">
-              <h2 className="text-base font-semibold text-slate-700 mb-4">
+            <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700">
+              <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200 mb-4">
                 種別内訳
               </h2>
               <AssortmentTreemap records={records} />

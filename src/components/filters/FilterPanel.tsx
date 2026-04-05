@@ -12,14 +12,14 @@ export default function FilterPanel() {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200 mb-6">
+    <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700 mb-6">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-slate-700">
+        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">
           フィルター
         </h2>
         <button
           onClick={() => setCollapsed((v) => !v)}
-          className="text-sm text-slate-500 hover:text-slate-700 sm:hidden"
+          className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 sm:hidden"
         >
           {collapsed ? "展開" : "折りたたむ"}
         </button>
@@ -27,7 +27,7 @@ export default function FilterPanel() {
 
       <div className={`space-y-4 ${collapsed ? "hidden sm:block" : ""}`}>
         <div>
-          <label className="text-sm font-medium text-slate-700 block mb-1">
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-1">
             フリーテキスト検索
           </label>
           <input
@@ -35,7 +35,7 @@ export default function FilterPanel() {
             value={filters.searchText}
             onChange={(e) => setFilter("searchText", e.target.value)}
             placeholder="事業者名、発電所名、要因など..."
-            className="w-full sm:w-80 rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full sm:w-80 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
 
@@ -67,7 +67,7 @@ export default function FilterPanel() {
         {hasActiveFilters && (
           <button
             onClick={resetFilters}
-            className="text-sm text-blue-600 hover:text-blue-800 underline"
+            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
           >
             フィルターをリセット
           </button>

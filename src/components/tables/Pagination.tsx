@@ -30,13 +30,13 @@ export default function Pagination({
       <button
         disabled={currentPage <= 1}
         onClick={() => onPageChange(currentPage - 1)}
-        className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-slate-100 transition-colors"
+        className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
       >
         前へ
       </button>
       {pageNumbers.map((p, i) =>
         p === "..." ? (
-          <span key={`ellipsis-${i}`} className="px-1 text-slate-400">
+          <span key={`ellipsis-${i}`} className="px-1 text-slate-400 dark:text-slate-500">
             ...
           </span>
         ) : (
@@ -46,7 +46,7 @@ export default function Pagination({
             className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
               p === currentPage
                 ? "bg-blue-600 text-white"
-                : "border border-slate-300 hover:bg-slate-100"
+                : "border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700"
             }`}
           >
             {p}
@@ -56,7 +56,7 @@ export default function Pagination({
       <button
         disabled={currentPage >= totalPages}
         onClick={() => onPageChange(currentPage + 1)}
-        className="rounded-lg border border-slate-300 px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-slate-100 transition-colors"
+        className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
       >
         次へ
       </button>

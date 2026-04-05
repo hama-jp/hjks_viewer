@@ -59,7 +59,7 @@ function OutagesContent() {
           message="データがありません"
           action={{ label: "再読み込み", onClick: () => window.location.reload() }}
         />
-        <p className="text-sm text-slate-400 text-center mt-2">{error}</p>
+        <p className="text-sm text-slate-400 dark:text-slate-500 text-center mt-2">{error}</p>
       </div>
     );
   }
@@ -67,9 +67,9 @@ function OutagesContent() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">停止情報一覧</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">停止情報一覧</h1>
         {meta && (
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             最終更新: {meta.generatedAt} / {records.length}件
           </p>
         )}
@@ -78,7 +78,7 @@ function OutagesContent() {
       <FilterPanel />
 
       <div className="flex items-center justify-between mb-3">
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           {loading
             ? "読み込み中..."
             : `${filtered.length}件中 ${(safePage - 1) * pageSize + 1}〜${Math.min(safePage * pageSize, filtered.length)}件を表示`}
@@ -110,17 +110,17 @@ function OutagesContent() {
 function OutagesLoading() {
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-      <div className="h-8 w-48 bg-slate-200 rounded animate-pulse mb-6" />
-      <div className="rounded-xl bg-white p-6 shadow-sm border border-slate-200 mb-6 animate-pulse">
+      <div className="h-8 w-48 bg-slate-200 dark:bg-slate-700 rounded animate-pulse mb-6" />
+      <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700 mb-6 animate-pulse">
         <div className="space-y-3">
-          <div className="h-4 w-32 bg-slate-200 rounded" />
-          <div className="h-10 w-80 bg-slate-100 rounded" />
+          <div className="h-4 w-32 bg-slate-200 dark:bg-slate-700 rounded" />
+          <div className="h-10 w-80 bg-slate-100 dark:bg-slate-600 rounded" />
         </div>
       </div>
-      <div className="rounded-xl bg-white shadow-sm border border-slate-200 p-8 animate-pulse">
+      <div className="rounded-xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 p-8 animate-pulse">
         <div className="space-y-3">
           {Array.from({ length: 10 }).map((_, i) => (
-            <div key={i} className="h-6 bg-slate-100 rounded" />
+            <div key={i} className="h-6 bg-slate-100 dark:bg-slate-700 rounded" />
           ))}
         </div>
       </div>

@@ -32,7 +32,7 @@ export default function SortableHeader({
           onSort(sortKey);
         }
       }}
-      className={`px-3 py-3 text-left font-medium text-slate-600 cursor-pointer select-none hover:text-blue-700 whitespace-nowrap ${className}`}
+      className={`px-3 py-3 text-left font-medium text-slate-600 dark:text-slate-300 cursor-pointer select-none hover:text-blue-700 dark:hover:text-blue-400 whitespace-nowrap ${className}`}
     >
       {label}
       {isActive && (

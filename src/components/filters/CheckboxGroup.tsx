@@ -25,20 +25,20 @@ export default function CheckboxGroup({
 
   return (
     <fieldset>
-      <legend className="text-sm font-medium text-slate-700 mb-2">
+      <legend className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
         {label}
       </legend>
       <div className="flex flex-wrap gap-x-4 gap-y-1">
         {Object.entries(options).map(([code, name]) => (
           <label
             key={code}
-            className="flex items-center gap-1.5 text-sm text-slate-600 cursor-pointer"
+            className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 cursor-pointer"
           >
             <input
               type="checkbox"
               checked={selected.has(code)}
               onChange={() => toggle(code)}
-              className="rounded border-slate-300 text-blue-600 focus:ring-blue-500"
+              className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 dark:bg-slate-700"
             />
             {name}
           </label>
