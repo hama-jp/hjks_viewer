@@ -41,11 +41,12 @@ export default function OutageTimelineChart({
 }: OutageTimelineChartProps) {
   const [now] = useState(() => Date.now());
 
-  // Filter to currently active outages:
-  //   startdt is in the past AND (restartschdt is in the future or null)
+  // Filter to currently active outages (started within past 2 years):
+  const twoYearsAgo = now - 2 * 365.25 * 24 * 60 * 60 * 1000;
   const active = records.filter((r) => {
     const start = parseOutageDate(r.startdt);
     if (start > now) return false; // not started yet
+    if (start < twoYearsAgo) return false; // too old
     if (!r.restartschdt) return true; // ongoing, no restart date
     const end = parseOutageDate(r.restartschdt);
     return end > now; // restart is still in the future
