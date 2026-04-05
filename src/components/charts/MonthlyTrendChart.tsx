@@ -36,12 +36,17 @@ export default function MonthlyTrendChart({ records }: Props) {
     );
   }
 
-  // Collect all months and maintemodes
+  // Current month as upper bound (e.g. "2026-04")
+  const now = new Date();
+  const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+
+  // Collect all months and maintemodes, excluding future months
   const monthSet = new Set<string>();
   const countMap: Record<string, Record<string, number>> = {};
 
   for (const r of records) {
     const month = parseMonth(r.startdt);
+    if (month > currentMonth) continue;
     monthSet.add(month);
     if (!countMap[r.maintemode]) countMap[r.maintemode] = {};
     countMap[r.maintemode][month] = (countMap[r.maintemode][month] || 0) + 1;
