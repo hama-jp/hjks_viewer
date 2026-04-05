@@ -135,6 +135,7 @@ export default function OutageTimelineChart({
     },
     xAxis: {
       type: "time",
+      max: now + 365 * 24 * 60 * 60 * 1000, // 1 year from now
       axisLabel: {
         fontSize: 11,
       },
