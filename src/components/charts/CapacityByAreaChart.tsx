@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import type { EChartsOption } from "echarts";
 import type { NormalizedOutage } from "@/types/outage";
 import { MAINTEMODES } from "@/lib/constants";
+import { useTheme } from "@/components/common/useTheme";
 
 const EChartWrapper = dynamic(
   () => import("@/components/charts/EChartWrapper"),
@@ -21,6 +22,9 @@ type Props = {
 };
 
 export default function CapacityByAreaChart({ records }: Props) {
+  const theme = useTheme();
+  const labelColor = theme === "dark" ? "#f1f5f9" : undefined;
+
   if (records.length === 0) {
     return (
       <p className="text-slate-400 dark:text-slate-500 text-sm py-20 text-center">
@@ -64,16 +68,18 @@ export default function CapacityByAreaChart({ records }: Props) {
     legend: {
       data: maintemodes.map((code) => MAINTEMODES[code]),
       bottom: 0,
-      textStyle: { fontSize: 11 },
+      textStyle: { fontSize: 11, color: labelColor },
     },
     xAxis: {
       type: "category",
       data: areaLabels,
-      axisLabel: { rotate: 30, fontSize: 11 },
+      axisLabel: { rotate: 30, fontSize: 11, color: labelColor },
     },
     yAxis: {
       type: "value",
       name: "MW",
+      nameTextStyle: { color: labelColor },
+      axisLabel: { color: labelColor },
     },
     series,
     grid: { left: 60, right: 20, bottom: 50, top: 20 },

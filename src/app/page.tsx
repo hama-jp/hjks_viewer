@@ -13,6 +13,7 @@ import type { EChartsOption } from "echarts";
 import AssortmentTreemap from "@/components/charts/AssortmentTreemap";
 import CapacityByAreaChart from "@/components/charts/CapacityByAreaChart";
 import OutageTimelineChart from "@/components/charts/OutageTimelineChart";
+import { useTheme } from "@/components/common/useTheme";
 
 const EChartWrapper = dynamic(
   () => import("@/components/charts/EChartWrapper"),
@@ -84,6 +85,9 @@ export default function DashboardPage() {
     });
   };
 
+  const theme = useTheme();
+  const labelColor = theme === "dark" ? "#f1f5f9" : undefined;
+
   const { loading, error, records: allRecords, meta } = state;
 
   // Filter to currently active outages (started & not yet restarted)
@@ -111,9 +115,9 @@ export default function DashboardPage() {
       xAxis: {
         type: "category",
         data: Object.keys(areaCountMap),
-        axisLabel: { rotate: 30, fontSize: 11 },
+        axisLabel: { rotate: 30, fontSize: 11, color: labelColor },
       },
-      yAxis: { type: "value", name: "件数" },
+      yAxis: { type: "value", name: "件数", nameTextStyle: { color: labelColor }, axisLabel: { color: labelColor } },
       series: [
         {
           type: "bar",
@@ -123,7 +127,7 @@ export default function DashboardPage() {
       ],
       grid: { left: 50, right: 20, bottom: 60, top: 30 },
     };
-  }, [records]);
+  }, [records, labelColor]);
 
   // Chart data: outages by format
   const formatChartOption = useMemo<EChartsOption>(() => {
@@ -137,9 +141,9 @@ export default function DashboardPage() {
       xAxis: {
         type: "category",
         data: Object.keys(formatCountMap),
-        axisLabel: { rotate: 30, fontSize: 11 },
+        axisLabel: { rotate: 30, fontSize: 11, color: labelColor },
       },
-      yAxis: { type: "value", name: "件数" },
+      yAxis: { type: "value", name: "件数", nameTextStyle: { color: labelColor }, axisLabel: { color: labelColor } },
       series: [
         {
           type: "bar",
@@ -149,7 +153,7 @@ export default function DashboardPage() {
       ],
       grid: { left: 50, right: 20, bottom: 80, top: 30 },
     };
-  }, [records]);
+  }, [records, labelColor]);
 
   // Chart data: outages by maintemode (pie)
   const pieChartOption = useMemo<EChartsOption>(() => {
@@ -175,12 +179,12 @@ export default function DashboardPage() {
               shadowColor: "rgba(0, 0, 0, 0.5)",
             },
           },
-          label: { formatter: "{b}\n{c}件 ({d}%)" },
+          label: { formatter: "{b}\n{c}件 ({d}%)", color: labelColor },
         },
       ],
       color: ["#3b82f6", "#ef4444", "#f59e0b", "#10b981", "#8b5cf6"],
     };
-  }, [records]);
+  }, [records, labelColor]);
 
   if (error && records.length === 0) {
     return (

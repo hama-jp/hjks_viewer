@@ -4,6 +4,7 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import type { EChartsOption } from "echarts";
 import type { NormalizedOutage } from "@/types/outage";
+import { useTheme } from "@/components/common/useTheme";
 
 const ReactECharts = dynamic(() => import("echarts-for-react"), { ssr: false });
 
@@ -44,6 +45,8 @@ export default function OutageTimelineChart({
   rangeMonths = 12,
 }: OutageTimelineChartProps) {
   const [now] = useState(() => Date.now());
+  const theme = useTheme();
+  const labelColor = theme === "dark" ? "#f1f5f9" : undefined;
 
   // Filter to currently active outages (started in past, not yet restarted):
   const twoYearsAgo = now - 2 * 365.25 * 24 * 60 * 60 * 1000;
@@ -143,6 +146,7 @@ export default function OutageTimelineChart({
       max: now + rangeMonths * 30.44 * 24 * 60 * 60 * 1000,
       axisLabel: {
         fontSize: 11,
+        color: labelColor,
       },
     },
     yAxis: {
@@ -153,6 +157,7 @@ export default function OutageTimelineChart({
         width: 160,
         overflow: "truncate",
         ellipsis: "...",
+        color: labelColor,
       },
       inverse: true,
     },

@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import type { EChartsOption } from "echarts";
 import type { NormalizedOutage } from "@/types/outage";
+import { useTheme } from "@/components/common/useTheme";
 
 const EChartWrapper = dynamic(
   () => import("@/components/charts/EChartWrapper"),
@@ -27,6 +28,9 @@ type Props = {
 };
 
 export default function AssortmentTreemap({ records }: Props) {
+  const theme = useTheme();
+  const labelColor = theme === "dark" ? "#f1f5f9" : undefined;
+
   if (records.length === 0) {
     return (
       <p className="text-slate-400 dark:text-slate-500 text-sm py-20 text-center">
@@ -72,6 +76,7 @@ export default function AssortmentTreemap({ records }: Props) {
           show: true,
           formatter: "{b}\n{c}件",
           fontSize: 12,
+          color: labelColor,
         },
         levels: [
           {
