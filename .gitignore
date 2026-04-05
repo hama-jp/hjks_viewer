@@ -12,6 +12,7 @@
 
 # testing
 /coverage
+.vitest/
 
 # next.js
 /.next/
@@ -39,3 +40,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# raw data (kept as GitHub Actions artifacts only)
+data/raw/
