@@ -82,6 +82,24 @@ export default function RootLayout({
           </div>
         </header>
         <main className="flex-1">{children}</main>
+        <footer className="border-t border-slate-200 bg-white mt-12">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 text-xs text-slate-500 space-y-2">
+            <p>
+              本サイトに掲載している停止情報は、
+              <a href="https://hjks.jepx.or.jp/hjks/outages" target="_blank" rel="noopener noreferrer"
+                className="text-blue-600 hover:text-blue-800 underline">
+                発電情報公開システム（HJKS）
+              </a>
+              より取得したデータに基づいています。
+            </p>
+            <p>
+              本サイトの情報は参考目的で提供しており、正確性・完全性を保証するものではありません。
+              データの取得・加工過程で誤りが生じる可能性があります。
+              本サイトの情報に基づく判断・行動について、作成者は一切の責任を負いません。
+            </p>
+            <p>&copy; {new Date().getFullYear()} hama-jp. All rights reserved.</p>
+          </div>
+        </footer>
       </body>
     </html>
   );
