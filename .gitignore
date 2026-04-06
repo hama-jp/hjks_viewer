@@ -47,3 +47,12 @@ data/raw/
 # playwright
 playwright-report/
 test-results/
+
+# local working files
+.local/
+
+# playwright MCP snapshots
+.playwright-mcp/
+
+# screenshots (review artifacts)
+screenshot-*.png
