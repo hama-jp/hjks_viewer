@@ -16,12 +16,7 @@ function parseSet(param: string | null): Set<string> {
   return new Set(param?.split(",").filter(Boolean) ?? []);
 }
 
-function parseOutageDate(dateStr: string): number {
-  const [date, time] = dateStr.split(" ");
-  const [y, m, d] = date.split("/").map(Number);
-  const [h, min] = (time || "00:00").split(":").map(Number);
-  return new Date(y, m - 1, d, h, min).getTime();
-}
+import { parseOutageDate } from "@/lib/date-utils";
 
 function TimelineContent() {
   const router = useRouter();

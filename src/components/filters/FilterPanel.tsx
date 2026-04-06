@@ -1,31 +1,52 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useSyncExternalStore } from "react";
 import { AREAS, FORMATS, MAINTEMODES } from "@/lib/constants";
 import CheckboxGroup from "./CheckboxGroup";
 import DateRangeFilter from "./DateRangeFilter";
 import { useFilters } from "./useFilters";
 import type { Filters } from "./useFilters";
 
+const subscribeMobile = (cb: () => void) => {
+  const mql = window.matchMedia("(max-width: 639px)");
+  mql.addEventListener("change", cb);
+  return () => mql.removeEventListener("change", cb);
+};
+const getIsMobile = () => window.matchMedia("(max-width: 639px)").matches;
+const getServerIsMobile = () => false;
+
 export default function FilterPanel() {
   const { filters, setFilter, resetFilters, hasActiveFilters } = useFilters();
-  const [collapsed, setCollapsed] = useState(false);
+  const isMobile = useSyncExternalStore(subscribeMobile, getIsMobile, getServerIsMobile);
+  const [userCollapsed, setUserCollapsed] = useState<boolean | null>(null);
+  const collapsed = userCollapsed ?? isMobile;
+
+  const activeFilterCount = useMemo(() => {
+    let count = 0;
+    if (filters.areas.size > 0) count++;
+    if (filters.formats.size > 0) count++;
+    if (filters.maintemodes.size > 0) count++;
+    if (filters.dateFrom) count++;
+    if (filters.dateTo) count++;
+    if (filters.searchText) count++;
+    return count;
+  }, [filters]);
 
   return (
     <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700 mb-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-          フィルター
+          フィルター{activeFilterCount > 0 && ` (${activeFilterCount}件適用中)`}
         </h2>
         <button
-          onClick={() => setCollapsed((v) => !v)}
-          className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 sm:hidden"
+          onClick={() => setUserCollapsed((v) => !(v ?? isMobile))}
+          className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
         >
           {collapsed ? "展開" : "折りたたむ"}
         </button>
       </div>
 
-      <div className={`space-y-4 ${collapsed ? "hidden sm:block" : ""}`}>
+      <div className={`space-y-4 ${collapsed ? "hidden" : ""}`}>
         <div>
           <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-1">
             フリーテキスト検索

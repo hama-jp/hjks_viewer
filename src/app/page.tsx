@@ -6,6 +6,7 @@ import Link from "next/link";
 import { format, parseISO } from "date-fns";
 import { ja } from "date-fns/locale";
 import { loadOutagesCurrent } from "@/lib/data-loader";
+import { parseOutageDate } from "@/lib/date-utils";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import EmptyState from "@/components/common/EmptyState";
 import type { NormalizedOutage, OutageFile } from "@/types/outage";
@@ -93,12 +94,10 @@ export default function DashboardPage() {
   // Filter to currently active outages (started & not yet restarted)
   const records = useMemo(() => {
     return allRecords.filter((r) => {
-      const parts = r.startdt.split(/[/ :]/);
-      const start = new Date(+parts[0], +parts[1] - 1, +parts[2], +parts[3] || 0, +parts[4] || 0).getTime();
+      const start = parseOutageDate(r.startdt);
       if (start > nowMs) return false;
       if (!r.restartschdt) return true;
-      const rp = r.restartschdt.split(/[/ :]/);
-      const end = new Date(+rp[0], +rp[1] - 1, +rp[2], +rp[3] || 0, +rp[4] || 0).getTime();
+      const end = parseOutageDate(r.restartschdt);
       return end > nowMs;
     });
   }, [allRecords, nowMs]);
@@ -217,6 +216,37 @@ export default function DashboardPage() {
           )}
         </div>
       </div>
+
+      {/* KPI Summary Cards */}
+      {loading ? (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700 animate-pulse">
+              <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded w-20 mb-2" />
+              <div className="h-8 bg-slate-200 dark:bg-slate-700 rounded w-16" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+          <div className="rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-xs text-slate-500 dark:text-slate-400">停止中件数</p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{records.length}</p>
+          </div>
+          <div className="rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-xs text-slate-500 dark:text-slate-400">計画外停止件数</p>
+            <p className="text-2xl font-bold text-red-600 dark:text-red-400">{records.filter(r => r.maintemode === "2").length}</p>
+          </div>
+          <div className="rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-xs text-slate-500 dark:text-slate-400">停止容量合計</p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{(records.reduce((sum, r) => sum + r.downcapacity / 1000, 0)).toFixed(1)}<span className="text-sm font-normal ml-1">MW</span></p>
+          </div>
+          <div className="rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700">
+            <p className="text-xs text-slate-500 dark:text-slate-400">エリア数</p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{new Set(records.map(r => r.area)).size}</p>
+          </div>
+        </div>
+      )}
 
       {/* Charts */}
       <div className="space-y-6">
