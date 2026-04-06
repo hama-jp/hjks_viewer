@@ -9,16 +9,19 @@ type EChartWrapperProps = {
   option: EChartsOption;
   style?: React.CSSProperties;
   className?: string;
+  ariaLabel?: string;
 };
 
-export default function EChartWrapper({ option, style, className }: EChartWrapperProps) {
+export default function EChartWrapper({ option, style, className, ariaLabel }: EChartWrapperProps) {
   return (
-    <ReactECharts
-      option={option}
-      style={style ?? { height: 350 }}
-      className={className}
-      notMerge
-      lazyUpdate
-    />
+    <div role={ariaLabel ? "img" : undefined} aria-label={ariaLabel}>
+      <ReactECharts
+        option={option}
+        style={style ?? { height: 350 }}
+        className={className}
+        notMerge
+        lazyUpdate
+      />
+    </div>
   );
 }

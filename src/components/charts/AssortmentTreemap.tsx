@@ -91,5 +91,5 @@ export default function AssortmentTreemap({ records }: Props) {
     ],
   };
 
-  return <EChartWrapper option={option} style={{ height: 400 }} />;
+  return <EChartWrapper option={option} style={{ height: 400 }} ariaLabel="燃料種別の停止容量ツリーマップ" />;
 }

@@ -237,7 +237,7 @@ export default function OutageTimelineChart({
   };
 
   return (
-    <div>
+    <div role="img" aria-label="停止タイムラインのガントチャート">
       <ReactECharts
         option={option}
         style={{ height: chartHeight }}
