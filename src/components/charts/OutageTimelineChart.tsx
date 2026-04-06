@@ -129,7 +129,7 @@ export default function OutageTimelineChart({
       },
     },
     grid: {
-      left: 180,
+      left: 220,
       right: 40,
       top: 20,
       bottom: 60,
@@ -149,7 +149,7 @@ export default function OutageTimelineChart({
       data: labels,
       axisLabel: {
         fontSize: 11,
-        width: 160,
+        width: 200,
         overflow: "truncate",
         ellipsis: "...",
         color: labelColor,
