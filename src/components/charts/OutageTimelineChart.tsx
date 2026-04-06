@@ -21,12 +21,7 @@ const MAINTEMODE_COLORS: Record<string, string> = {
   "3": "#f59e0b", // 出力低下 amber
 };
 
-function parseOutageDate(dateStr: string): number {
-  const [date, time] = dateStr.split(" ");
-  const [y, m, d] = date.split("/").map(Number);
-  const [h, min] = (time || "00:00").split(":").map(Number);
-  return new Date(y, m - 1, d, h, min).getTime();
-}
+import { parseOutageDate } from "@/lib/date-utils";
 
 function formatDuration(startMs: number, endMs: number): string {
   const diffMs = endMs - startMs;
