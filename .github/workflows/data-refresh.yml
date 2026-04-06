@@ -2,7 +2,7 @@ name: Data Refresh
 
 on:
   schedule:
-    - cron: "0 6,18 * * *" # UTC 06:00/18:00 = JST 15:00/03:00
+    - cron: "0 */2 * * *" # Every 2 hours
   workflow_dispatch:
     inputs:
       mode:
