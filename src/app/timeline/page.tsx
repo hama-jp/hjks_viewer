@@ -112,7 +112,7 @@ function TimelineContent() {
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">停止タイムライン</h1>
         {meta && (
-          <p className="text-sm text-slate-500 dark:text-slate-400 dark:text-slate-400 mt-1">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             最終更新: {meta.generatedAt} / 現在停止中 {filtered.length}件
           </p>
         )}
@@ -205,11 +205,11 @@ function TimelineContent() {
                         <div className="text-slate-500 dark:text-slate-400 text-xs">{r.unitname} / {r.areaName}</div>
                       </td>
                       <td className="px-4 py-3">
-                        <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium"
-                          style={{
-                            backgroundColor: r.maintemode === "1" ? "#dbeafe" : r.maintemode === "2" ? "#fee2e2" : "#fef3c7",
-                            color: r.maintemode === "1" ? "#1d4ed8" : r.maintemode === "2" ? "#b91c1c" : "#92400e",
-                          }}>
+                        <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                            r.maintemode === "1" ? "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300" :
+                            r.maintemode === "2" ? "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300" :
+                            "bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300"
+                          }`}>
                           {r.maintemodeName}
                         </span>
                       </td>
