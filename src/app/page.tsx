@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { format, parseISO } from "date-fns";
 import { ja } from "date-fns/locale";
-import { loadOutagesCurrent } from "@/lib/data-loader";
+import { loadOutagesCurrent, invalidateCache } from "@/lib/data-loader";
 import { parseOutageDate } from "@/lib/date-utils";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import EmptyState from "@/components/common/EmptyState";
@@ -70,6 +70,7 @@ export default function DashboardPage() {
   }, []);
 
   const handleRetry = () => {
+    invalidateCache();
     setState((prev) => ({ ...prev, loading: true, error: null }));
     loadOutagesCurrent().then((result) => {
       if (!mountedRef.current) return;
@@ -88,6 +89,7 @@ export default function DashboardPage() {
 
   const theme = useTheme();
   const labelColor = theme === "dark" ? "#f1f5f9" : undefined;
+  const splitLineColor = theme === "dark" ? "#334155" : "#e2e8f0";
 
   const { loading, error, records: allRecords, meta } = state;
 
@@ -115,8 +117,9 @@ export default function DashboardPage() {
         type: "category",
         data: Object.keys(areaCountMap),
         axisLabel: { rotate: 30, fontSize: 11, color: labelColor },
+        splitLine: { lineStyle: { color: splitLineColor } },
       },
-      yAxis: { type: "value", name: "件数", nameTextStyle: { color: labelColor }, axisLabel: { color: labelColor } },
+      yAxis: { type: "value", name: "件数", nameTextStyle: { color: labelColor }, axisLabel: { color: labelColor }, splitLine: { lineStyle: { color: splitLineColor } } },
       series: [
         {
           type: "bar",
@@ -126,7 +129,7 @@ export default function DashboardPage() {
       ],
       grid: { left: 50, right: 20, bottom: 60, top: 30 },
     };
-  }, [records, labelColor]);
+  }, [records, labelColor, splitLineColor]);
 
   // Chart data: outages by format
   const formatChartOption = useMemo<EChartsOption>(() => {
@@ -141,8 +144,9 @@ export default function DashboardPage() {
         type: "category",
         data: Object.keys(formatCountMap),
         axisLabel: { rotate: 30, fontSize: 11, color: labelColor },
+        splitLine: { lineStyle: { color: splitLineColor } },
       },
-      yAxis: { type: "value", name: "件数", nameTextStyle: { color: labelColor }, axisLabel: { color: labelColor } },
+      yAxis: { type: "value", name: "件数", nameTextStyle: { color: labelColor }, axisLabel: { color: labelColor }, splitLine: { lineStyle: { color: splitLineColor } } },
       series: [
         {
           type: "bar",
@@ -152,7 +156,7 @@ export default function DashboardPage() {
       ],
       grid: { left: 50, right: 20, bottom: 80, top: 30 },
     };
-  }, [records, labelColor]);
+  }, [records, labelColor, splitLineColor]);
 
   // Chart data: outages by maintemode (pie)
   const pieChartOption = useMemo<EChartsOption>(() => {

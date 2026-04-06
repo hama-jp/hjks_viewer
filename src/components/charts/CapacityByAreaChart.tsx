@@ -24,6 +24,7 @@ type Props = {
 export default function CapacityByAreaChart({ records }: Props) {
   const theme = useTheme();
   const labelColor = theme === "dark" ? "#f1f5f9" : undefined;
+  const splitLineColor = theme === "dark" ? "#334155" : "#e2e8f0";
 
   if (records.length === 0) {
     return (
@@ -74,12 +75,14 @@ export default function CapacityByAreaChart({ records }: Props) {
       type: "category",
       data: areaLabels,
       axisLabel: { rotate: 30, fontSize: 11, color: labelColor },
+      splitLine: { lineStyle: { color: splitLineColor } },
     },
     yAxis: {
       type: "value",
       name: "MW",
       nameTextStyle: { color: labelColor },
       axisLabel: { color: labelColor },
+      splitLine: { lineStyle: { color: splitLineColor } },
     },
     series,
     grid: { left: 60, right: 20, bottom: 50, top: 20 },

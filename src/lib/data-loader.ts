@@ -32,19 +32,43 @@ export async function loadManifest(): Promise<LoadResult<DataManifest>> {
   }
 }
 
-export async function loadOutagesCurrent(): Promise<LoadResult<OutageFile["records"]> & { meta?: OutageFile["meta"] }> {
-  try {
-    const res = await fetch(`${getBasePath()}/data/outages-current.json`);
-    if (!res.ok) {
-      return { ok: false, error: `HTTP ${res.status}: ${res.statusText}`, data: null };
-    }
-    const json = await res.json();
-    const parsed = OutageFileSchema.parse(json);
-    return { ok: true, data: parsed.records, meta: parsed.meta };
-  } catch (e) {
-    const message = e instanceof Error ? e.message : "Unknown error";
-    return { ok: false, error: message, data: null };
+type OutageResult = LoadResult<OutageFile["records"]> & { meta?: OutageFile["meta"] };
+
+let cachedResult: Promise<OutageResult> | null = null;
+let cacheTimestamp = 0;
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+export function invalidateCache(): void {
+  cachedResult = null;
+  cacheTimestamp = 0;
+}
+
+export async function loadOutagesCurrent(): Promise<OutageResult> {
+  const now = Date.now();
+  if (cachedResult && now - cacheTimestamp < CACHE_TTL) {
+    return cachedResult;
   }
+
+  const promise = (async (): Promise<OutageResult> => {
+    try {
+      const res = await fetch(`${getBasePath()}/data/outages-current.json`);
+      if (!res.ok) {
+        return { ok: false, error: `HTTP ${res.status}: ${res.statusText}`, data: null };
+      }
+      const json = await res.json();
+      const parsed = OutageFileSchema.parse(json);
+      return { ok: true, data: parsed.records, meta: parsed.meta };
+    } catch (e) {
+      // On error, invalidate cache so next call retries
+      invalidateCache();
+      const message = e instanceof Error ? e.message : "Unknown error";
+      return { ok: false, error: message, data: null };
+    }
+  })();
+
+  cachedResult = promise;
+  cacheTimestamp = now;
+  return promise;
 }
 
 export async function loadOutageArchive(period: string): Promise<LoadResult<OutageFile["records"]> & { meta?: OutageFile["meta"] }> {
