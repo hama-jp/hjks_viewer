@@ -65,14 +65,16 @@ function TimelineContent() {
     return () => { cancelled = true; };
   }, []);
 
-  // Filter to currently active + apply user filters
+  // Filter to active + future planned outages, apply user filters
   const filtered = useMemo(() => {
     const twoYearsAgo = nowMs - 2 * 365.25 * 24 * 60 * 60 * 1000;
+    const oneYearAhead = nowMs + 365.25 * 24 * 60 * 60 * 1000;
     let data = allRecords.filter((r) => {
       const start = parseOutageDate(r.startdt);
-      if (start > nowMs || start < twoYearsAgo) return false;
-      if (!r.restartschdt) return true;
-      return parseOutageDate(r.restartschdt) > nowMs;
+      if (start < twoYearsAgo || start > oneYearAhead) return false;
+      // 過去に開始して既に復旧済みのものは除外
+      if (start <= nowMs && r.restartschdt && parseOutageDate(r.restartschdt) <= nowMs) return false;
+      return true;
     });
     if (areas.size > 0) data = data.filter((r) => areas.has(r.area));
     if (formats.size > 0) data = data.filter((r) => formats.has(r.format));
@@ -108,7 +110,7 @@ function TimelineContent() {
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">停止タイムライン</h1>
         {meta && (
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            最終更新: {meta.generatedAt} / 現在停止中 {filtered.length}件
+            最終更新: {meta.generatedAt} / {filtered.length}件（停止中 {filtered.filter(r => parseOutageDate(r.startdt) <= nowMs).length}件・予定 {filtered.filter(r => parseOutageDate(r.startdt) > nowMs).length}件）
           </p>
         )}
       </div>
@@ -159,7 +161,7 @@ function TimelineContent() {
         {loading ? (
           <LoadingSpinner message="読み込み中..." />
         ) : (
-          <OutageTimelineChart records={pageRecords} maxItems={PAGE_SIZE} />
+          <OutageTimelineChart records={pageRecords} maxItems={PAGE_SIZE} includeFuture />
         )}
       </div>
 
@@ -187,14 +189,15 @@ function TimelineContent() {
               <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                 {pageRecords.map((r) => {
                   const startMs = parseOutageDate(r.startdt);
+                  const isFuture = startMs > nowMs;
                   const endMs = r.restartschdt ? parseOutageDate(r.restartschdt) : nowMs;
-                  const diffMs = endMs - startMs;
-                  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-                  const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                  const ongoing = !r.restartschdt;
+                  const diffMs = isFuture && r.restartschdt ? parseOutageDate(r.restartschdt) - startMs : endMs - startMs;
+                  const days = Math.floor(Math.max(0, diffMs) / (1000 * 60 * 60 * 24));
+                  const hours = Math.floor((Math.max(0, diffMs) % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                  const ongoing = !r.restartschdt && !isFuture;
 
                   return (
-                    <tr key={r.id} className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+                    <tr key={r.id} className={`hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors ${isFuture ? "opacity-70" : ""}`}>
                       <td className="px-4 py-3">
                         <div className="font-medium text-slate-900 dark:text-slate-100">{r.name}</div>
                         <div className="text-slate-500 dark:text-slate-400 text-xs">{r.unitname} / {r.areaName}</div>
@@ -215,8 +218,15 @@ function TimelineContent() {
                         )}
                       </td>
                       <td className="px-4 py-3 text-slate-700 dark:text-slate-300 whitespace-nowrap">
-                        {days}日{hours}時間
-                        {ongoing && <span className="text-amber-600 text-xs ml-1">(継続中)</span>}
+                        {isFuture ? (
+                          r.restartschdt ? (
+                            <span>{days}日{hours}時間<span className="text-blue-600 dark:text-blue-400 text-xs ml-1">(予定)</span></span>
+                          ) : (
+                            <span className="text-blue-600 dark:text-blue-400 text-xs">(未開始)</span>
+                          )
+                        ) : (
+                          <>{days}日{hours}時間{ongoing && <span className="text-amber-600 text-xs ml-1">(継続中)</span>}</>
+                        )}
                       </td>
                       <td className="px-4 py-3 text-slate-700 dark:text-slate-300 text-right">
                         {(r.downcapacity / 1000).toFixed(1)}
