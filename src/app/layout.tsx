@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import ThemeToggle from "@/components/common/ThemeToggle";
+import Navigation from "@/components/common/Navigation";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -45,50 +46,10 @@ export default function RootLayout({
                 <Link href="/" className="text-lg font-bold text-blue-700 dark:text-blue-400">
                   HJKS 停止情報ビューア
                 </Link>
-                <nav className="hidden sm:flex items-center gap-6">
-                  <Link
-                    href="/"
-                    className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors"
-                  >
-                    ダッシュボード
-                  </Link>
-                  <Link
-                    href="/timeline"
-                    className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors"
-                  >
-                    タイムライン
-                  </Link>
-                  <Link
-                    href="/outages"
-                    className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors"
-                  >
-                    停止情報一覧
-                  </Link>
-                </nav>
+                <Navigation />
               </div>
               <div className="flex items-center gap-2">
                 <ThemeToggle />
-                {/* Mobile nav */}
-                <nav className="flex sm:hidden items-center gap-4">
-                  <Link
-                    href="/"
-                    className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400"
-                  >
-                    ダッシュボード
-                  </Link>
-                  <Link
-                    href="/timeline"
-                    className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400"
-                  >
-                    タイムライン
-                  </Link>
-                  <Link
-                    href="/outages"
-                    className="text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400"
-                  >
-                    一覧
-                  </Link>
-                </nav>
               </div>
             </div>
           </div>
