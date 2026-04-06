@@ -290,7 +290,7 @@ export default function DashboardPage() {
                   エリア別停止件数
                 </h2>
                 {records.length > 0 ? (
-                  <EChartWrapper option={areaChartOption} />
+                  <EChartWrapper option={areaChartOption} ariaLabel="エリア別停止件数の棒グラフ" />
                 ) : (
                   <p className="text-slate-400 dark:text-slate-500 text-sm py-20 text-center">
                     データがありません
@@ -302,7 +302,7 @@ export default function DashboardPage() {
                   発電形式別停止件数
                 </h2>
                 {records.length > 0 ? (
-                  <EChartWrapper option={formatChartOption} />
+                  <EChartWrapper option={formatChartOption} ariaLabel="発電形式別停止件数の棒グラフ" />
                 ) : (
                   <p className="text-slate-400 dark:text-slate-500 text-sm py-20 text-center">
                     データがありません
@@ -321,6 +321,7 @@ export default function DashboardPage() {
                   <EChartWrapper
                     option={pieChartOption}
                     style={{ height: 400 }}
+                    ariaLabel="停止区分別件数の円グラフ"
                   />
                 ) : (
                   <p className="text-slate-400 dark:text-slate-500 text-sm py-20 text-center">

@@ -89,5 +89,5 @@ export default function CapacityByAreaChart({ records }: Props) {
     color: Object.values(MAINTEMODE_COLORS),
   };
 
-  return <EChartWrapper option={option} style={{ height: 350 }} />;
+  return <EChartWrapper option={option} style={{ height: 350 }} ariaLabel="エリア別停止容量の積み上げ棒グラフ" />;
 }
