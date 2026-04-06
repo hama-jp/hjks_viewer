@@ -12,6 +12,7 @@ type OutageTimelineChartProps = {
   records: NormalizedOutage[];
   maxItems?: number;
   excludePlanned?: boolean;
+  includeFuture?: boolean; // trueの場合、将来の停止予定も表示する
   rangeMonths?: number; // X軸の前後表示範囲（月数）。デフォルト12
 };
 
@@ -37,21 +38,31 @@ export default function OutageTimelineChart({
   records,
   maxItems = 20,
   excludePlanned = false,
+  includeFuture = false,
   rangeMonths = 12,
 }: OutageTimelineChartProps) {
   const [now] = useState(() => Date.now());
   const theme = useTheme();
   const labelColor = theme === "dark" ? "#f1f5f9" : undefined;
 
-  // Filter to currently active outages (started in past, not yet restarted):
+  // Filter outages for display
   const twoYearsAgo = now - 2 * 365.25 * 24 * 60 * 60 * 1000;
+  const futureLimit = now + 365.25 * 24 * 60 * 60 * 1000; // 1年先まで
   const active = records.filter((r) => {
     const start = parseOutageDate(r.startdt);
-    if (start > now) return false;
     if (start < twoYearsAgo) return false;
-    if (!r.restartschdt) return true;
-    const end = parseOutageDate(r.restartschdt);
-    return end > now;
+    if (includeFuture) {
+      // 将来停止も含める（1年先まで）
+      if (start > futureLimit) return false;
+      // 過去の停止は復旧済みなら除外
+      if (start <= now && r.restartschdt && parseOutageDate(r.restartschdt) <= now) return false;
+    } else {
+      // 従来動作: 将来開始は除外
+      if (start > now) return false;
+      if (!r.restartschdt) return true;
+      if (parseOutageDate(r.restartschdt) <= now) return false;
+    }
+    return true;
   });
 
   // Optionally exclude planned outages (dashboard mode)
@@ -88,14 +99,16 @@ export default function OutageTimelineChart({
   const seriesData = displayed.map((r, i) => {
     const start = parseOutageDate(r.startdt);
     const end = r.restartschdt ? parseOutageDate(r.restartschdt) : now;
+    const isFuture = start > now;
+    const isOngoing = !r.restartschdt && !isFuture;
     return {
       value: [i, start, end],
       itemStyle: {
         color: MAINTEMODE_COLORS[r.maintemode] || "#6b7280",
-        opacity: r.restartschdt ? 1 : 0.6,
-        borderColor: r.restartschdt ? undefined : MAINTEMODE_COLORS[r.maintemode] || "#6b7280",
-        borderWidth: r.restartschdt ? 0 : 2,
-        borderType: r.restartschdt ? "solid" as const : "dashed" as const,
+        opacity: isFuture ? 0.4 : (isOngoing ? 0.6 : 1),
+        borderColor: (isFuture || isOngoing) ? MAINTEMODE_COLORS[r.maintemode] || "#6b7280" : undefined,
+        borderWidth: (isFuture || isOngoing) ? 2 : 0,
+        borderType: isFuture ? "dashed" as const : (isOngoing ? "dashed" as const : "solid" as const),
       },
       // Attach full record for tooltip
       record: r,
