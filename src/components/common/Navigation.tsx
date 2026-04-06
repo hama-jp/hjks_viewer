@@ -19,10 +19,7 @@ export default function Navigation() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
 
-  // Close menu on route change
-  useEffect(() => {
-    setMenuOpen(false);
-  }, [pathname]);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
 
   // Close menu on Escape key
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -94,6 +91,7 @@ export default function Navigation() {
               <Link
                 key={href}
                 href={href}
+                onClick={closeMenu}
                 className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                   isActive(pathname, href, exact)
                     ? "text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 font-semibold"
