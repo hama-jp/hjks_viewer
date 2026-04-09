@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import type { EChartsOption } from "echarts";
 import type { NormalizedOutage } from "@/types/outage";
-import { useTheme } from "@/components/common/useTheme";
+import { useChartTheme } from "@/hooks/useChartTheme";
 
 const EChartWrapper = dynamic(
   () => import("@/components/charts/EChartWrapper"),
@@ -28,8 +28,7 @@ type Props = {
 };
 
 export default function AssortmentTreemap({ records }: Props) {
-  const theme = useTheme();
-  const labelColor = theme === "dark" ? "#f1f5f9" : undefined;
+  const { labelColor } = useChartTheme();
 
   if (records.length === 0) {
     return (

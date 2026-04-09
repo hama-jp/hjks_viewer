@@ -17,19 +17,26 @@ type LoadResult<T> = {
   data: null;
 };
 
-export async function loadManifest(): Promise<LoadResult<DataManifest>> {
+async function fetchAndParse<T>(
+  url: string,
+  parse: (json: unknown) => T
+): Promise<LoadResult<T>> {
   try {
-    const res = await fetch(`${getBasePath()}/data/manifest.json`);
+    const res = await fetch(`${getBasePath()}${url}`);
     if (!res.ok) {
       return { ok: false, error: `HTTP ${res.status}: ${res.statusText}`, data: null };
     }
     const json = await res.json();
-    const parsed = DataManifestSchema.parse(json);
-    return { ok: true, data: parsed };
+    const data = parse(json);
+    return { ok: true, data };
   } catch (e) {
     const message = e instanceof Error ? e.message : "Unknown error";
     return { ok: false, error: message, data: null };
   }
+}
+
+export async function loadManifest(): Promise<LoadResult<DataManifest>> {
+  return fetchAndParse("/data/manifest.json", (json) => DataManifestSchema.parse(json));
 }
 
 type OutageResult = LoadResult<OutageFile["records"]> & { meta?: OutageFile["meta"] };
@@ -59,7 +66,6 @@ export async function loadOutagesCurrent(): Promise<OutageResult> {
       const parsed = OutageFileSchema.parse(json);
       return { ok: true, data: parsed.records, meta: parsed.meta };
     } catch (e) {
-      // On error, invalidate cache so next call retries
       invalidateCache();
       const message = e instanceof Error ? e.message : "Unknown error";
       return { ok: false, error: message, data: null };
@@ -71,7 +77,7 @@ export async function loadOutagesCurrent(): Promise<OutageResult> {
   return promise;
 }
 
-export async function loadOutageArchive(period: string): Promise<LoadResult<OutageFile["records"]> & { meta?: OutageFile["meta"] }> {
+export async function loadOutageArchive(period: string): Promise<OutageResult> {
   try {
     // Try outages-archive/ subdirectory first, then flat path
     let res = await fetch(`${getBasePath()}/data/outages-archive/${period}.json`);
@@ -92,18 +98,9 @@ export async function loadOutageArchive(period: string): Promise<LoadResult<Outa
 }
 
 export async function loadUnits(): Promise<LoadResult<NormalizedUnit[]>> {
-  try {
-    const res = await fetch(`${getBasePath()}/data/units.json`);
-    if (!res.ok) {
-      return { ok: false, error: `HTTP ${res.status}: ${res.statusText}`, data: null };
-    }
-    const json = await res.json();
+  return fetchAndParse("/data/units.json", (json) => {
     // Support both { records: [...] } wrapper and raw array formats
-    const records = Array.isArray(json) ? json : json.records;
-    const parsed = z.array(NormalizedUnitSchema).parse(records);
-    return { ok: true, data: parsed };
-  } catch (e) {
-    const message = e instanceof Error ? e.message : "Unknown error";
-    return { ok: false, error: message, data: null };
-  }
+    const records = Array.isArray(json) ? json : (json as { records: unknown }).records;
+    return z.array(NormalizedUnitSchema).parse(records);
+  });
 }

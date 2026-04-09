@@ -2,6 +2,7 @@
 
 import { useMemo, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { parseSet } from "@/lib/filter-utils";
 
 export type Filters = {
   areas: Set<string>;
@@ -11,10 +12,6 @@ export type Filters = {
   dateTo: string;
   searchText: string;
 };
-
-function parseSet(param: string | null): Set<string> {
-  return new Set(param?.split(",").filter(Boolean) ?? []);
-}
 
 export function useFilters() {
   const router = useRouter();

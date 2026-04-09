@@ -2,6 +2,13 @@ import type { NormalizedOutage } from "@/types/outage";
 import type { Filters } from "@/components/filters/useFilters";
 
 /**
+ * Parse a comma-separated URL parameter into a Set of strings.
+ */
+export function parseSet(param: string | null): Set<string> {
+  return new Set(param?.split(",").filter(Boolean) ?? []);
+}
+
+/**
  * Apply all active filters to the outage records.
  * Pure function — no side effects.
  */

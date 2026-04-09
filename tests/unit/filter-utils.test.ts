@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { applyFilters, applySort } from "@/lib/filter-utils";
+import { applyFilters, applySort, parseSet } from "@/lib/filter-utils";
 import type { NormalizedOutage } from "@/types/outage";
 import type { Filters } from "@/components/filters/useFilters";
 
@@ -47,6 +47,30 @@ const records: NormalizedOutage[] = [
   makeRecord({ id: "r3", area: "6", areaName: "関西", format: "1", maintemode: "1", startdt: "2026/02/15 00:00", maxcapacity: 826000 }),
   makeRecord({ id: "r4", area: "4", areaName: "中部", format: "2", formatName: "火力(石炭)", maintemode: "3", maintemodeName: "出力低下", startdt: "2026/04/02 06:00", maxcapacity: 700000, factor: "排煙脱硫装置不具合" }),
 ];
+
+// --- parseSet ---
+
+describe("parseSet", () => {
+  it("should parse comma-separated string into a Set", () => {
+    expect(parseSet("1,2,3")).toEqual(new Set(["1", "2", "3"]));
+  });
+
+  it("should return empty Set for null", () => {
+    expect(parseSet(null)).toEqual(new Set());
+  });
+
+  it("should return empty Set for empty string", () => {
+    expect(parseSet("")).toEqual(new Set());
+  });
+
+  it("should filter out empty strings from trailing commas", () => {
+    expect(parseSet("1,,3,")).toEqual(new Set(["1", "3"]));
+  });
+
+  it("should handle single value", () => {
+    expect(parseSet("5")).toEqual(new Set(["5"]));
+  });
+});
 
 // --- applyFilters ---
 

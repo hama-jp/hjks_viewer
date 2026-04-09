@@ -1,32 +1,27 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { format, parseISO } from "date-fns";
 import { ja } from "date-fns/locale";
-import { loadOutagesCurrent, invalidateCache } from "@/lib/data-loader";
 import { parseOutageDate } from "@/lib/date-utils";
+import { buildBarChartOption } from "@/lib/chart-utils";
+import { useOutageData } from "@/hooks/useOutageData";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import EmptyState from "@/components/common/EmptyState";
-import type { NormalizedOutage, OutageFile } from "@/types/outage";
 import type { EChartsOption } from "echarts";
 import AssortmentTreemap from "@/components/charts/AssortmentTreemap";
 import CapacityByAreaChart from "@/components/charts/CapacityByAreaChart";
 import OutageTimelineChart from "@/components/charts/OutageTimelineChart";
-import { useTheme } from "@/components/common/useTheme";
+import KpiCard from "@/components/common/KpiCard";
+import ChartCard from "@/components/common/ChartCard";
+import { useChartTheme } from "@/hooks/useChartTheme";
 
 const EChartWrapper = dynamic(
   () => import("@/components/charts/EChartWrapper"),
   { ssr: false }
 );
-
-type DashboardState = {
-  loading: boolean;
-  error: string | null;
-  records: NormalizedOutage[];
-  meta: OutageFile["meta"] | null;
-};
 
 function SkeletonChart() {
   return (
@@ -38,60 +33,11 @@ function SkeletonChart() {
 }
 
 export default function DashboardPage() {
-  const [state, setState] = useState<DashboardState>({
-    loading: true,
-    error: null,
-    records: [],
-    meta: null,
-  });
+  const { loading, error, records: allRecords, meta, retry: handleRetry } = useOutageData();
 
   const [nowMs] = useState(() => Date.now());
-  const mountedRef = useRef(true);
-  useEffect(() => {
-    return () => { mountedRef.current = false; };
-  }, []);
 
-  useEffect(() => {
-    let cancelled = false;
-    loadOutagesCurrent().then((result) => {
-      if (cancelled) return;
-      if (result.ok) {
-        setState({
-          loading: false,
-          error: null,
-          records: result.data,
-          meta: result.meta ?? null,
-        });
-      } else {
-        setState({ loading: false, error: result.error, records: [], meta: null });
-      }
-    });
-    return () => { cancelled = true; };
-  }, []);
-
-  const handleRetry = () => {
-    invalidateCache();
-    setState((prev) => ({ ...prev, loading: true, error: null }));
-    loadOutagesCurrent().then((result) => {
-      if (!mountedRef.current) return;
-      if (result.ok) {
-        setState({
-          loading: false,
-          error: null,
-          records: result.data,
-          meta: result.meta ?? null,
-        });
-      } else {
-        setState({ loading: false, error: result.error, records: [], meta: null });
-      }
-    });
-  };
-
-  const theme = useTheme();
-  const labelColor = theme === "dark" ? "#f1f5f9" : undefined;
-  const splitLineColor = theme === "dark" ? "#334155" : "#e2e8f0";
-
-  const { loading, error, records: allRecords, meta } = state;
+  const { labelColor, splitLineColor } = useChartTheme();
 
   // Filter to currently active outages (started & not yet restarted)
   const records = useMemo(() => {
@@ -105,57 +51,28 @@ export default function DashboardPage() {
   }, [allRecords, nowMs]);
 
   // Chart data: outages by area
-  const areaChartOption = useMemo<EChartsOption>(() => {
-    const areaCountMap: Record<string, number> = {};
-    for (const r of records) {
-      const label = r.areaName;
-      areaCountMap[label] = (areaCountMap[label] || 0) + 1;
-    }
-    return {
-      tooltip: { trigger: "axis" },
-      xAxis: {
-        type: "category",
-        data: Object.keys(areaCountMap),
-        axisLabel: { rotate: 30, fontSize: 11, color: labelColor },
-        splitLine: { lineStyle: { color: splitLineColor } },
-      },
-      yAxis: { type: "value", name: "件数", nameTextStyle: { color: labelColor }, axisLabel: { color: labelColor }, splitLine: { lineStyle: { color: splitLineColor } } },
-      series: [
-        {
-          type: "bar",
-          data: Object.values(areaCountMap),
-          itemStyle: { color: "#3b82f6" },
-        },
-      ],
-      grid: { left: 50, right: 20, bottom: 60, top: 30 },
-    };
+  const areaChartOption = useMemo(() => {
+    const countMap: Record<string, number> = {};
+    for (const r of records) countMap[r.areaName] = (countMap[r.areaName] || 0) + 1;
+    return buildBarChartOption({
+      items: Object.entries(countMap).map(([label, count]) => ({ label, count })),
+      color: "#3b82f6",
+      labelColor,
+      splitLineColor,
+    });
   }, [records, labelColor, splitLineColor]);
 
   // Chart data: outages by format
-  const formatChartOption = useMemo<EChartsOption>(() => {
-    const formatCountMap: Record<string, number> = {};
-    for (const r of records) {
-      const label = r.formatName;
-      formatCountMap[label] = (formatCountMap[label] || 0) + 1;
-    }
-    return {
-      tooltip: { trigger: "axis" },
-      xAxis: {
-        type: "category",
-        data: Object.keys(formatCountMap),
-        axisLabel: { rotate: 30, fontSize: 11, color: labelColor },
-        splitLine: { lineStyle: { color: splitLineColor } },
-      },
-      yAxis: { type: "value", name: "件数", nameTextStyle: { color: labelColor }, axisLabel: { color: labelColor }, splitLine: { lineStyle: { color: splitLineColor } } },
-      series: [
-        {
-          type: "bar",
-          data: Object.values(formatCountMap),
-          itemStyle: { color: "#8b5cf6" },
-        },
-      ],
-      grid: { left: 50, right: 20, bottom: 80, top: 30 },
-    };
+  const formatChartOption = useMemo(() => {
+    const countMap: Record<string, number> = {};
+    for (const r of records) countMap[r.formatName] = (countMap[r.formatName] || 0) + 1;
+    return buildBarChartOption({
+      items: Object.entries(countMap).map(([label, count]) => ({ label, count })),
+      color: "#8b5cf6",
+      labelColor,
+      splitLineColor,
+      gridBottom: 80,
+    });
   }, [records, labelColor, splitLineColor]);
 
   // Chart data: outages by maintemode (pie)
@@ -233,22 +150,18 @@ export default function DashboardPage() {
         </div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-          <div className="rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700">
-            <p className="text-xs text-slate-500 dark:text-slate-400">停止中件数</p>
+          <KpiCard label="停止中件数">
             <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{records.length}</p>
-          </div>
-          <div className="rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700">
-            <p className="text-xs text-slate-500 dark:text-slate-400">計画外停止件数</p>
+          </KpiCard>
+          <KpiCard label="計画外停止件数">
             <p className="text-2xl font-bold text-red-600 dark:text-red-400">{records.filter(r => r.maintemode === "2").length}</p>
-          </div>
-          <div className="rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700">
-            <p className="text-xs text-slate-500 dark:text-slate-400">停止容量合計</p>
+          </KpiCard>
+          <KpiCard label="停止容量合計">
             <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{(records.reduce((sum, r) => sum + r.downcapacity / 1000, 0)).toFixed(1)}<span className="text-sm font-normal ml-1">MW</span></p>
-          </div>
-          <div className="rounded-xl bg-white dark:bg-slate-800 p-4 shadow-sm border border-slate-200 dark:border-slate-700">
-            <p className="text-xs text-slate-500 dark:text-slate-400">エリア数</p>
+          </KpiCard>
+          <KpiCard label="エリア数">
             <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{new Set(records.map(r => r.area)).size}</p>
-          </div>
+          </KpiCard>
         </div>
       )}
 
@@ -268,55 +181,41 @@ export default function DashboardPage() {
         ) : (
           <>
             {/* Row 1: outage timeline (full width, right below title) */}
-            <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200">
-                  現在の停止状況（計画停止除く）
-                </h2>
+            <ChartCard
+              title="現在の停止状況（計画停止除く）"
+              action={
                 <Link
                   href="/timeline"
                   className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
                 >
                   タイムライン（計画停止を含む）を詳しく見る &rarr;
                 </Link>
-              </div>
+              }
+            >
               <OutageTimelineChart records={records} maxItems={9999} excludePlanned rangeMonths={3} />
-            </div>
+            </ChartCard>
 
             {/* Row 2: area bar + format bar */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-                <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200 mb-4">
-                  エリア別停止件数
-                </h2>
+              <ChartCard title="エリア別停止件数">
                 {records.length > 0 ? (
                   <EChartWrapper option={areaChartOption} ariaLabel="エリア別停止件数の棒グラフ" />
                 ) : (
-                  <p className="text-slate-400 dark:text-slate-500 text-sm py-20 text-center">
-                    データがありません
-                  </p>
+                  <EmptyState message="データがありません" />
                 )}
-              </div>
-              <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-                <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200 mb-4">
-                  発電形式別停止件数
-                </h2>
+              </ChartCard>
+              <ChartCard title="発電形式別停止件数">
                 {records.length > 0 ? (
                   <EChartWrapper option={formatChartOption} ariaLabel="発電形式別停止件数の棒グラフ" />
                 ) : (
-                  <p className="text-slate-400 dark:text-slate-500 text-sm py-20 text-center">
-                    データがありません
-                  </p>
+                  <EmptyState message="データがありません" />
                 )}
-              </div>
+              </ChartCard>
             </div>
 
             {/* Row 3: maintemode pie + capacity by area stacked bar */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-                <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200 mb-4">
-                  停止区分別件数
-                </h2>
+              <ChartCard title="停止区分別件数">
                 {records.length > 0 ? (
                   <EChartWrapper
                     option={pieChartOption}
@@ -324,26 +223,18 @@ export default function DashboardPage() {
                     ariaLabel="停止区分別件数の円グラフ"
                   />
                 ) : (
-                  <p className="text-slate-400 dark:text-slate-500 text-sm py-20 text-center">
-                    データがありません
-                  </p>
+                  <EmptyState message="データがありません" />
                 )}
-              </div>
-              <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-                <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200 mb-4">
-                  エリア別停止容量 (MW)
-                </h2>
+              </ChartCard>
+              <ChartCard title="エリア別停止容量 (MW)">
                 <CapacityByAreaChart records={records} />
-              </div>
+              </ChartCard>
             </div>
 
             {/* Row 4: assortment treemap (full width) */}
-            <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700">
-              <h2 className="text-base font-semibold text-slate-700 dark:text-slate-200 mb-4">
-                種別内訳
-              </h2>
+            <ChartCard title="種別内訳">
               <AssortmentTreemap records={records} />
-            </div>
+            </ChartCard>
           </>
         )}
       </div>

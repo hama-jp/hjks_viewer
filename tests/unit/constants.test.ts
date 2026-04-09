@@ -4,6 +4,7 @@ import {
   FORMATS,
   MAINTEMODES,
   ASSORTMENTS,
+  MAINTEMODE_COLORS,
   getAreaName,
   getFormatName,
   getMaintemodeName,
@@ -91,6 +92,27 @@ describe("getMaintemodeName", () => {
 
   it("should return 不明 for unknown code", () => {
     expect(getMaintemodeName("0")).toBe("不明");
+  });
+});
+
+describe("MAINTEMODE_COLORS", () => {
+  it("should have a color for each maintemode", () => {
+    for (const code of Object.keys(MAINTEMODES)) {
+      expect(MAINTEMODE_COLORS[code]).toBeDefined();
+      expect(MAINTEMODE_COLORS[code]).toMatch(/^#[0-9a-f]{6}$/);
+    }
+  });
+
+  it("should map code 1 (計画停止) to blue", () => {
+    expect(MAINTEMODE_COLORS["1"]).toBe("#3b82f6");
+  });
+
+  it("should map code 2 (計画外停止) to red", () => {
+    expect(MAINTEMODE_COLORS["2"]).toBe("#ef4444");
+  });
+
+  it("should map code 3 (出力低下) to amber", () => {
+    expect(MAINTEMODE_COLORS["3"]).toBe("#f59e0b");
   });
 });
 
