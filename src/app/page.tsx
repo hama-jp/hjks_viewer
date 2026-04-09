@@ -159,8 +159,8 @@ export default function DashboardPage() {
           <KpiCard label="停止容量合計">
             <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{(records.reduce((sum, r) => sum + r.downcapacity / 1000, 0)).toFixed(1)}<span className="text-sm font-normal ml-1">MW</span></p>
           </KpiCard>
-          <KpiCard label="エリア数">
-            <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{new Set(records.map(r => r.area)).size}</p>
+          <KpiCard label="計画外停止容量">
+            <p className="text-2xl font-bold text-red-600 dark:text-red-400">{(records.filter(r => r.maintemode === "2").reduce((sum, r) => sum + r.downcapacity / 1000, 0)).toFixed(1)}<span className="text-sm font-normal ml-1">MW</span></p>
           </KpiCard>
         </div>
       )}
