@@ -6,7 +6,6 @@ import Link from "next/link";
 import { format, parseISO } from "date-fns";
 import { ja } from "date-fns/locale";
 import { parseOutageDate } from "@/lib/date-utils";
-import { buildBarChartOption } from "@/lib/chart-utils";
 import { MAINTEMODES, MAINTEMODE_COLORS } from "@/lib/constants";
 import { useOutageData } from "@/hooks/useOutageData";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
@@ -113,40 +112,6 @@ export default function DashboardPage() {
     };
   }, [records, labelColor, splitLineColor]);
 
-  // Chart data: outages by format
-  const formatChartOption = useMemo(() => {
-    const countMap: Record<string, number> = {};
-    for (const r of records) countMap[r.formatName] = (countMap[r.formatName] || 0) + 1;
-    return buildBarChartOption({
-      items: Object.entries(countMap).map(([label, count]) => ({ label, count })),
-      color: "#8b5cf6",
-      labelColor,
-      splitLineColor,
-      gridBottom: 80,
-    });
-  }, [records, labelColor, splitLineColor]);
-
-  // 長期停止Top5（計画外停止・出力低下のみ）
-  const longOutageTop5 = useMemo(() => {
-    return records
-      .filter((r) => r.maintemode === "2" || r.maintemode === "3")
-      .map((r) => {
-        const startMs = parseOutageDate(r.startdt);
-        const durationDays = Math.floor((nowMs - startMs) / (1000 * 60 * 60 * 24));
-        return {
-          name: r.name,
-          unitname: r.unitname,
-          areaName: r.areaName,
-          maintemodeName: r.maintemodeName,
-          downcapacityMW: Math.round(r.downcapacity / 1000),
-          startdt: r.startdt,
-          durationDays,
-        };
-      })
-      .sort((a, b) => b.durationDays - a.durationDays)
-      .slice(0, 5);
-  }, [records, nowMs]);
-
   if (error && records.length === 0) {
     return (
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
@@ -251,63 +216,7 @@ export default function DashboardPage() {
               </ChartCard>
             </div>
 
-            {/* Row 3: long outage top5 + format bar */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <ChartCard title="長期停止 Top 5">
-                {longOutageTop5.length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-slate-200 dark:border-slate-700 text-left">
-                          <th className="py-2 pr-2 font-medium text-slate-500 dark:text-slate-400">#</th>
-                          <th className="py-2 pr-2 font-medium text-slate-500 dark:text-slate-400">発電所</th>
-                          <th className="py-2 pr-2 font-medium text-slate-500 dark:text-slate-400">区分</th>
-                          <th className="py-2 pr-2 font-medium text-slate-500 dark:text-slate-400 text-right">MW</th>
-                          <th className="py-2 font-medium text-slate-500 dark:text-slate-400 text-right">停止日数</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {longOutageTop5.map((item, i) => (
-                          <tr key={i} className="border-b border-slate-100 dark:border-slate-700/50">
-                            <td className="py-2 pr-2 text-slate-400 dark:text-slate-500">{i + 1}</td>
-                            <td className="py-2 pr-2 text-slate-900 dark:text-slate-100">
-                              {item.name}
-                              <span className="text-xs text-slate-400 dark:text-slate-500 ml-1">{item.unitname}</span>
-                              <div className="text-xs text-slate-400 dark:text-slate-500">{item.areaName}</div>
-                            </td>
-                            <td className="py-2 pr-2">
-                              <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                                item.maintemodeName === "計画外停止" ? "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300" :
-                                item.maintemodeName === "出力低下" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300" :
-                                "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300"
-                              }`}>
-                                {item.maintemodeName}
-                              </span>
-                            </td>
-                            <td className="py-2 pr-2 text-right text-slate-900 dark:text-slate-100">{item.downcapacityMW}</td>
-                            <td className="py-2 text-right font-semibold text-slate-900 dark:text-slate-100">
-                              {item.durationDays}
-                              <span className="text-xs font-normal text-slate-400 ml-0.5">日</span>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <EmptyState message="データがありません" />
-                )}
-              </ChartCard>
-              <ChartCard title="発電形式別停止件数">
-                {records.length > 0 ? (
-                  <EChartWrapper option={formatChartOption} ariaLabel="発電形式別停止件数の棒グラフ" />
-                ) : (
-                  <EmptyState message="データがありません" />
-                )}
-              </ChartCard>
-            </div>
-
-            {/* Row 4: assortment treemap (full width) */}
+            {/* Row 3: assortment treemap (full width) */}
             <ChartCard title="種別内訳">
               <AssortmentTreemap records={records} />
             </ChartCard>
