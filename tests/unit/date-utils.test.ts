@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseOutageDate, formatDuration } from "@/lib/date-utils";
+import { parseOutageDate, formatDuration, formatShortDate } from "@/lib/date-utils";
 
 describe("parseOutageDate", () => {
   it("parses date with time", () => {
@@ -59,5 +59,23 @@ describe("formatDuration", () => {
     const start = new Date(2026, 0, 1).getTime();
     const end = new Date(2026, 3, 11).getTime(); // 100 days later
     expect(formatDuration(start, end)).toBe("100日0時間");
+  });
+});
+
+describe("formatShortDate", () => {
+  it("should format as M/D without zero-padding", () => {
+    expect(formatShortDate(new Date(2026, 0, 3).getTime())).toBe("1/3");
+  });
+
+  it("should format double-digit month and day", () => {
+    expect(formatShortDate(new Date(2026, 11, 23).getTime())).toBe("12/23");
+  });
+
+  it("should format year-end date", () => {
+    expect(formatShortDate(new Date(2026, 11, 31).getTime())).toBe("12/31");
+  });
+
+  it("should format date with time component", () => {
+    expect(formatShortDate(new Date(2026, 2, 15, 10, 30).getTime())).toBe("3/15");
   });
 });
