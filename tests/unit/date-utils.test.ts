@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseOutageDate } from "@/lib/date-utils";
+import { parseOutageDate, formatDuration } from "@/lib/date-utils";
 
 describe("parseOutageDate", () => {
   it("parses date with time", () => {
@@ -28,5 +28,36 @@ describe("parseOutageDate", () => {
 
   it("returns NaN for invalid date string", () => {
     expect(parseOutageDate("invalid")).toBeNaN();
+  });
+});
+
+describe("formatDuration", () => {
+  it("should format duration in days and hours", () => {
+    const start = new Date(2026, 0, 1, 0, 0).getTime();
+    const end = new Date(2026, 0, 3, 12, 0).getTime(); // 2日12時間後
+    expect(formatDuration(start, end)).toBe("2日12時間");
+  });
+
+  it("should return 0日0時間 for negative duration", () => {
+    const start = new Date(2026, 0, 5).getTime();
+    const end = new Date(2026, 0, 1).getTime();
+    expect(formatDuration(start, end)).toBe("0日0時間");
+  });
+
+  it("should return 0日0時間 for zero duration", () => {
+    const t = new Date(2026, 0, 1).getTime();
+    expect(formatDuration(t, t)).toBe("0日0時間");
+  });
+
+  it("should handle hours-only duration", () => {
+    const start = new Date(2026, 0, 1, 0, 0).getTime();
+    const end = new Date(2026, 0, 1, 5, 0).getTime();
+    expect(formatDuration(start, end)).toBe("0日5時間");
+  });
+
+  it("should handle large durations", () => {
+    const start = new Date(2026, 0, 1).getTime();
+    const end = new Date(2026, 3, 11).getTime(); // 100 days later
+    expect(formatDuration(start, end)).toBe("100日0時間");
   });
 });

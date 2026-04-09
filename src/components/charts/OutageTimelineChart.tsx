@@ -4,7 +4,8 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import type { EChartsOption } from "echarts";
 import type { NormalizedOutage } from "@/types/outage";
-import { useTheme } from "@/components/common/useTheme";
+import { useChartTheme } from "@/hooks/useChartTheme";
+import { MAINTEMODE_COLORS } from "@/lib/constants";
 
 const ReactECharts = dynamic(() => import("echarts-for-react"), { ssr: false });
 
@@ -16,23 +17,7 @@ type OutageTimelineChartProps = {
   rangeMonths?: number; // X軸の前後表示範囲（月数）。デフォルト12
 };
 
-const MAINTEMODE_COLORS: Record<string, string> = {
-  "1": "#3b82f6", // 計画停止 blue
-  "2": "#ef4444", // 計画外停止 red
-  "3": "#f59e0b", // 出力低下 amber
-};
-
-import { parseOutageDate } from "@/lib/date-utils";
-
-function formatDuration(startMs: number, endMs: number): string {
-  const diffMs = endMs - startMs;
-  if (diffMs < 0) return "0日0時間";
-  const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  const hours = Math.floor(
-    (diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-  );
-  return `${days}日${hours}時間`;
-}
+import { parseOutageDate, formatDuration } from "@/lib/date-utils";
 
 export default function OutageTimelineChart({
   records,
@@ -42,8 +27,7 @@ export default function OutageTimelineChart({
   rangeMonths = 12,
 }: OutageTimelineChartProps) {
   const [now] = useState(() => Date.now());
-  const theme = useTheme();
-  const labelColor = theme === "dark" ? "#f1f5f9" : undefined;
+  const { labelColor } = useChartTheme();
 
   // Filter outages for display
   const twoYearsAgo = now - 2 * 365.25 * 24 * 60 * 60 * 1000;

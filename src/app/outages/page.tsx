@@ -1,8 +1,8 @@
 "use client";
 
-import { Suspense, useEffect, useState, useMemo } from "react";
-import { loadOutagesCurrent } from "@/lib/data-loader";
+import { Suspense, useMemo } from "react";
 import { applyFilters, applySort } from "@/lib/filter-utils";
+import { useOutageData } from "@/hooks/useOutageData";
 import { useFilters } from "@/components/filters/useFilters";
 import { useTableState } from "@/components/tables/useTableState";
 import FilterPanel from "@/components/filters/FilterPanel";
@@ -10,35 +10,13 @@ import OutageTable from "@/components/tables/OutageTable";
 import Pagination from "@/components/tables/Pagination";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import EmptyState from "@/components/common/EmptyState";
-import type { NormalizedOutage, OutageFile } from "@/types/outage";
 
 function OutagesContent() {
-  const [records, setRecords] = useState<NormalizedOutage[]>([]);
-  const [meta, setMeta] = useState<OutageFile["meta"] | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { loading, error, records, meta } = useOutageData();
 
   const { filters } = useFilters();
   const { sortKey, sortDir, currentPage, pageSize, setSort, setPage } =
     useTableState();
-
-  useEffect(() => {
-    let cancelled = false;
-    loadOutagesCurrent().then((result) => {
-      if (cancelled) return;
-      if (result.ok) {
-        setRecords(result.data);
-        setMeta(result.meta ?? null);
-      } else {
-        setError(result.error);
-        setRecords([]);
-      }
-      setLoading(false);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
 
   const filtered = useMemo(
     () => applySort(applyFilters(records, filters), sortKey, sortDir),

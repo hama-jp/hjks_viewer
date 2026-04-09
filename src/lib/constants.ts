@@ -42,6 +42,12 @@ export const ASSORTMENTS: Record<string, string> = {
   "10": "低下・その他",
 };
 
+export const MAINTEMODE_COLORS: Record<string, string> = {
+  "1": "#3b82f6", // 計画停止 blue
+  "2": "#ef4444", // 計画外停止 red
+  "3": "#f59e0b", // 出力低下 amber
+};
+
 export function getAreaName(code: string): string {
   return AREAS[code] ?? "不明";
 }

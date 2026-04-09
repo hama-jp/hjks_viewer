@@ -1,31 +1,25 @@
 "use client";
 
-import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { Suspense, useCallback, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { loadOutagesCurrent } from "@/lib/data-loader";
 import { AREAS, FORMATS, MAINTEMODES } from "@/lib/constants";
+import { parseSet } from "@/lib/filter-utils";
+import { useOutageData } from "@/hooks/useOutageData";
 import CheckboxGroup from "@/components/filters/CheckboxGroup";
 import OutageTimelineChart from "@/components/charts/OutageTimelineChart";
+import Pagination from "@/components/tables/Pagination";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import EmptyState from "@/components/common/EmptyState";
-import type { NormalizedOutage, OutageFile } from "@/types/outage";
 
 const PAGE_SIZE = 50;
-
-function parseSet(param: string | null): Set<string> {
-  return new Set(param?.split(",").filter(Boolean) ?? []);
-}
 
 import { parseOutageDate } from "@/lib/date-utils";
 
 function TimelineContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { loading, error, records: allRecords, meta } = useOutageData();
 
-  const [allRecords, setAllRecords] = useState<NormalizedOutage[]>([]);
-  const [meta, setMeta] = useState<OutageFile["meta"] | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [nowMs] = useState(() => Date.now());
 
   // Parse filters from URL
@@ -48,22 +42,6 @@ function TimelineContent() {
     },
     [searchParams, router]
   );
-
-  useEffect(() => {
-    let cancelled = false;
-    loadOutagesCurrent().then((result) => {
-      if (cancelled) return;
-      if (result.ok) {
-        setAllRecords(result.data);
-        setMeta(result.meta ?? null);
-      } else {
-        setError(result.error);
-        setAllRecords([]);
-      }
-      setLoading(false);
-    });
-    return () => { cancelled = true; };
-  }, []);
 
   // Filter to active + future planned outages, apply user filters
   const filtered = useMemo(() => {
@@ -91,6 +69,11 @@ function TimelineContent() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(currentPage, totalPages);
   const pageRecords = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  const handlePageChange = useCallback(
+    (page: number) => updateParams({ page: String(page) }),
+    [updateParams]
+  );
 
   if (error && allRecords.length === 0) {
     return (
@@ -134,25 +117,13 @@ function TimelineContent() {
         </div>
       </div>
 
-      {/* Pagination controls */}
+      {/* Pagination controls (top) */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between mb-4">
-          <p className="text-sm text-slate-500 dark:text-slate-400">
+        <div className="mb-4">
+          <p className="text-sm text-slate-500 dark:text-slate-400 mb-2">
             {filtered.length}件中 {(safePage - 1) * PAGE_SIZE + 1}〜{Math.min(safePage * PAGE_SIZE, filtered.length)}件
           </p>
-          <div className="flex items-center gap-2">
-            <button disabled={safePage <= 1}
-              onClick={() => updateParams({ page: String(safePage - 1) })}
-              className="px-3 py-1 text-sm rounded border border-slate-300 dark:border-slate-600 disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-slate-700">
-              前へ
-            </button>
-            <span className="text-sm text-slate-600 dark:text-slate-300">{safePage} / {totalPages}</span>
-            <button disabled={safePage >= totalPages}
-              onClick={() => updateParams({ page: String(safePage + 1) })}
-              className="px-3 py-1 text-sm rounded border border-slate-300 dark:border-slate-600 disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-slate-700">
-              次へ
-            </button>
-          </div>
+          <Pagination currentPage={safePage} totalPages={totalPages} onPageChange={handlePageChange} />
         </div>
       )}
 
@@ -244,23 +215,7 @@ function TimelineContent() {
       )}
 
       {/* Bottom pagination */}
-      {totalPages > 1 && (
-        <div className="flex justify-center mt-6">
-          <div className="flex items-center gap-2">
-            <button disabled={safePage <= 1}
-              onClick={() => updateParams({ page: String(safePage - 1) })}
-              className="px-3 py-1 text-sm rounded border border-slate-300 dark:border-slate-600 disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-slate-700">
-              前へ
-            </button>
-            <span className="text-sm text-slate-600 dark:text-slate-300">{safePage} / {totalPages}</span>
-            <button disabled={safePage >= totalPages}
-              onClick={() => updateParams({ page: String(safePage + 1) })}
-              className="px-3 py-1 text-sm rounded border border-slate-300 dark:border-slate-600 disabled:opacity-40 hover:bg-slate-50 dark:hover:bg-slate-700">
-              次へ
-            </button>
-          </div>
-        </div>
-      )}
+      <Pagination currentPage={safePage} totalPages={totalPages} onPageChange={handlePageChange} />
     </div>
   );
 }

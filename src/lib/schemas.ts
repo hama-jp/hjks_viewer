@@ -1,14 +1,31 @@
 import { z } from "zod";
 
-// --- Raw data schemas (all strings, straight from CSV) ---
+// --- Base schemas (shared fields) ---
 
-export const RawOutageRecordSchema = z.object({
+const BaseRawRecordSchema = z.object({
   area: z.string(),
   company: z.string(),
   plantcd: z.string(),
   name: z.string(),
   format: z.string(),
   unitname: z.string(),
+});
+
+const BaseNormalizedSchema = z.object({
+  id: z.string(),
+  area: z.string(),
+  areaName: z.string(),
+  company: z.string(),
+  plantcd: z.string(),
+  name: z.string(),
+  format: z.string(),
+  formatName: z.string(),
+  unitname: z.string(),
+});
+
+// --- Raw data schemas (all strings, straight from CSV) ---
+
+export const RawOutageRecordSchema = BaseRawRecordSchema.extend({
   maxcapacity: z.string(),
   maintemode: z.string(),
   assortment: z.string(),
@@ -20,13 +37,7 @@ export const RawOutageRecordSchema = z.object({
   upddt: z.string(),
 });
 
-export const RawUnitRecordSchema = z.object({
-  area: z.string(),
-  company: z.string(),
-  plantcd: z.string(),
-  name: z.string(),
-  format: z.string(),
-  unitname: z.string(),
+export const RawUnitRecordSchema = BaseRawRecordSchema.extend({
   maxcapacity: z.string(),
   nextmaxcapacity: z.string(),
   nextmaxcapacitystartdt: z.string(),
@@ -37,16 +48,7 @@ export const RawUnitRecordSchema = z.object({
 
 // --- Normalized data schemas (validated & transformed) ---
 
-export const NormalizedOutageSchema = z.object({
-  id: z.string(),
-  area: z.string(),
-  areaName: z.string(),
-  company: z.string(),
-  plantcd: z.string(),
-  name: z.string(),
-  format: z.string(),
-  formatName: z.string(),
-  unitname: z.string(),
+export const NormalizedOutageSchema = BaseNormalizedSchema.extend({
   maxcapacity: z.number(),
   downcapacity: z.number(),
   maintemode: z.string(),
@@ -61,16 +63,7 @@ export const NormalizedOutageSchema = z.object({
   fetchedAt: z.string(),
 });
 
-export const NormalizedUnitSchema = z.object({
-  id: z.string(),
-  area: z.string(),
-  areaName: z.string(),
-  company: z.string(),
-  plantcd: z.string(),
-  name: z.string(),
-  format: z.string(),
-  formatName: z.string(),
-  unitname: z.string(),
+export const NormalizedUnitSchema = BaseNormalizedSchema.extend({
   maxcapacity: z.number(),
   nextmaxcapacity: z.number().nullable(),
   nextmaxcapacitystartdt: z.string().nullable(),

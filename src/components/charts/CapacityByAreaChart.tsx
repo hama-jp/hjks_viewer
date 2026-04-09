@@ -3,28 +3,20 @@
 import dynamic from "next/dynamic";
 import type { EChartsOption } from "echarts";
 import type { NormalizedOutage } from "@/types/outage";
-import { MAINTEMODES } from "@/lib/constants";
-import { useTheme } from "@/components/common/useTheme";
+import { MAINTEMODES, MAINTEMODE_COLORS } from "@/lib/constants";
+import { useChartTheme } from "@/hooks/useChartTheme";
 
 const EChartWrapper = dynamic(
   () => import("@/components/charts/EChartWrapper"),
   { ssr: false }
 );
 
-const MAINTEMODE_COLORS: Record<string, string> = {
-  "1": "#3b82f6", // 計画停止 - blue
-  "2": "#ef4444", // 計画外停止 - red
-  "3": "#f59e0b", // 出力低下 - amber
-};
-
 type Props = {
   records: NormalizedOutage[];
 };
 
 export default function CapacityByAreaChart({ records }: Props) {
-  const theme = useTheme();
-  const labelColor = theme === "dark" ? "#f1f5f9" : undefined;
-  const splitLineColor = theme === "dark" ? "#334155" : "#e2e8f0";
+  const { labelColor, splitLineColor } = useChartTheme();
 
   if (records.length === 0) {
     return (
