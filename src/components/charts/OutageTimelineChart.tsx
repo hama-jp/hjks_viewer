@@ -17,7 +17,10 @@ type OutageTimelineChartProps = {
   rangeMonths?: number; // X軸の前後表示範囲（月数）。デフォルト12
 };
 
-import { parseOutageDate, formatDuration } from "@/lib/date-utils";
+import { parseOutageDate, formatDuration, formatShortDate } from "@/lib/date-utils";
+
+const LABEL_BOTH_MIN_WIDTH = 100;
+const LABEL_START_MIN_WIDTH = 50;
 
 export default function OutageTimelineChart({
   records,
@@ -85,8 +88,10 @@ export default function OutageTimelineChart({
     const end = r.restartschdt ? parseOutageDate(r.restartschdt) : now;
     const isFuture = start > now;
     const isOngoing = !r.restartschdt && !isFuture;
+    const hasEndDate = r.restartschdt != null;
+    const isTransparent = isFuture || isOngoing;
     return {
-      value: [i, start, end],
+      value: [i, start, end, hasEndDate ? 1 : 0, isTransparent ? 1 : 0],
       itemStyle: {
         color: MAINTEMODE_COLORS[r.maintemode] || "#6b7280",
         opacity: isFuture ? 0.4 : (isOngoing ? 0.6 : 1),
@@ -170,20 +175,60 @@ export default function OutageTimelineChart({
           const startCoord = a.coord([a.value(1), yIndex]);
           const endCoord = a.coord([a.value(2), yIndex]);
           const barHeight = a.size([0, 1])[1] * 0.6;
+          const barWidth = Math.max(endCoord[0] - startCoord[0], 2);
 
           const rectShape = {
             x: startCoord[0],
             y: startCoord[1] - barHeight / 2,
-            width: Math.max(endCoord[0] - startCoord[0], 2),
+            width: barWidth,
             height: barHeight,
             r: 3,
           };
 
-          return {
-            type: "rect" as const,
-            shape: rectShape,
-            style: a.style(),
-          };
+          const hasEndDate = a.value(3) === 1;
+          const isTransparent = a.value(4) === 1;
+          const textColor = isTransparent ? (labelColor ?? "#1e293b") : "#fff";
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const children: any[] = [
+            { type: "rect", shape: rectShape, style: a.style() },
+          ];
+
+          if (barWidth >= LABEL_START_MIN_WIDTH) {
+            children.push({
+              type: "text",
+              style: {
+                x: rectShape.x + 4,
+                y: rectShape.y + barHeight / 2,
+                text: formatShortDate(a.value(1)),
+                textAlign: "left",
+                textVerticalAlign: "middle",
+                fontSize: 10,
+                fill: textColor,
+                fontWeight: "bold",
+              },
+              silent: true,
+            });
+          }
+
+          if (barWidth >= LABEL_BOTH_MIN_WIDTH && hasEndDate) {
+            children.push({
+              type: "text",
+              style: {
+                x: rectShape.x + barWidth - 4,
+                y: rectShape.y + barHeight / 2,
+                text: formatShortDate(a.value(2)),
+                textAlign: "right",
+                textVerticalAlign: "middle",
+                fontSize: 10,
+                fill: textColor,
+                fontWeight: "bold",
+              },
+              silent: true,
+            });
+          }
+
+          return { type: "group" as const, children };
         },
         encode: {
           x: [1, 2],

@@ -20,3 +20,12 @@ export function formatDuration(startMs: number, endMs: number): string {
   );
   return `${days}日${hours}時間`;
 }
+
+/**
+ * ミリ秒タイムスタンプを M/D 形式の短い日付文字列に変換する。
+ * 例: 12/23, 1/3
+ */
+export function formatShortDate(timestampMs: number): string {
+  const d = new Date(timestampMs);
+  return `${d.getMonth() + 1}/${d.getDate()}`;
+}
