@@ -126,9 +126,10 @@ export default function DashboardPage() {
     });
   }, [records, labelColor, splitLineColor]);
 
-  // 長期停止Top5
+  // 長期停止Top5（計画外停止・出力低下のみ）
   const longOutageTop5 = useMemo(() => {
     return records
+      .filter((r) => r.maintemode === "2" || r.maintemode === "3")
       .map((r) => {
         const startMs = parseOutageDate(r.startdt);
         const durationDays = Math.floor((nowMs - startMs) / (1000 * 60 * 60 * 24));
@@ -236,7 +237,7 @@ export default function DashboardPage() {
               <OutageTimelineChart records={records} maxItems={9999} excludePlanned rangeMonths={3} />
             </ChartCard>
 
-            {/* Row 2: area bar + format bar */}
+            {/* Row 2: area count + area capacity */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <ChartCard title="エリア別停止件数">
                 {records.length > 0 ? (
@@ -245,16 +246,12 @@ export default function DashboardPage() {
                   <EmptyState message="データがありません" />
                 )}
               </ChartCard>
-              <ChartCard title="発電形式別停止件数">
-                {records.length > 0 ? (
-                  <EChartWrapper option={formatChartOption} ariaLabel="発電形式別停止件数の棒グラフ" />
-                ) : (
-                  <EmptyState message="データがありません" />
-                )}
+              <ChartCard title="エリア別停止容量 (MW)">
+                <CapacityByAreaChart records={records} />
               </ChartCard>
             </div>
 
-            {/* Row 3: long outage top5 + capacity by area */}
+            {/* Row 3: long outage top5 + format bar */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <ChartCard title="長期停止 Top 5">
                 {longOutageTop5.length > 0 ? (
@@ -301,8 +298,12 @@ export default function DashboardPage() {
                   <EmptyState message="データがありません" />
                 )}
               </ChartCard>
-              <ChartCard title="エリア別停止容量 (MW)">
-                <CapacityByAreaChart records={records} />
+              <ChartCard title="発電形式別停止件数">
+                {records.length > 0 ? (
+                  <EChartWrapper option={formatChartOption} ariaLabel="発電形式別停止件数の棒グラフ" />
+                ) : (
+                  <EmptyState message="データがありません" />
+                )}
               </ChartCard>
             </div>
 
