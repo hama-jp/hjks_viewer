@@ -162,7 +162,7 @@ export default function OutageTimelineChart({
       {
         type: "custom",
         renderItem: (
-          _params: unknown,
+          params: unknown,
           api: unknown
         ) => {
           const a = api as {
@@ -171,6 +171,12 @@ export default function OutageTimelineChart({
             size: (val: [number, number]) => [number, number];
             style: () => Record<string, unknown>;
           };
+          const p = params as {
+            coordSys: { x: number; y: number; width: number; height: number };
+          };
+          const gridLeft = p.coordSys.x;
+          const gridRight = p.coordSys.x + p.coordSys.width;
+
           const yIndex = a.value(0);
           const startCoord = a.coord([a.value(1), yIndex]);
           const endCoord = a.coord([a.value(2), yIndex]);
@@ -185,6 +191,11 @@ export default function OutageTimelineChart({
             r: 3,
           };
 
+          // Visible portion of the bar within the grid
+          const visibleLeft = Math.max(rectShape.x, gridLeft);
+          const visibleRight = Math.min(rectShape.x + barWidth, gridRight);
+          const visibleWidth = visibleRight - visibleLeft;
+
           const hasEndDate = a.value(3) === 1;
           const isTransparent = a.value(4) === 1;
           const textColor = isTransparent ? (labelColor ?? "#1e293b") : "#fff";
@@ -194,11 +205,11 @@ export default function OutageTimelineChart({
             { type: "rect", shape: rectShape, style: a.style() },
           ];
 
-          if (barWidth >= LABEL_START_MIN_WIDTH) {
+          if (visibleWidth >= LABEL_START_MIN_WIDTH) {
             children.push({
               type: "text",
               style: {
-                x: rectShape.x + 4,
+                x: visibleLeft + 4,
                 y: rectShape.y + barHeight / 2,
                 text: formatShortDate(a.value(1)),
                 textAlign: "left",
@@ -211,11 +222,11 @@ export default function OutageTimelineChart({
             });
           }
 
-          if (barWidth >= LABEL_BOTH_MIN_WIDTH && hasEndDate) {
+          if (visibleWidth >= LABEL_BOTH_MIN_WIDTH && hasEndDate) {
             children.push({
               type: "text",
               style: {
-                x: rectShape.x + barWidth - 4,
+                x: visibleRight - 4,
                 y: rectShape.y + barHeight / 2,
                 text: formatShortDate(a.value(2)),
                 textAlign: "right",
