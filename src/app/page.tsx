@@ -7,6 +7,7 @@ import { format, parseISO } from "date-fns";
 import { ja } from "date-fns/locale";
 import { parseOutageDate } from "@/lib/date-utils";
 import { buildBarChartOption } from "@/lib/chart-utils";
+import { MAINTEMODES, MAINTEMODE_COLORS } from "@/lib/constants";
 import { useOutageData } from "@/hooks/useOutageData";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import EmptyState from "@/components/common/EmptyState";
@@ -49,16 +50,67 @@ export default function DashboardPage() {
     });
   }, [allRecords, nowMs]);
 
-  // Chart data: outages by area
+  // Chart data: outages by area (stacked by maintemode with count labels)
   const areaChartOption = useMemo(() => {
-    const countMap: Record<string, number> = {};
-    for (const r of records) countMap[r.areaName] = (countMap[r.areaName] || 0) + 1;
-    return buildBarChartOption({
-      items: Object.entries(countMap).map(([label, count]) => ({ label, count })),
-      color: "#3b82f6",
-      labelColor,
-      splitLineColor,
-    });
+    const areaSet = new Set<string>();
+    const areaNameMap: Record<string, string> = {};
+    const countMap: Record<string, Record<string, number>> = {};
+    for (const r of records) {
+      areaSet.add(r.area);
+      areaNameMap[r.area] = r.areaName;
+      if (!countMap[r.maintemode]) countMap[r.maintemode] = {};
+      countMap[r.maintemode][r.area] = (countMap[r.maintemode][r.area] || 0) + 1;
+    }
+    const areas = Array.from(areaSet).sort((a, b) => parseInt(a) - parseInt(b));
+    const areaLabels = areas.map((a) => areaNameMap[a]);
+    const maintemodes = Object.keys(MAINTEMODES);
+
+    const series = maintemodes.map((code) => ({
+      name: MAINTEMODES[code],
+      type: "bar" as const,
+      stack: "count",
+      data: areas.map((a) => countMap[code]?.[a] ?? 0),
+      itemStyle: { color: MAINTEMODE_COLORS[code] },
+      emphasis: { focus: "series" as const },
+      label: {
+        show: true,
+        position: "inside" as const,
+        formatter: (p: unknown) => {
+          const v = (p as { value: number }).value;
+          return v > 0 ? `${v}` : "";
+        },
+        fontSize: 11,
+        color: "#fff",
+      },
+    }));
+
+    return {
+      tooltip: {
+        trigger: "axis" as const,
+        axisPointer: { type: "shadow" as const },
+        valueFormatter: (value: unknown) => `${value}件`,
+      },
+      legend: {
+        data: maintemodes.map((code) => MAINTEMODES[code]),
+        bottom: 0,
+        textStyle: { fontSize: 11, color: labelColor },
+      },
+      xAxis: {
+        type: "category" as const,
+        data: areaLabels,
+        axisLabel: { rotate: 30, fontSize: 11, color: labelColor },
+      },
+      yAxis: {
+        type: "value" as const,
+        name: "件数",
+        nameTextStyle: { color: labelColor },
+        axisLabel: { color: labelColor },
+        splitLine: { lineStyle: { color: splitLineColor } },
+      },
+      series,
+      grid: { left: 50, right: 20, bottom: 50, top: 30 },
+      color: Object.values(MAINTEMODE_COLORS),
+    };
   }, [records, labelColor, splitLineColor]);
 
   // Chart data: outages by format
@@ -249,7 +301,7 @@ export default function DashboardPage() {
                   <EmptyState message="データがありません" />
                 )}
               </ChartCard>
-              <ChartCard title="エリア別停止容量・件数">
+              <ChartCard title="エリア別停止容量 (MW)">
                 <CapacityByAreaChart records={records} />
               </ChartCard>
             </div>
