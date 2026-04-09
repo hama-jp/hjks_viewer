@@ -10,7 +10,6 @@ import { buildBarChartOption } from "@/lib/chart-utils";
 import { useOutageData } from "@/hooks/useOutageData";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import EmptyState from "@/components/common/EmptyState";
-import type { EChartsOption } from "echarts";
 import AssortmentTreemap from "@/components/charts/AssortmentTreemap";
 import CapacityByAreaChart from "@/components/charts/CapacityByAreaChart";
 import OutageTimelineChart from "@/components/charts/OutageTimelineChart";
@@ -75,36 +74,25 @@ export default function DashboardPage() {
     });
   }, [records, labelColor, splitLineColor]);
 
-  // Chart data: outages by maintemode (pie)
-  const pieChartOption = useMemo<EChartsOption>(() => {
-    const maintemodeCountMap: Record<string, number> = {};
-    for (const r of records) {
-      const label = r.maintemodeName;
-      maintemodeCountMap[label] = (maintemodeCountMap[label] || 0) + 1;
-    }
-    return {
-      tooltip: { trigger: "item", formatter: "{b}: {c} ({d}%)" },
-      series: [
-        {
-          type: "pie",
-          radius: ["40%", "70%"],
-          data: Object.entries(maintemodeCountMap).map(([name, value]) => ({
-            name,
-            value,
-          })),
-          emphasis: {
-            itemStyle: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: "rgba(0, 0, 0, 0.5)",
-            },
-          },
-          label: { formatter: "{b}\n{c}件 ({d}%)", color: labelColor },
-        },
-      ],
-      color: ["#3b82f6", "#ef4444", "#f59e0b", "#10b981", "#8b5cf6"],
-    };
-  }, [records, labelColor]);
+  // 長期停止Top5
+  const longOutageTop5 = useMemo(() => {
+    return records
+      .map((r) => {
+        const startMs = parseOutageDate(r.startdt);
+        const durationDays = Math.floor((nowMs - startMs) / (1000 * 60 * 60 * 24));
+        return {
+          name: r.name,
+          unitname: r.unitname,
+          areaName: r.areaName,
+          maintemodeName: r.maintemodeName,
+          downcapacityMW: Math.round(r.downcapacity / 1000),
+          startdt: r.startdt,
+          durationDays,
+        };
+      })
+      .sort((a, b) => b.durationDays - a.durationDays)
+      .slice(0, 5);
+  }, [records, nowMs]);
 
   if (error && records.length === 0) {
     return (
@@ -136,6 +124,7 @@ export default function DashboardPage() {
             </p>
           )}
         </div>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">計画外停止及び出力低下</p>
       </div>
 
       {/* KPI Summary Cards */}
@@ -153,11 +142,11 @@ export default function DashboardPage() {
           <KpiCard label="停止中件数">
             <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{records.length}</p>
           </KpiCard>
-          <KpiCard label="計画外停止件数">
-            <p className="text-2xl font-bold text-red-600 dark:text-red-400">{records.filter(r => r.maintemode === "2").length}</p>
-          </KpiCard>
           <KpiCard label="停止容量合計">
             <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{(records.reduce((sum, r) => sum + r.downcapacity / 1000, 0)).toFixed(1)}<span className="text-sm font-normal ml-1">MW</span></p>
+          </KpiCard>
+          <KpiCard label="計画外停止件数">
+            <p className="text-2xl font-bold text-red-600 dark:text-red-400">{records.filter(r => r.maintemode === "2").length}</p>
           </KpiCard>
           <KpiCard label="計画外停止容量">
             <p className="text-2xl font-bold text-red-600 dark:text-red-400">{(records.filter(r => r.maintemode === "2").reduce((sum, r) => sum + r.downcapacity / 1000, 0)).toFixed(1)}<span className="text-sm font-normal ml-1">MW</span></p>
@@ -182,13 +171,13 @@ export default function DashboardPage() {
           <>
             {/* Row 1: outage timeline (full width, right below title) */}
             <ChartCard
-              title="現在の停止状況（計画停止除く）"
+              title="現在の停止状況（計画外停止及び出力低下）"
               action={
                 <Link
                   href="/timeline"
                   className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
                 >
-                  タイムライン（計画停止を含む）を詳しく見る &rarr;
+                  定検を含む停止状況・停止計画はこちら &rarr;
                 </Link>
               }
             >
@@ -213,20 +202,54 @@ export default function DashboardPage() {
               </ChartCard>
             </div>
 
-            {/* Row 3: maintemode pie + capacity by area stacked bar */}
+            {/* Row 3: long outage top5 + capacity by area */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <ChartCard title="停止区分別件数">
-                {records.length > 0 ? (
-                  <EChartWrapper
-                    option={pieChartOption}
-                    style={{ height: 400 }}
-                    ariaLabel="停止区分別件数の円グラフ"
-                  />
+              <ChartCard title="長期停止 Top 5">
+                {longOutageTop5.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b border-slate-200 dark:border-slate-700 text-left">
+                          <th className="py-2 pr-2 font-medium text-slate-500 dark:text-slate-400">#</th>
+                          <th className="py-2 pr-2 font-medium text-slate-500 dark:text-slate-400">発電所</th>
+                          <th className="py-2 pr-2 font-medium text-slate-500 dark:text-slate-400">区分</th>
+                          <th className="py-2 pr-2 font-medium text-slate-500 dark:text-slate-400 text-right">MW</th>
+                          <th className="py-2 font-medium text-slate-500 dark:text-slate-400 text-right">停止日数</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {longOutageTop5.map((item, i) => (
+                          <tr key={i} className="border-b border-slate-100 dark:border-slate-700/50">
+                            <td className="py-2 pr-2 text-slate-400 dark:text-slate-500">{i + 1}</td>
+                            <td className="py-2 pr-2 text-slate-900 dark:text-slate-100">
+                              {item.name}
+                              <span className="text-xs text-slate-400 dark:text-slate-500 ml-1">{item.unitname}</span>
+                              <div className="text-xs text-slate-400 dark:text-slate-500">{item.areaName}</div>
+                            </td>
+                            <td className="py-2 pr-2">
+                              <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                                item.maintemodeName === "計画外停止" ? "bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300" :
+                                item.maintemodeName === "出力低下" ? "bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300" :
+                                "bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300"
+                              }`}>
+                                {item.maintemodeName}
+                              </span>
+                            </td>
+                            <td className="py-2 pr-2 text-right text-slate-900 dark:text-slate-100">{item.downcapacityMW}</td>
+                            <td className="py-2 text-right font-semibold text-slate-900 dark:text-slate-100">
+                              {item.durationDays}
+                              <span className="text-xs font-normal text-slate-400 ml-0.5">日</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 ) : (
                   <EmptyState message="データがありません" />
                 )}
               </ChartCard>
-              <ChartCard title="エリア別停止容量 (MW)">
+              <ChartCard title="エリア別停止容量・件数">
                 <CapacityByAreaChart records={records} />
               </ChartCard>
             </div>
