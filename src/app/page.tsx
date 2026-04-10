@@ -1,12 +1,13 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { format, parseISO } from "date-fns";
 import { ja } from "date-fns/locale";
 import { parseOutageDate } from "@/lib/date-utils";
-import { MAINTEMODES, MAINTEMODE_COLORS } from "@/lib/constants";
+import { MAINTEMODES, MAINTEMODE_COLORS, AREAS_REVERSE, MAINTEMODES_REVERSE } from "@/lib/constants";
 import { useOutageData } from "@/hooks/useOutageData";
 import ErrorBoundary from "@/components/common/ErrorBoundary";
 import EmptyState from "@/components/common/EmptyState";
@@ -32,11 +33,23 @@ function SkeletonChart() {
 }
 
 export default function DashboardPage() {
+  const router = useRouter();
   const { loading, error, records: allRecords, meta, retry: handleRetry } = useOutageData();
 
   const [nowMs] = useState(() => Date.now());
 
   const { labelColor, splitLineColor } = useChartTheme();
+
+  const handleAreaChartClick = useCallback(
+    (params: { name?: string; seriesName?: string; value?: number }) => {
+      const areaCode = params.name ? AREAS_REVERSE[params.name] : undefined;
+      const maintemodeCode = params.seriesName ? MAINTEMODES_REVERSE[params.seriesName] : undefined;
+      if (!areaCode || !maintemodeCode) return;
+      if (params.value === 0) return;
+      router.push(`/timeline?areas=${areaCode}&maintemodes=${maintemodeCode}`);
+    },
+    [router]
+  );
 
   // Filter to currently active outages (started & not yet restarted)
   const records = useMemo(() => {
@@ -69,7 +82,7 @@ export default function DashboardPage() {
       type: "bar" as const,
       stack: "count",
       data: areas.map((a) => countMap[code]?.[a] ?? 0),
-      itemStyle: { color: MAINTEMODE_COLORS[code] },
+      itemStyle: { color: MAINTEMODE_COLORS[code], cursor: "pointer" as const },
       emphasis: { focus: "series" as const },
       label: {
         show: true,
@@ -206,7 +219,7 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <ChartCard title="エリア別停止件数">
                 {records.length > 0 ? (
-                  <EChartWrapper option={areaChartOption} ariaLabel="エリア別停止件数の棒グラフ" />
+                  <EChartWrapper option={areaChartOption} ariaLabel="エリア別停止件数の棒グラフ" onEvents={{ click: handleAreaChartClick }} />
                 ) : (
                   <EmptyState message="データがありません" />
                 )}
