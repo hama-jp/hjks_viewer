@@ -10,9 +10,10 @@ type EChartWrapperProps = {
   style?: React.CSSProperties;
   className?: string;
   ariaLabel?: string;
+  onEvents?: Record<string, (...args: never[]) => void>;
 };
 
-export default function EChartWrapper({ option, style, className, ariaLabel }: EChartWrapperProps) {
+export default function EChartWrapper({ option, style, className, ariaLabel, onEvents }: EChartWrapperProps) {
   return (
     <div role={ariaLabel ? "img" : undefined} aria-label={ariaLabel}>
       <ReactECharts
@@ -21,6 +22,7 @@ export default function EChartWrapper({ option, style, className, ariaLabel }: E
         className={className}
         notMerge
         lazyUpdate
+        onEvents={onEvents}
       />
     </div>
   );
