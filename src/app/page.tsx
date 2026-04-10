@@ -225,7 +225,7 @@ export default function DashboardPage() {
                 )}
               </ChartCard>
               <ChartCard title="エリア別停止容量 (MW)">
-                <CapacityByAreaChart records={records} />
+                <CapacityByAreaChart records={records} onBarClick={handleAreaChartClick} />
               </ChartCard>
             </div>
 

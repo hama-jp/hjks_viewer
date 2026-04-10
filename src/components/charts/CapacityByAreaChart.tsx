@@ -13,9 +13,10 @@ const EChartWrapper = dynamic(
 
 type Props = {
   records: NormalizedOutage[];
+  onBarClick?: (params: { name?: string; seriesName?: string; value?: number }) => void;
 };
 
-export default function CapacityByAreaChart({ records }: Props) {
+export default function CapacityByAreaChart({ records, onBarClick }: Props) {
   const { labelColor, splitLineColor } = useChartTheme();
 
   if (records.length === 0) {
@@ -48,7 +49,7 @@ export default function CapacityByAreaChart({ records }: Props) {
     type: "bar" as const,
     stack: "capacity",
     data: areas.map((a) => Math.round(capacityMap[code]?.[a] ?? 0)),
-    itemStyle: { color: MAINTEMODE_COLORS[code] },
+    itemStyle: { color: MAINTEMODE_COLORS[code], cursor: onBarClick ? "pointer" as const : "default" as const },
     emphasis: { focus: "series" as const },
   }));
 
@@ -81,5 +82,5 @@ export default function CapacityByAreaChart({ records }: Props) {
     color: Object.values(MAINTEMODE_COLORS),
   };
 
-  return <EChartWrapper option={option} style={{ height: 350 }} ariaLabel="エリア別停止容量の積み上げ棒グラフ" />;
+  return <EChartWrapper option={option} style={{ height: 350 }} ariaLabel="エリア別停止容量の積み上げ棒グラフ" onEvents={onBarClick ? { click: onBarClick } : undefined} />;
 }
