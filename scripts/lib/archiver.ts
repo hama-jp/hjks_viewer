@@ -13,6 +13,7 @@ import {
 } from "fs";
 import { resolve } from "path";
 import { OutageFileSchema } from "@/lib/schemas";
+import { parseOutageDateAsJST } from "@/lib/date-utils";
 import type { NormalizedOutage, OutageFile } from "@/types/outage";
 
 // --- Quarter helpers ---
@@ -44,30 +45,17 @@ export function getQuarter(dateStr: string): string {
 
 /**
  * Check if a restartschdt is in the past (record has already restarted).
+ * Uses parseOutageDateAsJST to handle timezone correctly regardless of server locale.
  */
 function isHistorical(record: NormalizedOutage, now: Date): boolean {
   if (!record.restartschdt) return false;
 
-  // Parse "YYYY/MM/DD HH:mm" format
-  const slashMatch = record.restartschdt.match(
-    /^(\d{4})\/(\d{2})\/(\d{2})\s+(\d{2}):(\d{2})/
-  );
-  if (slashMatch) {
-    const [, y, mo, d, h, mi] = slashMatch;
-    const restartDate = new Date(
-      parseInt(y), parseInt(mo) - 1, parseInt(d),
-      parseInt(h), parseInt(mi)
-    );
+  try {
+    const restartDate = parseOutageDateAsJST(record.restartschdt);
     return restartDate < now;
+  } catch {
+    return false;
   }
-
-  // Parse ISO format
-  const isoDate = new Date(record.restartschdt);
-  if (!isNaN(isoDate.getTime())) {
-    return isoDate < now;
-  }
-
-  return false;
 }
 
 /**

@@ -29,20 +29,25 @@ export default function CheckboxGroup({
         {label}
       </legend>
       <div className="flex flex-wrap gap-x-4 gap-y-1">
-        {Object.entries(options).map(([code, name]) => (
-          <label
-            key={code}
-            className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 cursor-pointer"
-          >
-            <input
-              type="checkbox"
-              checked={selected.has(code)}
-              onChange={() => toggle(code)}
-              className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 dark:bg-slate-700"
-            />
-            {name}
-          </label>
-        ))}
+        {Object.entries(options).map(([code, name]) => {
+          const inputId = `${label}-${code}`;
+          return (
+            <label
+              key={code}
+              htmlFor={inputId}
+              className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 cursor-pointer"
+            >
+              <input
+                id={inputId}
+                type="checkbox"
+                checked={selected.has(code)}
+                onChange={() => toggle(code)}
+                className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 dark:bg-slate-700"
+              />
+              {name}
+            </label>
+          );
+        })}
       </div>
     </fieldset>
   );

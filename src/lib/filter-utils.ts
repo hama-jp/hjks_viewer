@@ -35,8 +35,8 @@ export function applyFilters(
         r.company.toLowerCase().includes(q) ||
         r.name.toLowerCase().includes(q) ||
         r.unitname.toLowerCase().includes(q) ||
-        r.areaName.includes(q) ||
-        r.formatName.includes(q) ||
+        r.areaName.toLowerCase().includes(q) ||
+        r.formatName.toLowerCase().includes(q) ||
         r.factor.toLowerCase().includes(q)
     );
   }

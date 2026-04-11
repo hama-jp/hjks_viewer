@@ -26,10 +26,11 @@ export default function Pagination({
     }, []);
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-6">
+    <nav aria-label="ページネーション" className="flex items-center justify-center gap-2 mt-6">
       <button
         disabled={currentPage <= 1}
         onClick={() => onPageChange(currentPage - 1)}
+        aria-label="前のページ"
         className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
       >
         前へ
@@ -43,6 +44,8 @@ export default function Pagination({
           <button
             key={p}
             onClick={() => onPageChange(p)}
+            aria-current={p === currentPage ? "page" : undefined}
+            aria-label={`${p}ページ`}
             className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
               p === currentPage
                 ? "bg-blue-600 text-white"
@@ -56,10 +59,11 @@ export default function Pagination({
       <button
         disabled={currentPage >= totalPages}
         onClick={() => onPageChange(currentPage + 1)}
+        aria-label="次のページ"
         className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
       >
         次へ
       </button>
-    </div>
+    </nav>
   );
 }

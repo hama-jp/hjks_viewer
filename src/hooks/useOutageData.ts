@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { loadOutagesCurrent, invalidateCache } from "@/lib/data-loader";
 import type { NormalizedOutage, OutageFile } from "@/types/outage";
 
@@ -10,6 +10,15 @@ type OutageDataState = {
   records: NormalizedOutage[];
   meta: OutageFile["meta"] | null;
 };
+
+function handleResult(
+  result: { ok: true; data: NormalizedOutage[]; meta?: OutageFile["meta"] } | { ok: false; error: string; data: null },
+): OutageDataState {
+  if (result.ok) {
+    return { loading: false, error: null, records: result.data, meta: result.meta ?? null };
+  }
+  return { loading: false, error: result.error, records: [], meta: null };
+}
 
 /**
  * 停止情報データの読み込み・リトライを一元管理するフック。
@@ -23,36 +32,31 @@ export function useOutageData() {
     meta: null,
   });
 
+  // Request ID to ignore stale responses from previous load/retry calls
+  const requestIdRef = useRef(0);
   const mountedRef = useRef(true);
   useEffect(() => {
     return () => { mountedRef.current = false; };
   }, []);
 
+  // Initial data load — state is already loading:true so no setState needed
   useEffect(() => {
-    let cancelled = false;
+    const id = ++requestIdRef.current;
     loadOutagesCurrent().then((result) => {
-      if (cancelled) return;
-      if (result.ok) {
-        setState({ loading: false, error: null, records: result.data, meta: result.meta ?? null });
-      } else {
-        setState({ loading: false, error: result.error, records: [], meta: null });
-      }
+      if (!mountedRef.current || id !== requestIdRef.current) return;
+      setState(handleResult(result));
     });
-    return () => { cancelled = true; };
   }, []);
 
-  const retry = () => {
+  const retry = useCallback(() => {
     invalidateCache();
     setState((prev) => ({ ...prev, loading: true, error: null }));
+    const id = ++requestIdRef.current;
     loadOutagesCurrent().then((result) => {
-      if (!mountedRef.current) return;
-      if (result.ok) {
-        setState({ loading: false, error: null, records: result.data, meta: result.meta ?? null });
-      } else {
-        setState({ loading: false, error: result.error, records: [], meta: null });
-      }
+      if (!mountedRef.current || id !== requestIdRef.current) return;
+      setState(handleResult(result));
     });
-  };
+  }, []);
 
   return { ...state, retry };
 }

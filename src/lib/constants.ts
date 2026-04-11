@@ -42,6 +42,8 @@ export const ASSORTMENTS: Record<string, string> = {
   "10": "低下・その他",
 };
 
+export const DEFAULT_PAGE_SIZE = 50;
+
 export const MAINTEMODE_COLORS: Record<string, string> = {
   "1": "#3b82f6", // 計画停止 blue
   "2": "#ef4444", // 計画外停止 red
