@@ -51,12 +51,16 @@ export default function DashboardPage() {
     [router]
   );
 
-  // Filter to currently active outages (started & not yet restarted)
+  // 本日時点で実際に停止しているもののみカウントする。
+  // 将来の定期点検の停止予定などは、実際に停止が開始されるまで除外する。
   const records = useMemo(() => {
     return allRecords.filter((r) => {
       const start = parseOutageDate(r.startdt);
+      // 停止開始日が未来のものは除外（定期検査の停止予定など）
       if (start > nowMs) return false;
+      // 復旧予定日がなければ現在も停止中
       if (!r.restartschdt) return true;
+      // 復旧予定日を過ぎていれば復旧済みとして除外
       const end = parseOutageDate(r.restartschdt);
       return end > nowMs;
     });
