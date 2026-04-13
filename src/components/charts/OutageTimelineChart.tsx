@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import type { EChartsOption } from "echarts";
 import type { NormalizedOutage } from "@/types/outage";
@@ -8,6 +8,8 @@ import { useChartTheme } from "@/hooks/useChartTheme";
 import { MAINTEMODE_COLORS } from "@/lib/constants";
 
 const ReactECharts = dynamic(() => import("echarts-for-react"), { ssr: false });
+
+const SM_BREAKPOINT = 640;
 
 type OutageTimelineChartProps = {
   records: NormalizedOutage[];
@@ -31,6 +33,14 @@ export default function OutageTimelineChart({
 }: OutageTimelineChartProps) {
   const [now] = useState(() => Date.now());
   const { labelColor } = useChartTheme();
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < SM_BREAKPOINT);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   // Filter outages for display
   const twoYearsAgo = now - 2 * 365.25 * 24 * 60 * 60 * 1000;
@@ -104,11 +114,19 @@ export default function OutageTimelineChart({
     };
   });
 
-  const chartHeight = Math.max(350, displayed.length * 32 + 120);
+  const chartHeight = isMobile
+    ? Math.max(300, displayed.length * 28 + 100)
+    : Math.max(350, displayed.length * 32 + 120);
+
+  const gridLeft = isMobile ? 100 : 220;
+  const gridRight = isMobile ? 16 : 40;
+  const yLabelWidth = isMobile ? 80 : 200;
+  const axisFontSize = isMobile ? 10 : 11;
 
   const option: EChartsOption = {
     tooltip: {
       trigger: "item",
+      confine: true,
       formatter: (params: unknown) => {
         const p = params as { data?: { record?: NormalizedOutage; value?: number[] } };
         const rec = p.data?.record;
@@ -131,8 +149,8 @@ export default function OutageTimelineChart({
       },
     },
     grid: {
-      left: 220,
-      right: 40,
+      left: gridLeft,
+      right: gridRight,
       top: 20,
       bottom: 60,
       containLabel: false,
@@ -142,7 +160,7 @@ export default function OutageTimelineChart({
       min: now - rangeMonths * 30.44 * 24 * 60 * 60 * 1000,
       max: now + rangeMonths * 30.44 * 24 * 60 * 60 * 1000,
       axisLabel: {
-        fontSize: 11,
+        fontSize: axisFontSize,
         color: labelColor,
       },
     },
@@ -150,8 +168,8 @@ export default function OutageTimelineChart({
       type: "category",
       data: labels,
       axisLabel: {
-        fontSize: 11,
-        width: 200,
+        fontSize: axisFontSize,
+        width: yLabelWidth,
         overflow: "truncate",
         ellipsis: "...",
         color: labelColor,
@@ -280,11 +298,11 @@ export default function OutageTimelineChart({
         type: "slider",
         xAxisIndex: 0,
         filterMode: "none",
-        height: 20,
+        height: isMobile ? 28 : 20,
         bottom: 5,
         borderColor: "#e2e8f0",
         fillerColor: "rgba(59,130,246,0.15)",
-        handleSize: "80%",
+        handleSize: isMobile ? "120%" : "80%",
       },
     ],
   };
@@ -301,7 +319,7 @@ export default function OutageTimelineChart({
         {combined.length}件表示中
         {filtered.length > maxItems && `（全${filtered.length}件中）`}
       </p>
-      <div className="flex items-center gap-4 mt-2 text-xs text-slate-500 dark:text-slate-400">
+      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-500 dark:text-slate-400">
         {!excludePlanned && (
           <span className="flex items-center gap-1">
             <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: "#3b82f6" }} />
