@@ -128,7 +128,7 @@ function TimelineContent() {
       )}
 
       {/* Timeline Chart — current page only */}
-      <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700 mb-6">
+      <div className="rounded-xl bg-white dark:bg-slate-800 p-3 sm:p-6 shadow-sm border border-slate-200 dark:border-slate-700 mb-6">
         {loading ? (
           <LoadingSpinner message="読み込み中..." />
         ) : (
