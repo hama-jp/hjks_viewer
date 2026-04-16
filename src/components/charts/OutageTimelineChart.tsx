@@ -49,16 +49,14 @@ export default function OutageTimelineChart({
   }, []);
 
   // Filter outages for display
-  const twoYearsAgo = now - 2 * 365.25 * 24 * 60 * 60 * 1000;
   const futureLimit = now + 365.25 * 24 * 60 * 60 * 1000; // 1年先まで
   const active = records.filter((r) => {
     const start = parseOutageDate(r.startdt);
-    if (start < twoYearsAgo) return false;
     if (includeFuture) {
       // 将来停止も含める（1年先まで）
       if (start > futureLimit) return false;
-      // 過去の停止は復旧済みなら除外
-      if (start <= now && r.restartschdt && parseOutageDate(r.restartschdt) <= now) return false;
+      // 復旧予定が過去＝既に復旧済みなら除外（長期停止中の号機は含む）
+      if (r.restartschdt && parseOutageDate(r.restartschdt) <= now) return false;
     } else {
       // 従来動作: 将来開始は除外
       if (start > now) return false;

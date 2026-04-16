@@ -45,13 +45,13 @@ function TimelineContent() {
 
   // Filter to active + future planned outages, apply user filters
   const filtered = useMemo(() => {
-    const twoYearsAgo = nowMs - 2 * 365.25 * 24 * 60 * 60 * 1000;
     const oneYearAhead = nowMs + 365.25 * 24 * 60 * 60 * 1000;
     let data = allRecords.filter((r) => {
       const start = parseOutageDate(r.startdt);
-      if (start < twoYearsAgo || start > oneYearAhead) return false;
-      // 過去に開始して既に復旧済みのものは除外
-      if (start <= nowMs && r.restartschdt && parseOutageDate(r.restartschdt) <= nowMs) return false;
+      // 1年以上先に開始する予定は除外
+      if (start > oneYearAhead) return false;
+      // 復旧予定が過去＝既に復旧済みのため除外（長期停止中の号機は含む）
+      if (r.restartschdt && parseOutageDate(r.restartschdt) <= nowMs) return false;
       return true;
     });
     if (areas.size > 0) data = data.filter((r) => areas.has(r.area));
