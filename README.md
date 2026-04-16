@@ -2,7 +2,7 @@
 
 発電所の停止情報を可視化・分析するWebアプリケーションです。発電情報公開システム（HJKS）から停止情報を定期的に取得し、ダッシュボード、タイムライン、詳細一覧で表示します。
 
-**最終更新**: 2026-04-05
+**最終更新**: 2026-04-16
 
 **デモサイト**: https://hama-jp.github.io/hjks_viewer/
 
@@ -58,10 +58,12 @@ hjks_viewer/
 │   │   │   ├── useTheme.ts      # テーマ管理フック
 │   │   │   ├── ErrorBoundary.tsx # エラー境界
 │   │   │   ├── LoadingSpinner.tsx
-│   │   │   └── EmptyState.tsx
+│   │   │   ├── EmptyState.tsx
+│   │   │   ├── ChartCard.tsx    # チャート用カードコンポーネント
+│   │   │   ├── KpiCard.tsx      # KPI表示カード
+│   │   │   └── Navigation.tsx   # ナビゲーション
 │   │   ├── charts/              # チャートコンポーネント
 │   │   │   ├── OutageTimelineChart.tsx # タイムラインチャート
-│   │   │   ├── MonthlyTrendChart.tsx   # 月別トレンド
 │   │   │   ├── CapacityByAreaChart.tsx # エリア別容量
 │   │   │   ├── AssortmentTreemap.tsx   # ツリーマップ
 │   │   │   └── EChartWrapper.tsx       # ECharts共通ラッパー
@@ -79,7 +81,9 @@ hjks_viewer/
 │   │   ├── data-loader.ts       # JSON/マニフェスト読み込み
 │   │   ├── schemas.ts           # Zodスキーマ定義
 │   │   ├── constants.ts         # マスタコード定義
-│   │   └── filter-utils.ts      # フィルタロジック
+│   │   ├── filter-utils.ts      # フィルタロジック
+│   │   ├── chart-utils.ts       # チャート関連ユーティリティ
+│   │   └── date-utils.ts        # 日付操作ユーティリティ
 │   └── types/                   # TypeScript型定義
 │       └── outage.ts            # 停止情報型定義
 ├── scripts/                      # バックエンドスクリプト
@@ -102,15 +106,27 @@ hjks_viewer/
 │   │   ├── units.json
 │   │   └── manifest.json
 │   └── *.svg                    # ロゴなど
+├── tests/                        # テスト
+│   ├── unit/                    # ユニットテスト
+│   │   ├── schemas.test.ts
+│   │   ├── constants.test.ts
+│   │   ├── filter-utils.test.ts
+│   │   ├── chart-utils.test.ts
+│   │   ├── date-utils.test.ts
+│   │   ├── parsers.test.ts
+│   │   ├── normalizers.test.ts
+│   │   └── archiver.test.ts
+│   └── e2e/                     # E2Eテスト
+│       ├── dashboard.spec.ts
+│       ├── navigation.spec.ts
+│       └── outages.spec.ts
 ├── package.json                 # npm依存関係
 ├── tsconfig.json               # TypeScript設定
 ├── next.config.ts              # Next.js設定（SSG出力）
-├── tailwind.config.ts          # Tailwind CSS設定
+├── vitest.config.ts            # Vitest設定
 ├── playwright.config.ts        # Playwright E2Eテスト設定
 ├── eslint.config.mjs           # ESLint設定
 ├── postcss.config.mjs          # PostCSS設定
-├── ARCHITECTURE.md             # 詳細なアーキテクチャ設計
-├── PLAN.md                     # 実装計画・ロードマップ
 └── README.md                   # このファイル
 ```
 
@@ -372,13 +388,6 @@ npm run test:coverage
 - JavaScript が有効か確認
 - ブラウザコンソールでエラーがないか確認
 
-## アーキテクチャドキュメント
-
-詳細な設計情報は以下をご覧ください:
-
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)**: モジュール設計、データフロー、API仕様
-- **[PLAN.md](./PLAN.md)**: 実装計画、ロードマップ、既知の制限事項
-
 ## ライセンス
 
 このプロジェクトは MIT ライセンスの下で公開されています。詳細は [LICENSE](./LICENSE) を参照してください。
@@ -402,4 +411,4 @@ npm run test:coverage
 ---
 
 **作成者**: hama-jp  
-**最終更新**: 2026-04-05
+**最終更新**: 2026-04-16
