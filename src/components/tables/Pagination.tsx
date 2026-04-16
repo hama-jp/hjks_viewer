@@ -37,7 +37,7 @@ export default function Pagination({
       </button>
       {pageNumbers.map((p, i) =>
         p === "..." ? (
-          <span key={`ellipsis-${i}`} className="px-1 text-slate-400 dark:text-slate-500">
+          <span key={`ellipsis-${i}`} className="px-1 text-slate-500 dark:text-slate-400">
             ...
           </span>
         ) : (

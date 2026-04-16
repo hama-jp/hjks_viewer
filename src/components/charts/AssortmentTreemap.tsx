@@ -32,7 +32,7 @@ export default function AssortmentTreemap({ records }: Props) {
 
   if (records.length === 0) {
     return (
-      <p className="text-slate-400 dark:text-slate-500 text-sm py-20 text-center">
+      <p className="text-slate-500 dark:text-slate-400 text-sm py-20 text-center">
         データがありません
       </p>
     );
