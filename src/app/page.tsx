@@ -41,7 +41,15 @@ export default function DashboardPage() {
   const { labelColor, splitLineColor } = useChartTheme();
 
   const handleAreaChartClick = useCallback(
-    (params: { name?: string; seriesName?: string; value?: number }) => {
+    (params: { componentType?: string; name?: string; seriesName?: string; value?: string | number }) => {
+      // X-axis label click → navigate with area filter only (all maintemodes)
+      if (params.componentType === "xAxis") {
+        const areaCode = params.value ? AREAS_REVERSE[String(params.value)] : undefined;
+        if (!areaCode) return;
+        router.push(`/timeline?areas=${areaCode}`);
+        return;
+      }
+      // Bar segment click → navigate with area + maintemode
       const areaCode = params.name ? AREAS_REVERSE[params.name] : undefined;
       const maintemodeCode = params.seriesName ? MAINTEMODES_REVERSE[params.seriesName] : undefined;
       if (!areaCode || !maintemodeCode) return;
@@ -114,7 +122,8 @@ export default function DashboardPage() {
       xAxis: {
         type: "category" as const,
         data: areaLabels,
-        axisLabel: { rotate: 30, fontSize: 11, color: labelColor },
+        axisLabel: { rotate: 30, fontSize: 11, color: labelColor, triggerEvent: true },
+        triggerEvent: true,
       },
       yAxis: {
         type: "value" as const,

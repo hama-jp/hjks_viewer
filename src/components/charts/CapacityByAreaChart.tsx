@@ -13,7 +13,7 @@ const EChartWrapper = dynamic(
 
 type Props = {
   records: NormalizedOutage[];
-  onBarClick?: (params: { name?: string; seriesName?: string; value?: number }) => void;
+  onBarClick?: (params: { componentType?: string; name?: string; seriesName?: string; value?: string | number }) => void;
 };
 
 export default function CapacityByAreaChart({ records, onBarClick }: Props) {
@@ -67,7 +67,8 @@ export default function CapacityByAreaChart({ records, onBarClick }: Props) {
     xAxis: {
       type: "category",
       data: areaLabels,
-      axisLabel: { rotate: 30, fontSize: 11, color: labelColor },
+      axisLabel: { rotate: 30, fontSize: 11, color: labelColor, triggerEvent: true } as never,
+      triggerEvent: true,
       splitLine: { lineStyle: { color: splitLineColor } },
     },
     yAxis: {
