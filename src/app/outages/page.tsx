@@ -37,7 +37,7 @@ function OutagesContent() {
           message="データがありません"
           action={{ label: "再読み込み", onClick: () => window.location.reload() }}
         />
-        <p className="text-sm text-slate-400 dark:text-slate-500 text-center mt-2">{error}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400 text-center mt-2">{error}</p>
       </div>
     );
   }
