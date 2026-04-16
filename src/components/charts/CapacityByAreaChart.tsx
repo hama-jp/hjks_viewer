@@ -67,7 +67,7 @@ export default function CapacityByAreaChart({ records, onBarClick }: Props) {
     xAxis: {
       type: "category",
       data: areaLabels,
-      axisLabel: { rotate: 30, fontSize: 11, color: labelColor, triggerEvent: true },
+      axisLabel: { rotate: 30, fontSize: 11, color: labelColor, triggerEvent: true } as never,
       triggerEvent: true,
       splitLine: { lineStyle: { color: splitLineColor } },
     },
