@@ -11,6 +11,12 @@ const ReactECharts = dynamic(() => import("echarts-for-react"), { ssr: false });
 
 const SM_BREAKPOINT = 640;
 
+/** Tooltip display only needs a subset of fields — avoid storing full NormalizedOutage */
+type TooltipRecord = Pick<
+  NormalizedOutage,
+  "name" | "unitname" | "maintemodeName" | "startdt" | "restartschdt" | "outlook" | "factor" | "downcapacity" | "company"
+>;
+
 type OutageTimelineChartProps = {
   records: NormalizedOutage[];
   maxItems?: number;
@@ -100,6 +106,11 @@ export default function OutageTimelineChart({
     const isOngoing = !r.restartschdt && !isFuture;
     const hasEndDate = r.restartschdt != null;
     const isTransparent = isFuture || isOngoing;
+    const tooltipRecord: TooltipRecord = {
+      name: r.name, unitname: r.unitname, maintemodeName: r.maintemodeName,
+      startdt: r.startdt, restartschdt: r.restartschdt, outlook: r.outlook,
+      factor: r.factor, downcapacity: r.downcapacity, company: r.company,
+    };
     return {
       value: [i, start, end, hasEndDate ? 1 : 0, isTransparent ? 1 : 0],
       itemStyle: {
@@ -109,8 +120,7 @@ export default function OutageTimelineChart({
         borderWidth: (isFuture || isOngoing) ? 2 : 0,
         borderType: isFuture ? "dashed" as const : (isOngoing ? "dashed" as const : "solid" as const),
       },
-      // Attach full record for tooltip
-      record: r,
+      record: tooltipRecord,
     };
   });
 
@@ -128,7 +138,7 @@ export default function OutageTimelineChart({
       trigger: "item",
       confine: true,
       formatter: (params: unknown) => {
-        const p = params as { data?: { record?: NormalizedOutage; value?: number[] } };
+        const p = params as { data?: { record?: TooltipRecord; value?: number[] } };
         const rec = p.data?.record;
         if (!rec) return "";
         const start = parseOutageDate(rec.startdt);

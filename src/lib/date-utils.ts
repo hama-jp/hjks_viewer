@@ -1,11 +1,38 @@
 /**
  * HJKS日付文字列 ("2024/03/15 10:30" or "2024/03/15") をミリ秒タイムスタンプに変換する。
+ * HJKSデータはJST (UTC+9) なので、ブラウザ側ではローカルタイムゾーンで処理する。
+ * スクリプト側はTZ=Asia/Tokyoの環境変数設定を前提とする。
  */
 export function parseOutageDate(dateStr: string): number {
   const [date, time] = dateStr.split(" ");
   const [y, m, d] = date.split("/").map(Number);
   const [h, min] = (time || "00:00").split(":").map(Number);
   return new Date(y, m - 1, d, h, min).getTime();
+}
+
+/**
+ * HJKS日付文字列をJST前提でDateオブジェクトに変換する（スクリプト用）。
+ * ISO 8601形式もサポートする。
+ */
+export function parseOutageDateAsJST(dateStr: string): Date {
+  // "YYYY/MM/DD HH:mm" format
+  const slashMatch = dateStr.match(
+    /^(\d{4})\/(\d{1,2})\/(\d{1,2})(?:\s+(\d{1,2}):(\d{2}))?$/
+  );
+  if (slashMatch) {
+    const [, y, mo, d, h = "0", mi = "0"] = slashMatch;
+    // Build ISO string with JST offset (+09:00) so parsing is timezone-explicit
+    const iso = `${y}-${mo.padStart(2, "0")}-${d.padStart(2, "0")}T${h.padStart(2, "0")}:${mi.padStart(2, "0")}:00+09:00`;
+    return new Date(iso);
+  }
+
+  // ISO format fallback
+  const isoDate = new Date(dateStr);
+  if (!isNaN(isoDate.getTime())) {
+    return isoDate;
+  }
+
+  throw new Error(`Cannot parse outage date: ${dateStr}`);
 }
 
 /**

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseOutageDate, formatDuration, formatShortDate } from "@/lib/date-utils";
+import { parseOutageDate, parseOutageDateAsJST, formatDuration, formatShortDate } from "@/lib/date-utils";
 
 describe("parseOutageDate", () => {
   it("parses date with time", () => {
@@ -28,6 +28,35 @@ describe("parseOutageDate", () => {
 
   it("returns NaN for invalid date string", () => {
     expect(parseOutageDate("invalid")).toBeNaN();
+  });
+});
+
+describe("parseOutageDateAsJST", () => {
+  it("parses YYYY/MM/DD HH:mm as JST", () => {
+    const result = parseOutageDateAsJST("2024/03/15 10:30");
+    // 10:30 JST = 01:30 UTC
+    expect(result.toISOString()).toBe("2024-03-15T01:30:00.000Z");
+  });
+
+  it("parses date without time as JST midnight", () => {
+    const result = parseOutageDateAsJST("2024/03/15");
+    // 00:00 JST = previous day 15:00 UTC
+    expect(result.toISOString()).toBe("2024-03-14T15:00:00.000Z");
+  });
+
+  it("parses single-digit month and day", () => {
+    const result = parseOutageDateAsJST("2024/1/5 9:00");
+    // 09:00 JST = 00:00 UTC
+    expect(result.toISOString()).toBe("2024-01-05T00:00:00.000Z");
+  });
+
+  it("parses ISO format", () => {
+    const result = parseOutageDateAsJST("2024-03-15T10:30:00+09:00");
+    expect(result.toISOString()).toBe("2024-03-15T01:30:00.000Z");
+  });
+
+  it("throws on invalid date string", () => {
+    expect(() => parseOutageDateAsJST("invalid")).toThrow("Cannot parse outage date");
   });
 });
 

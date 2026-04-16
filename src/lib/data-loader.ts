@@ -100,7 +100,11 @@ export async function loadOutageArchive(period: string): Promise<OutageResult> {
 export async function loadUnits(): Promise<LoadResult<NormalizedUnit[]>> {
   return fetchAndParse("/data/units.json", (json) => {
     // Support both { records: [...] } wrapper and raw array formats
-    const records = Array.isArray(json) ? json : (json as { records: unknown }).records;
+    const records = Array.isArray(json)
+      ? json
+      : (json && typeof json === "object" && "records" in json)
+        ? (json as Record<string, unknown>).records
+        : json;
     return z.array(NormalizedUnitSchema).parse(records);
   });
 }

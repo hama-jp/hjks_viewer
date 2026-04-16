@@ -3,15 +3,14 @@
 import { useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import type { SortKey, SortDir } from "@/lib/filter-utils";
+import { DEFAULT_PAGE_SIZE } from "@/lib/constants";
 
-const DEFAULT_PAGE_SIZE = 50;
+const VALID_SORT_KEYS: SortKey[] = ["areaName", "company", "name", "unitname", "maxcapacity", "maintemodeName", "assortmentName", "startdt", "outlook"];
+const VALID_SORT_DIRS: SortDir[] = ["asc", "desc"];
 
 export function useTableState() {
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  const VALID_SORT_KEYS: SortKey[] = ["areaName", "company", "name", "unitname", "maxcapacity", "maintemodeName", "assortmentName", "startdt", "outlook"];
-  const VALID_SORT_DIRS: SortDir[] = ["asc", "desc"];
 
   const rawSort = searchParams.get("sort");
   const sortKey: SortKey = VALID_SORT_KEYS.includes(rawSort as SortKey) ? (rawSort as SortKey) : "startdt";

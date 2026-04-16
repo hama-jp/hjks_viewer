@@ -2,7 +2,7 @@
 
 import { Suspense, useCallback, useMemo, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { AREAS, FORMATS, MAINTEMODES } from "@/lib/constants";
+import { AREAS, FORMATS, MAINTEMODES, DEFAULT_PAGE_SIZE } from "@/lib/constants";
 import { parseSet } from "@/lib/filter-utils";
 import { useOutageData } from "@/hooks/useOutageData";
 import CheckboxGroup from "@/components/filters/CheckboxGroup";
@@ -11,7 +11,7 @@ import Pagination from "@/components/tables/Pagination";
 import LoadingSpinner from "@/components/common/LoadingSpinner";
 import EmptyState from "@/components/common/EmptyState";
 
-const PAGE_SIZE = 50;
+const PAGE_SIZE = DEFAULT_PAGE_SIZE;
 
 import { parseOutageDate } from "@/lib/date-utils";
 
