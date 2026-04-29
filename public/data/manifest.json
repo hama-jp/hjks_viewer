@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "2026-04-28T22:59:12.639Z",
+  "lastUpdated": "2026-04-29T03:31:46.805Z",
   "files": {
     "current": {
       "path": "data/outages-current.json",
@@ -285,7 +285,7 @@
       {
         "path": "data/outages-archive/2026-Q2.json",
         "period": "2026-Q2",
-        "recordCount": 742
+        "recordCount": 743
       }
     ],
     "units": {
