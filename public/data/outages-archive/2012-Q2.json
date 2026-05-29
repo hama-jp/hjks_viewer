@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-05-29T03:58:33.532Z",
+    "generatedAt": "2026-05-29T08:05:12.517Z",
     "recordCount": 2,
     "source": "csv"
   },
@@ -26,7 +26,7 @@
       "outlook": "あり",
       "factor": "",
       "upddt": "2018/05/29 17:38",
-      "fetchedAt": "2026-05-29T03:58:32.626Z"
+      "fetchedAt": "2026-05-29T08:05:11.549Z"
     },
     {
       "id": "611368a2fafba445",
@@ -49,7 +49,7 @@
       "outlook": "あり",
       "factor": "",
       "upddt": "2018/05/29 17:38",
-      "fetchedAt": "2026-05-29T03:58:32.626Z"
+      "fetchedAt": "2026-05-29T08:05:11.549Z"
     }
   ]
 }
