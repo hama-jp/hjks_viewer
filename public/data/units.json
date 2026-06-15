@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-06-15T04:47:51.646Z",
+    "generatedAt": "2026-06-15T12:23:07.709Z",
     "recordCount": 534
   },
   "records": [
@@ -8093,8 +8093,8 @@
       "nextmaxcapacity": null,
       "nextmaxcapacitystartdt": null,
       "startdt": "1900/01/01",
-      "enddt": "9999/12/31",
-      "upddt": "2016/04/12 15:42"
+      "enddt": "2026/06/30",
+      "upddt": "2026/06/15 18:00"
     },
     {
       "id": "c7c959a0cf44a303",
