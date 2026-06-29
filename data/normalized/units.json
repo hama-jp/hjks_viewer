@@ -1,7 +1,7 @@
 {
   "meta": {
-    "generatedAt": "2026-06-29T11:07:09.311Z",
-    "recordCount": 534
+    "generatedAt": "2026-06-29T15:53:31.336Z",
+    "recordCount": 532
   },
   "records": [
     {
@@ -6941,23 +6941,6 @@
       "upddt": "2018/03/06 16:17"
     },
     {
-      "id": "8ea3c38a7b80ffe1",
-      "area": "6",
-      "areaName": "関西",
-      "company": "関西電力株式会社",
-      "plantcd": "67C41",
-      "name": "御坊発電所",
-      "format": "4",
-      "formatName": "火力(石油)",
-      "unitname": "１号機",
-      "maxcapacity": 600000,
-      "nextmaxcapacity": null,
-      "nextmaxcapacitystartdt": null,
-      "startdt": "1900/01/01",
-      "enddt": "2026/06/30",
-      "upddt": "2025/09/26 15:56"
-    },
-    {
       "id": "a278fcc697eb4ae1",
       "area": "6",
       "areaName": "関西",
@@ -8078,23 +8061,6 @@
       "startdt": "1900/01/01",
       "enddt": "9999/12/31",
       "upddt": "2017/04/11 14:06"
-    },
-    {
-      "id": "be8eb8494ae334e6",
-      "area": "8",
-      "areaName": "四国",
-      "company": "四国電力(株)",
-      "plantcd": "80102",
-      "name": "四国電力　阿南発電所",
-      "format": "4",
-      "formatName": "火力(石油)",
-      "unitname": "３号機",
-      "maxcapacity": 450000,
-      "nextmaxcapacity": null,
-      "nextmaxcapacitystartdt": null,
-      "startdt": "1900/01/01",
-      "enddt": "2026/06/30",
-      "upddt": "2026/06/15 18:00"
     },
     {
       "id": "c7c959a0cf44a303",
