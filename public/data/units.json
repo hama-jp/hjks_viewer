@@ -1,7 +1,7 @@
 {
   "meta": {
-    "generatedAt": "2026-06-29T23:02:30.347Z",
-    "recordCount": 532
+    "generatedAt": "2026-06-30T03:57:18.763Z",
+    "recordCount": 531
   },
   "records": [
     {
@@ -8333,23 +8333,6 @@
       "startdt": "1900/01/01",
       "enddt": "9999/12/31",
       "upddt": "2016/04/12 15:15"
-    },
-    {
-      "id": "0a1c181795b96c39",
-      "area": "9",
-      "areaName": "九州",
-      "company": "九州電力株式会社",
-      "plantcd": "91062",
-      "name": "苅田発電所",
-      "format": "2",
-      "formatName": "火力(石炭)",
-      "unitname": "新１号機",
-      "maxcapacity": 360000,
-      "nextmaxcapacity": null,
-      "nextmaxcapacitystartdt": null,
-      "startdt": "1900/01/01",
-      "enddt": "9999/12/31",
-      "upddt": "2016/04/12 15:08"
     },
     {
       "id": "0f588dce80b0fd11",
