@@ -1,7 +1,7 @@
 {
   "meta": {
-    "generatedAt": "2026-06-30T23:17:35.745Z",
-    "recordCount": 7,
+    "generatedAt": "2026-07-01T04:12:15.347Z",
+    "recordCount": 8,
     "source": "csv"
   },
   "records": [
@@ -49,7 +49,7 @@
       "outlook": "あり",
       "factor": "系統作業",
       "upddt": "2026/06/26 09:43",
-      "fetchedAt": "2026-06-30T23:17:34.822Z"
+      "fetchedAt": "2026-07-01T04:12:14.369Z"
     },
     {
       "id": "4610fe19e2bfc7c5",
@@ -72,7 +72,7 @@
       "outlook": "あり",
       "factor": "系統作業",
       "upddt": "2026/06/26 09:43",
-      "fetchedAt": "2026-06-30T23:17:34.822Z"
+      "fetchedAt": "2026-07-01T04:12:14.369Z"
     },
     {
       "id": "084557af294ccb31",
@@ -95,7 +95,7 @@
       "outlook": "あり",
       "factor": "系統作業",
       "upddt": "2026/06/26 09:43",
-      "fetchedAt": "2026-06-30T23:17:34.822Z"
+      "fetchedAt": "2026-07-01T04:12:14.369Z"
     },
     {
       "id": "9d3cb2830391d253",
@@ -118,7 +118,7 @@
       "outlook": "あり",
       "factor": "系統作業",
       "upddt": "2026/06/26 09:43",
-      "fetchedAt": "2026-06-30T23:17:34.822Z"
+      "fetchedAt": "2026-07-01T04:12:14.369Z"
     },
     {
       "id": "1370cb439a00e3c4",
@@ -141,7 +141,7 @@
       "outlook": "あり",
       "factor": "共通自動制御盤基盤交換",
       "upddt": "2026/06/29 14:16",
-      "fetchedAt": "2026-06-30T23:17:34.822Z"
+      "fetchedAt": "2026-07-01T04:12:14.369Z"
     },
     {
       "id": "99c2cff82d0d94cb",
@@ -164,7 +164,30 @@
       "outlook": "あり",
       "factor": "共通自動制御盤基盤交換",
       "upddt": "2026/06/29 14:14",
-      "fetchedAt": "2026-06-30T23:17:34.822Z"
+      "fetchedAt": "2026-07-01T04:12:14.369Z"
+    },
+    {
+      "id": "2c74a1fdbe9fcbb3",
+      "area": "6",
+      "areaName": "関西",
+      "company": "関西電力株式会社",
+      "plantcd": "68J45",
+      "name": "姫路第一発電所",
+      "format": "3",
+      "formatName": "火力(ガス)",
+      "unitname": "５号機",
+      "maxcapacity": 729000,
+      "downcapacity": 293000,
+      "maintemode": "3",
+      "maintemodeName": "出力低下",
+      "assortment": "7",
+      "assortmentName": "低下・設備故障",
+      "startdt": "2026/07/01 10:10",
+      "restartschdt": "2026/07/01",
+      "outlook": "あり",
+      "factor": "発電機作業のため",
+      "upddt": "2026/07/01 12:04",
+      "fetchedAt": "2026-07-01T04:12:14.369Z"
     }
   ]
 }
