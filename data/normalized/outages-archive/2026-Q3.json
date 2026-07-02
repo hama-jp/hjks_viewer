@@ -1,7 +1,7 @@
 {
   "meta": {
-    "generatedAt": "2026-07-02T03:53:09.467Z",
-    "recordCount": 31,
+    "generatedAt": "2026-07-02T07:36:27.671Z",
+    "recordCount": 36,
     "source": "csv"
   },
   "records": [
@@ -49,7 +49,7 @@
       "outlook": "あり",
       "factor": "系統作業",
       "upddt": "2026/06/26 09:43",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "4610fe19e2bfc7c5",
@@ -72,7 +72,7 @@
       "outlook": "あり",
       "factor": "系統作業",
       "upddt": "2026/06/26 09:43",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "084557af294ccb31",
@@ -95,7 +95,7 @@
       "outlook": "あり",
       "factor": "系統作業",
       "upddt": "2026/06/26 09:43",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "9d3cb2830391d253",
@@ -118,7 +118,7 @@
       "outlook": "あり",
       "factor": "系統作業",
       "upddt": "2026/06/26 09:43",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "1370cb439a00e3c4",
@@ -141,7 +141,7 @@
       "outlook": "あり",
       "factor": "共通自動制御盤基盤交換",
       "upddt": "2026/06/29 14:16",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "99c2cff82d0d94cb",
@@ -164,7 +164,7 @@
       "outlook": "あり",
       "factor": "共通自動制御盤基盤交換",
       "upddt": "2026/06/29 14:14",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "2c74a1fdbe9fcbb3",
@@ -187,7 +187,7 @@
       "outlook": "あり",
       "factor": "発電機作業のため",
       "upddt": "2026/07/01 12:04",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "7ca5efa29b44402e",
@@ -210,7 +210,7 @@
       "outlook": "あり",
       "factor": "試運転",
       "upddt": "2026/04/22 17:43",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "db7fd54c7071954a",
@@ -233,7 +233,7 @@
       "outlook": "あり",
       "factor": "発電機作業",
       "upddt": "2026/04/22 17:25",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "bba8a294b2b5c6ed",
@@ -256,7 +256,7 @@
       "outlook": "あり",
       "factor": "発電機作業",
       "upddt": "2026/04/22 17:23",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "97717ade0b740ad9",
@@ -279,7 +279,7 @@
       "outlook": "あり",
       "factor": "発電機作業",
       "upddt": "2026/04/22 17:22",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "88c1dbb1a678b7c0",
@@ -302,7 +302,7 @@
       "outlook": "あり",
       "factor": "発電機作業",
       "upddt": "2026/04/22 17:20",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "bd0ea22b574aa89b",
@@ -325,7 +325,7 @@
       "outlook": "あり",
       "factor": "発電機作業",
       "upddt": "2026/04/22 17:18",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "6c551ff12b0c24ce",
@@ -440,7 +440,7 @@
       "outlook": "あり",
       "factor": "他号機試験に伴う停止",
       "upddt": "2026/06/19 15:43",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "1a5354b83c1ab7e2",
@@ -463,7 +463,7 @@
       "outlook": "あり",
       "factor": "試運転 / 最大低下量：400,000（kW） / 最小低下量：45,900（kW）",
       "upddt": "2026/06/24 14:43",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "fd3bfc8b2ac16f15",
@@ -532,7 +532,7 @@
       "outlook": "あり",
       "factor": "系統作業",
       "upddt": "2026/06/26 09:43",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "1fd82da51acb0439",
@@ -555,7 +555,7 @@
       "outlook": "あり",
       "factor": "系統作業",
       "upddt": "2026/06/26 09:43",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "deafe565db4eaef6",
@@ -578,7 +578,7 @@
       "outlook": "あり",
       "factor": "系統作業",
       "upddt": "2026/06/26 09:43",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "2c67b483bfabb441",
@@ -601,7 +601,7 @@
       "outlook": "あり",
       "factor": "系統作業",
       "upddt": "2026/06/26 09:43",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "c57e3b4843e51c74",
@@ -624,7 +624,7 @@
       "outlook": "あり",
       "factor": "発電機作業",
       "upddt": "2026/06/26 18:14",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "4eb8a4a037579a29",
@@ -647,7 +647,7 @@
       "outlook": "あり",
       "factor": "確認試験のため",
       "upddt": "2026/06/29 09:43",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "e230146b4e7bb1ea",
@@ -670,7 +670,7 @@
       "outlook": "あり",
       "factor": "確認試験のため",
       "upddt": "2026/06/29 09:43",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "975ad5febbd7042b",
@@ -693,7 +693,7 @@
       "outlook": "あり",
       "factor": "ボイラ関連設備",
       "upddt": "2026/07/01 21:37",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     },
     {
       "id": "47a096227271f286",
@@ -716,7 +716,122 @@
       "outlook": "あり",
       "factor": "電気設備設備調査",
       "upddt": "2026/07/02 08:14",
-      "fetchedAt": "2026-07-02T03:53:08.474Z"
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
+    },
+    {
+      "id": "9ccc84d89b897d42",
+      "area": "4",
+      "areaName": "中部",
+      "company": "電源開発",
+      "plantcd": "48001",
+      "name": "電源開発新豊根発電所（中部）",
+      "format": "5",
+      "formatName": "水力",
+      "unitname": "5号機",
+      "maxcapacity": 225000,
+      "downcapacity": 225000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "6",
+      "assortmentName": "停止・その他",
+      "startdt": "2026/07/02 10:45",
+      "restartschdt": "2026/07/02",
+      "outlook": "あり",
+      "factor": "河川制約による停止",
+      "upddt": "2026/07/02 13:50",
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
+    },
+    {
+      "id": "8ab65484bbaf0911",
+      "area": "4",
+      "areaName": "中部",
+      "company": "電源開発",
+      "plantcd": "48001",
+      "name": "電源開発新豊根発電所（中部）",
+      "format": "5",
+      "formatName": "水力",
+      "unitname": "4号機",
+      "maxcapacity": 225000,
+      "downcapacity": 225000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "6",
+      "assortmentName": "停止・その他",
+      "startdt": "2026/07/02 10:45",
+      "restartschdt": "2026/07/02",
+      "outlook": "あり",
+      "factor": "河川制約による停止",
+      "upddt": "2026/07/02 13:50",
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
+    },
+    {
+      "id": "bfbc9e2ff5342328",
+      "area": "4",
+      "areaName": "中部",
+      "company": "電源開発",
+      "plantcd": "48001",
+      "name": "電源開発新豊根発電所（中部）",
+      "format": "5",
+      "formatName": "水力",
+      "unitname": "3号機",
+      "maxcapacity": 225000,
+      "downcapacity": 225000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "6",
+      "assortmentName": "停止・その他",
+      "startdt": "2026/07/02 10:45",
+      "restartschdt": "2026/07/02",
+      "outlook": "あり",
+      "factor": "河川制約による停止",
+      "upddt": "2026/07/02 13:50",
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
+    },
+    {
+      "id": "aeaa0af76742d1ff",
+      "area": "4",
+      "areaName": "中部",
+      "company": "電源開発",
+      "plantcd": "48001",
+      "name": "電源開発新豊根発電所（中部）",
+      "format": "5",
+      "formatName": "水力",
+      "unitname": "2号機",
+      "maxcapacity": 225000,
+      "downcapacity": 225000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "6",
+      "assortmentName": "停止・その他",
+      "startdt": "2026/07/02 10:45",
+      "restartschdt": "2026/07/02",
+      "outlook": "あり",
+      "factor": "河川制約による停止",
+      "upddt": "2026/07/02 13:49",
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
+    },
+    {
+      "id": "c7ca12bf193814d5",
+      "area": "4",
+      "areaName": "中部",
+      "company": "電源開発",
+      "plantcd": "48001",
+      "name": "電源開発新豊根発電所（中部）",
+      "format": "5",
+      "formatName": "水力",
+      "unitname": "1号機",
+      "maxcapacity": 225000,
+      "downcapacity": 225000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "6",
+      "assortmentName": "停止・その他",
+      "startdt": "2026/07/02 10:45",
+      "restartschdt": "2026/07/02",
+      "outlook": "あり",
+      "factor": "河川制約による停止",
+      "upddt": "2026/07/02 13:49",
+      "fetchedAt": "2026-07-02T07:36:26.740Z"
     }
   ]
 }
