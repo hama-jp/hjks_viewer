@@ -1,10 +1,10 @@
 {
-  "lastUpdated": "2026-07-02T07:36:35.600Z",
+  "lastUpdated": "2026-07-02T10:45:04.880Z",
   "files": {
     "current": {
       "path": "data/outages-current.json",
-      "recordCount": 4381,
-      "sizeBytes": 3144408
+      "recordCount": 4385,
+      "sizeBytes": 3147439
     },
     "archives": [
       {
@@ -290,7 +290,7 @@
       {
         "path": "data/outages-archive/2026-Q3.json",
         "period": "2026-Q3",
-        "recordCount": 36
+        "recordCount": 37
       }
     ],
     "units": {
