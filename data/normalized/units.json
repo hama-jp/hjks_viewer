@@ -1,7 +1,7 @@
 {
   "meta": {
-    "generatedAt": "2026-07-15T23:01:56.264Z",
-    "recordCount": 531
+    "generatedAt": "2026-07-16T02:50:00.726Z",
+    "recordCount": 530
   },
   "records": [
     {
@@ -5732,23 +5732,6 @@
       "startdt": "1900/01/01",
       "enddt": "9999/12/31",
       "upddt": "2016/04/26 17:22"
-    },
-    {
-      "id": "dbfd32059acef648",
-      "area": "3",
-      "areaName": "東京",
-      "company": "鹿島共同火力株式会社",
-      "plantcd": "60413",
-      "name": "鹿島共同発電所",
-      "format": "4",
-      "formatName": "火力(石油)",
-      "unitname": "４号機",
-      "maxcapacity": 350000,
-      "nextmaxcapacity": null,
-      "nextmaxcapacitystartdt": null,
-      "startdt": "1900/01/01",
-      "enddt": "9999/12/31",
-      "upddt": "2016/04/26 17:20"
     },
     {
       "id": "18292a4de12cc9a9",
