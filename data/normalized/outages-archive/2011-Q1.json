@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-08-03T23:05:23.996Z",
+    "generatedAt": "2026-08-04T02:47:53.637Z",
     "recordCount": 1,
     "source": "csv"
   },
@@ -26,7 +26,7 @@
       "outlook": "あり",
       "factor": "特重工事による停止",
       "upddt": "2023/06/21 16:32",
-      "fetchedAt": "2026-08-03T23:05:22.999Z"
+      "fetchedAt": "2026-08-04T02:47:52.680Z"
     }
   ]
 }
