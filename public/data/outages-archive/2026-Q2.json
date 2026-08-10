@@ -1,8 +1,8 @@
 {
   "meta": {
-    "generatedAt": "2026-08-10T13:15:51.856Z",
-    "recordCount": 2834,
-    "source": "csv"
+    "generatedAt": "2026-08-10T15:04:06.902Z",
+    "recordCount": 2835,
+    "source": "toppage"
   },
   "records": [
     {
@@ -65186,6 +65186,29 @@
       "factor": "タービン付属装置点検",
       "upddt": "2026/06/24 17:33",
       "fetchedAt": "2026-08-10T13:15:50.890Z"
+    },
+    {
+      "id": "9a6e8c2e79e49c27",
+      "area": "7",
+      "areaName": "中国",
+      "company": "中国電力株式会社",
+      "plantcd": "72410",
+      "name": "柳井発電所第２号系列",
+      "format": "3",
+      "formatName": "火力(ガス)",
+      "unitname": "２－３号",
+      "maxcapacity": 198000,
+      "downcapacity": 198000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "1",
+      "assortmentName": "停止・定期検査等",
+      "startdt": "2026/05/07 00:00",
+      "restartschdt": "2026/08/11",
+      "outlook": "あり",
+      "factor": "点検",
+      "upddt": "2026/02/10 20:31",
+      "fetchedAt": "2026-04-16T06:04:40.362Z"
     }
   ]
 }
