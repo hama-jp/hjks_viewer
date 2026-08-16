@@ -1,10 +1,10 @@
 {
-  "lastUpdated": "2026-08-16T08:34:48.252Z",
+  "lastUpdated": "2026-08-16T10:27:34.468Z",
   "files": {
     "current": {
       "path": "data/outages-current.json",
-      "recordCount": 4635,
-      "sizeBytes": 3329308
+      "recordCount": 4636,
+      "sizeBytes": 3330122
     },
     "archives": [
       {
