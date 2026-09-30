@@ -1,7 +1,7 @@
 {
   "meta": {
-    "generatedAt": "2026-09-30T12:10:56.679Z",
-    "recordCount": 530
+    "generatedAt": "2026-09-30T18:55:57.297Z",
+    "recordCount": 529
   },
   "records": [
     {
@@ -3811,23 +3811,6 @@
       "startdt": "1900/01/01",
       "enddt": "9999/12/31",
       "upddt": "2020/06/26 13:45"
-    },
-    {
-      "id": "d0a6cfeb4bcd1863",
-      "area": "3",
-      "areaName": "東京",
-      "company": "ENEOS株式会社",
-      "plantcd": "4009331905",
-      "name": "根岸 ガス化複合発電所",
-      "format": "4",
-      "formatName": "火力(石油)",
-      "unitname": "単独",
-      "maxcapacity": 431450,
-      "nextmaxcapacity": null,
-      "nextmaxcapacitystartdt": null,
-      "startdt": "1900/01/01",
-      "enddt": "2026/10/01",
-      "upddt": "2025/09/04 16:51"
     },
     {
       "id": "3f08ba1db48f4b61",
