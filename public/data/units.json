@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-09-30T23:34:38.749Z",
+    "generatedAt": "2026-10-01T04:55:13.664Z",
     "recordCount": 529
   },
   "records": [
@@ -5737,9 +5737,9 @@
       "id": "88a98943e9113f2f",
       "area": "3",
       "areaName": "東京",
-      "company": "君津共同火力株式会社",
+      "company": "東日本共同発電株式会社",
       "plantcd": "6065330508",
-      "name": "君津共同火力株式会社君津共同発電所",
+      "name": "東日本共同発電株式会社君津共同発電所",
       "format": "3",
       "formatName": "火力(ガス)",
       "unitname": "3号機",
@@ -5748,15 +5748,15 @@
       "nextmaxcapacitystartdt": null,
       "startdt": "1900/01/01",
       "enddt": "9999/12/31",
-      "upddt": "2016/04/27 10:02"
+      "upddt": "2026/10/01 09:29"
     },
     {
       "id": "a1e2d0922f234fb6",
       "area": "3",
       "areaName": "東京",
-      "company": "君津共同火力株式会社",
+      "company": "東日本共同発電株式会社",
       "plantcd": "6065330508",
-      "name": "君津共同火力株式会社君津共同発電所",
+      "name": "東日本共同発電株式会社君津共同発電所",
       "format": "3",
       "formatName": "火力(ガス)",
       "unitname": "4号機",
@@ -5765,15 +5765,15 @@
       "nextmaxcapacitystartdt": null,
       "startdt": "1900/01/01",
       "enddt": "9999/12/31",
-      "upddt": "2016/04/27 10:04"
+      "upddt": "2026/10/01 09:30"
     },
     {
       "id": "189a243a1a954e1d",
       "area": "3",
       "areaName": "東京",
-      "company": "君津共同火力株式会社",
+      "company": "東日本共同発電株式会社",
       "plantcd": "6065330508",
-      "name": "君津共同火力株式会社君津共同発電所",
+      "name": "東日本共同発電株式会社君津共同発電所",
       "format": "3",
       "formatName": "火力(ガス)",
       "unitname": "5号機",
@@ -5782,15 +5782,15 @@
       "nextmaxcapacitystartdt": null,
       "startdt": "1900/01/01",
       "enddt": "9999/12/31",
-      "upddt": "2016/04/27 10:06"
+      "upddt": "2026/10/01 09:30"
     },
     {
       "id": "81b64bdc7dd298df",
       "area": "3",
       "areaName": "東京",
-      "company": "君津共同火力株式会社",
+      "company": "東日本共同発電株式会社",
       "plantcd": "6065330508",
-      "name": "君津共同火力株式会社君津共同発電所",
+      "name": "東日本共同発電株式会社君津共同発電所",
       "format": "3",
       "formatName": "火力(ガス)",
       "unitname": "6号機",
@@ -5799,7 +5799,7 @@
       "nextmaxcapacitystartdt": null,
       "startdt": "1900/01/01",
       "enddt": "9999/12/31",
-      "upddt": "2016/04/27 10:07"
+      "upddt": "2026/10/01 09:31"
     },
     {
       "id": "9c72c2f8b54ec2e2",
