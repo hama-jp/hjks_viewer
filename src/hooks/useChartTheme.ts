@@ -4,14 +4,11 @@ import { useTheme } from "@/components/common/useTheme";
 
 type ChartTheme = {
   theme: "light" | "dark";
+  /** Treemap のタイル上に載せるラベル色（既定色に任せる場合は undefined） */
   labelColor: string | undefined;
-  mutedColor: string | undefined;
+  /** 軸ラベル・凡例・軸名など、カード背景上に置くテキスト色 */
+  axisLabelColor: string;
   splitLineColor: string;
-  tooltipBackground: string;
-  tooltipBorder: string;
-  tooltipText: string;
-  axisLineColor: string;
-  surface: string;
 };
 
 /**
@@ -19,16 +16,11 @@ type ChartTheme = {
  */
 export function useChartTheme(): ChartTheme {
   const theme = useTheme();
-  const dark = theme === "dark";
+  const isDark = theme === "dark";
   return {
     theme,
-    labelColor: dark ? "#e2e8f0" : "#334155",
-    mutedColor: dark ? "#94a3b8" : "#64748b",
-    splitLineColor: dark ? "#22304a" : "#eef2f7",
-    tooltipBackground: dark ? "rgba(17, 28, 46, 0.96)" : "rgba(255, 255, 255, 0.98)",
-    tooltipBorder: dark ? "#334155" : "#e2e8f0",
-    tooltipText: dark ? "#f1f5f9" : "#0f172a",
-    axisLineColor: dark ? "#334155" : "#cbd5e1",
-    surface: dark ? "#111c2e" : "#ffffff",
+    labelColor: isDark ? "#f1f5f9" : undefined,
+    axisLabelColor: isDark ? "#cbd5e1" : "#334155",
+    splitLineColor: isDark ? "#334155" : "#e2e8f0",
   };
 }

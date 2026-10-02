@@ -14,19 +14,21 @@ export default function ChartCard({
   action,
 }: ChartCardProps) {
   return (
-    <section className="card p-4 sm:p-6">
-      <div className="mb-5 flex flex-wrap items-start justify-between gap-3">
+    <section className="surface-card overflow-hidden">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-slate-100 px-5 py-4 dark:border-slate-800">
         <div className="min-w-0">
-          <h2 className="text-[15px] font-semibold tracking-tight text-[var(--text)]">
+          <h2 className="text-sm font-semibold tracking-tight text-slate-800 dark:text-slate-100">
             {title}
           </h2>
           {description && (
-            <p className="mt-0.5 text-xs text-muted">{description}</p>
+            <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+              {description}
+            </p>
           )}
         </div>
-        {action && <div className="shrink-0">{action}</div>}
+        {action}
       </div>
-      {children}
+      <div className="p-4 sm:p-5">{children}</div>
     </section>
   );
 }

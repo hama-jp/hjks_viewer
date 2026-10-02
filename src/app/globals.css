@@ -2,141 +2,46 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* ---------------------------------------------------------------------------
-   Design tokens
-   Semantic CSS variables that resolve per color scheme. Components reference
-   these instead of repeating long `bg-white dark:bg-slate-800 ...` chains.
---------------------------------------------------------------------------- */
 @theme {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
-    "Hiragino Kaku Gothic ProN", "Noto Sans JP", Meiryo, sans-serif;
-
-  --color-brand-50: #eff6ff;
-  --color-brand-100: #dbeafe;
-  --color-brand-400: #60a5fa;
-  --color-brand-500: #3b82f6;
-  --color-brand-600: #2563eb;
-  --color-brand-700: #1d4ed8;
-
-  --radius-card: 1rem;
-  --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.04),
-    0 1px 3px 0 rgb(15 23 42 / 0.06);
-  --shadow-card-hover: 0 4px 6px -1px rgb(15 23 42 / 0.07),
-    0 10px 20px -5px rgb(15 23 42 / 0.08);
-}
-
-:root {
-  --page: #f8fafc;
-  --page-accent: #eef2ff;
-  --surface: #ffffff;
-  --surface-muted: #f8fafc;
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
-  --text: #0f172a;
-  --text-muted: #64748b;
-  --text-subtle: #94a3b8;
-  --header: rgb(255 255 255 / 0.8);
-}
-
-.dark {
-  --page: #0b1120;
-  --page-accent: #111c33;
-  --surface: #111c2e;
-  --surface-muted: #16233a;
-  --border: #22304a;
-  --border-strong: #334155;
-  --text: #f1f5f9;
-  --text-muted: #94a3b8;
-  --text-subtle: #64748b;
-  --header: rgb(11 17 32 / 0.8);
+    "Segoe UI", "Hiragino Kaku Gothic ProN", "Noto Sans JP", Meiryo, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo,
+    monospace;
 }
 
 @layer base {
   html {
-    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
-    background-color: var(--page);
-    background-image: radial-gradient(
-        55rem 32rem at 100% -8%,
-        var(--page-accent),
-        transparent 60%
-      );
-    background-repeat: no-repeat;
-    color: var(--text);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
-    font-feature-settings: "palt" 1;
   }
 
   ::selection {
-    background-color: color-mix(in oklab, var(--color-brand-500) 28%, transparent);
+    background-color: color-mix(in oklab, var(--color-blue-500) 25%, transparent);
   }
 
-  :focus-visible {
-    outline: 2px solid var(--color-brand-500);
-    outline-offset: 2px;
+  /* Thin, unobtrusive scrollbars that respect the active theme. */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-slate-300) transparent;
+  }
+
+  .dark * {
+    scrollbar-color: var(--color-slate-700) transparent;
   }
 }
 
-/* ---------------------------------------------------------------------------
-   Reusable component primitives
---------------------------------------------------------------------------- */
 @layer components {
-  .card {
-    background-color: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-card);
-    box-shadow: var(--shadow-card);
+  /* Shared card surface used across the dashboard. */
+  .surface-card {
+    @apply rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900;
   }
 
-  .card-hover {
-    transition: box-shadow 0.2s ease, border-color 0.2s ease,
-      transform 0.2s ease;
-  }
-
-  .card-hover:hover {
-    box-shadow: var(--shadow-card-hover);
-    border-color: var(--border-strong);
-  }
-
-  .text-muted {
-    color: var(--text-muted);
-  }
-
-  .text-subtle {
-    color: var(--text-subtle);
-  }
-
-  .surface-muted {
-    background-color: var(--surface-muted);
-  }
-
-  .divide-border {
-    border-color: var(--border);
-  }
-
-  .field {
-    width: 100%;
-    border-radius: 0.625rem;
-    border: 1px solid var(--border-strong);
-    background-color: var(--surface);
-    color: var(--text);
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    line-height: 1.25rem;
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
-  }
-
-  .field::placeholder {
-    color: var(--text-subtle);
-  }
-
-  .field:focus {
-    outline: none;
-    border-color: var(--color-brand-500);
-    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-brand-500) 22%, transparent);
+  /* Small uppercase label used for sections and KPI captions. */
+  .eyebrow {
+    @apply text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400;
   }
 }

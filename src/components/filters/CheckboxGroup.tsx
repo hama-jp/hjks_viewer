@@ -25,24 +25,27 @@ export default function CheckboxGroup({
 
   return (
     <fieldset>
-      <legend className="mb-2 text-sm font-medium text-[var(--text)]">
-        {label}
-      </legend>
-      <div className="flex flex-wrap gap-x-4 gap-y-1">
+      <legend className="eyebrow mb-2.5">{label}</legend>
+      <div className="flex flex-wrap gap-2">
         {Object.entries(options).map(([code, name]) => {
           const inputId = `${label}-${code}`;
+          const checked = selected.has(code);
           return (
             <label
               key={code}
               htmlFor={inputId}
-              className="flex cursor-pointer items-center gap-1.5 text-sm text-muted transition-colors hover:text-[var(--text)]"
+              className={`inline-flex cursor-pointer items-center rounded-full border px-3 py-1.5 text-xs font-medium transition-all select-none ${
+                checked
+                  ? "border-blue-500 bg-blue-50 text-blue-700 dark:border-blue-500/60 dark:bg-blue-500/10 dark:text-blue-300"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:bg-slate-800"
+              }`}
             >
               <input
                 id={inputId}
                 type="checkbox"
-                checked={selected.has(code)}
+                checked={checked}
                 onChange={() => toggle(code)}
-                className="h-4 w-4 shrink-0 rounded border-[var(--border-strong)] accent-brand-600 focus:ring-brand-500"
+                className="sr-only"
               />
               {name}
             </label>

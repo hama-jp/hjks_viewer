@@ -32,11 +32,15 @@ export default function SortableHeader({
           onSort(sortKey);
         }
       }}
-      className={`select-none whitespace-nowrap px-3 py-3 text-left text-xs font-medium uppercase tracking-wide text-muted transition-colors hover:text-[var(--text)] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 ${className}`}
+      className={`cursor-pointer px-3 py-3 text-left text-xs font-semibold tracking-wide whitespace-nowrap select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+        isActive
+          ? "text-blue-700 dark:text-blue-400"
+          : "text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-100"
+      } ${className}`}
     >
       {label}
       {isActive && (
-        <span className="ml-1" aria-hidden="true">
+        <span className="ml-1 text-[10px]" aria-hidden="true">
           {sortDir === "asc" ? "\u25b2" : "\u25bc"}
         </span>
       )}

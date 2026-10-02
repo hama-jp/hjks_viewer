@@ -1,40 +1,3 @@
-import { format } from "date-fns";
-import { ja } from "date-fns/locale";
-
-/**
- * データ生成日時（ISO 8601文字列）を「yyyy年M月d日 H時」形式に整形する。
- * ダッシュボード・タイムライン・一覧で表記をそろえるために共通利用する。
- * パースできない場合は元の文字列をそのまま返す。
- */
-export function formatGeneratedAt(iso: string): string {
-  try {
-    return format(new Date(iso), "yyyy年M月d日 H時", { locale: ja });
-  } catch {
-    return iso;
-  }
-}
-
-/**
- * 「9999/12/31」などHJKSが未定・長期停止を表すために使う番兵日付かどうかを判定する。
- * 年が 2999 以上のもの（9998, 9999, 2999, 2200, 2099 等）を番兵として扱う。
- */
-export function isSentinelDate(dateStr: string | null | undefined): boolean {
-  if (!dateStr) return false;
-  const year = parseInt(dateStr.slice(0, 4), 10);
-  return Number.isFinite(year) && year >= 2099;
-}
-
-/**
- * 停止日時・復旧予定日時の表示用ラベルを返す。
- * 番兵日付（未定・長期停止）は「未定」に置き換え、それ以外は元の表記を返す。
- */
-export function formatOutageDateLabel(
-  dateStr: string | null | undefined
-): string | null {
-  if (!dateStr) return null;
-  return isSentinelDate(dateStr) ? "未定" : dateStr;
-}
-
 /**
  * HJKS日付文字列 ("2024/03/15 10:30" or "2024/03/15") をミリ秒タイムスタンプに変換する。
  * HJKSデータはJST (UTC+9) なので、ブラウザ側ではローカルタイムゾーンで処理する。
@@ -92,4 +55,39 @@ export function formatDuration(startMs: number, endMs: number): string {
 export function formatShortDate(timestampMs: number): string {
   const d = new Date(timestampMs);
   return `${d.getMonth() + 1}/${d.getDate()}`;
+}
+
+/**
+ * HJKSは停止・復旧予定が未定の場合、年を 9999 とするセンチネル値
+ * （例: "9999/12/31 00:00"）を格納する。それを判定する。
+ */
+export function isUndeterminedDate(
+  dateStr: string | null | undefined
+): boolean {
+  if (!dateStr) return false;
+  const match = dateStr.match(/^(\d{4})\//);
+  return match ? Number(match[1]) >= 9999 : false;
+}
+
+/**
+ * ISO 8601 の生成日時を「yyyy年M月d日 H:mm」形式（ローカルタイム）に整形する。
+ * 例: 2026年10月2日 13:45
+ */
+export function formatGeneratedAt(iso: string): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+  return `${d.getFullYear()}年${d.getMonth() + 1}月${d.getDate()}日 ${d.getHours()}:${minutes}`;
+}
+
+/**
+ * 日時文字列を表示用に整形する。未定センチネルは「未定」、
+ * 空値は「―」を返し、それ以外は元の文字列を返す。
+ */
+export function formatOutageDateLabel(
+  dateStr: string | null | undefined
+): string {
+  if (!dateStr) return "―";
+  if (isUndeterminedDate(dateStr)) return "未定";
+  return dateStr;
 }

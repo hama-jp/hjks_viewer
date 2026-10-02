@@ -1,57 +1,82 @@
 import type { ReactNode } from "react";
 
-type Tone = "default" | "danger" | "warning" | "brand";
+export type KpiTone = "slate" | "blue" | "red" | "amber" | "emerald";
+
+const TONE_STYLES: Record<
+  KpiTone,
+  { chip: string; bar: string }
+> = {
+  slate: {
+    chip: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300",
+    bar: "from-slate-300 to-slate-400 dark:from-slate-600 dark:to-slate-500",
+  },
+  blue: {
+    chip: "bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400",
+    bar: "from-blue-500 to-indigo-500",
+  },
+  red: {
+    chip: "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400",
+    bar: "from-red-500 to-rose-500",
+  },
+  amber: {
+    chip: "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400",
+    bar: "from-amber-400 to-orange-500",
+  },
+  emerald: {
+    chip: "bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400",
+    bar: "from-emerald-400 to-teal-500",
+  },
+};
 
 type KpiCardProps = {
   label: string;
-  children: ReactNode;
-  hint?: string;
-  tone?: Tone;
+  value: ReactNode;
+  unit?: string;
   icon?: ReactNode;
-};
-
-const TONE_ACCENT: Record<Tone, string> = {
-  default: "bg-slate-300 dark:bg-slate-600",
-  brand: "bg-brand-500",
-  danger: "bg-red-500",
-  warning: "bg-amber-500",
-};
-
-const TONE_ICON: Record<Tone, string> = {
-  default: "bg-[var(--surface-muted)] text-muted",
-  brand: "bg-brand-50 text-brand-600 dark:bg-brand-500/15 dark:text-brand-400",
-  danger: "bg-red-50 text-red-600 dark:bg-red-500/15 dark:text-red-400",
-  warning: "bg-amber-50 text-amber-600 dark:bg-amber-500/15 dark:text-amber-400",
+  tone?: KpiTone;
+  hint?: string;
 };
 
 export default function KpiCard({
   label,
-  children,
-  hint,
-  tone = "default",
+  value,
+  unit,
   icon,
+  tone = "slate",
+  hint,
 }: KpiCardProps) {
+  const styles = TONE_STYLES[tone];
+
   return (
-    <div className="card card-hover relative overflow-hidden p-4 sm:p-5">
-      <span
-        className={`absolute inset-y-0 left-0 w-1 ${TONE_ACCENT[tone]}`}
-        aria-hidden="true"
-      />
-      <div className="flex items-start justify-between gap-3 pl-1">
-        <p className="text-xs font-medium uppercase tracking-wide text-muted">
-          {label}
-        </p>
+    <div className="surface-card group relative overflow-hidden p-5 transition-shadow hover:shadow-md">
+      <div className="flex items-start justify-between gap-3">
+        <p className="eyebrow pt-0.5">{label}</p>
         {icon && (
           <span
-            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${TONE_ICON[tone]}`}
+            className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${styles.chip}`}
             aria-hidden="true"
           >
             {icon}
           </span>
         )}
       </div>
-      <div className="mt-2 pl-1">{children}</div>
-      {hint && <p className="mt-1 pl-1 text-xs text-subtle">{hint}</p>}
+      <div className="mt-3 flex flex-wrap items-baseline gap-x-1.5">
+        <span className="text-2xl leading-none font-bold tracking-tight tabular-nums text-slate-900 sm:text-3xl dark:text-white">
+          {value}
+        </span>
+        {unit && (
+          <span className="text-sm font-medium text-slate-400 dark:text-slate-500">
+            {unit}
+          </span>
+        )}
+      </div>
+      {hint && (
+        <p className="mt-1.5 text-xs text-slate-400 dark:text-slate-500">{hint}</p>
+      )}
+      <span
+        className={`absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r ${styles.bar}`}
+        aria-hidden="true"
+      />
     </div>
   );
 }
