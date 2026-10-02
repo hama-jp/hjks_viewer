@@ -13,15 +13,14 @@ export default function DateRangeFilter({
 }: DateRangeFilterProps) {
   const isInvalid = dateFrom !== "" && dateTo !== "" && dateFrom > dateTo;
   const errorId = "date-range-error";
-  const inputBase =
-    "rounded-lg border bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500";
+  const inputBase = "field";
   const inputBorder = isInvalid
-    ? "border-red-500 dark:border-red-400 focus:ring-red-500"
-    : "border-slate-300 dark:border-slate-600";
+    ? "border-red-500 focus:border-red-500 focus:ring-red-500/30"
+    : "";
 
   return (
     <fieldset>
-      <legend className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
+      <legend className="mb-2 text-sm font-medium text-[var(--text)]">
         停止日時の範囲
       </legend>
       <div className="flex flex-wrap items-center gap-2">
@@ -32,9 +31,9 @@ export default function DateRangeFilter({
           aria-invalid={isInvalid || undefined}
           aria-describedby={isInvalid ? errorId : undefined}
           onChange={(e) => onChange("dateFrom", e.target.value)}
-          className={`${inputBase} ${inputBorder}`}
+          className={`${inputBase} ${inputBorder} w-auto`}
         />
-        <span className="text-sm text-slate-500 dark:text-slate-400">〜</span>
+        <span className="text-sm text-muted">〜</span>
         <input
           type="date"
           value={dateTo}
@@ -42,7 +41,7 @@ export default function DateRangeFilter({
           aria-invalid={isInvalid || undefined}
           aria-describedby={isInvalid ? errorId : undefined}
           onChange={(e) => onChange("dateTo", e.target.value)}
-          className={`${inputBase} ${inputBorder}`}
+          className={`${inputBase} ${inputBorder} w-auto`}
         />
       </div>
       {isInvalid && (

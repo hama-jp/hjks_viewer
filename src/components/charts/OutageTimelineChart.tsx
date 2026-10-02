@@ -6,6 +6,7 @@ import type { EChartsOption } from "echarts";
 import type { NormalizedOutage } from "@/types/outage";
 import { useChartTheme } from "@/hooks/useChartTheme";
 import { MAINTEMODE_COLORS } from "@/lib/constants";
+import { buildTooltipStyle } from "@/lib/chart-utils";
 
 const ReactECharts = dynamic(() => import("echarts-for-react"), { ssr: false });
 
@@ -25,7 +26,7 @@ type OutageTimelineChartProps = {
   rangeMonths?: number; // X軸の前後表示範囲（月数）。デフォルト12
 };
 
-import { parseOutageDate, formatDuration, formatShortDate } from "@/lib/date-utils";
+import { parseOutageDate, formatDuration, formatShortDate, formatOutageDateLabel, isSentinelDate } from "@/lib/date-utils";
 
 const LABEL_BOTH_MIN_WIDTH = 100;
 const LABEL_START_MIN_WIDTH = 50;
@@ -38,7 +39,7 @@ export default function OutageTimelineChart({
   rangeMonths = 12,
 }: OutageTimelineChartProps) {
   const [now] = useState(() => Date.now());
-  const { labelColor } = useChartTheme();
+  const { labelColor, tooltipBackground, tooltipBorder, tooltipText, splitLineColor, axisLineColor } = useChartTheme();
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -99,10 +100,11 @@ export default function OutageTimelineChart({
   // and color/itemStyle per data point
   const seriesData = displayed.map((r, i) => {
     const start = parseOutageDate(r.startdt);
-    const end = r.restartschdt ? parseOutageDate(r.restartschdt) : now;
+    // 番兵日付（未定・長期）は終了日不明として扱い、バーを現在まで伸ばす
+    const hasEndDate = !!r.restartschdt && !isSentinelDate(r.restartschdt);
+    const end = hasEndDate ? parseOutageDate(r.restartschdt as string) : now;
     const isFuture = start > now;
-    const isOngoing = !r.restartschdt && !isFuture;
-    const hasEndDate = r.restartschdt != null;
+    const isOngoing = !hasEndDate && !isFuture;
     const isTransparent = isFuture || isOngoing;
     const tooltipRecord: TooltipRecord = {
       name: r.name, unitname: r.unitname, maintemodeName: r.maintemodeName,
@@ -129,25 +131,31 @@ export default function OutageTimelineChart({
   const gridLeft = isMobile ? 100 : 220;
   const gridRight = isMobile ? 16 : 40;
   const yLabelWidth = isMobile ? 80 : 200;
-  const axisFontSize = isMobile ? 10 : 11;
+  const axisFontSize = isMobile ? 11 : 12;
 
   const option: EChartsOption = {
     tooltip: {
       trigger: "item",
       confine: true,
+      ...buildTooltipStyle({ tooltipBackground, tooltipBorder, tooltipText }),
       formatter: (params: unknown) => {
         const p = params as { data?: { record?: TooltipRecord; value?: number[] } };
         const rec = p.data?.record;
         if (!rec) return "";
         const start = parseOutageDate(rec.startdt);
-        const end = rec.restartschdt ? parseOutageDate(rec.restartschdt) : now;
-        const restartLabel = rec.restartschdt || (rec.outlook ? `未定（${rec.outlook}）` : "未定");
-        const ongoing = !rec.restartschdt;
+        const hasEnd = !!rec.restartschdt && !isSentinelDate(rec.restartschdt);
+        const end = hasEnd ? parseOutageDate(rec.restartschdt as string) : now;
+        const restartLabel = hasEnd
+          ? (rec.restartschdt as string)
+          : rec.outlook
+            ? `未定（${rec.outlook}）`
+            : "未定";
+        const ongoing = !hasEnd;
         const downcapacityMW = (rec.downcapacity / 1000).toFixed(1);
         return [
           `<strong>${rec.name} ${rec.unitname}</strong>`,
           `停止区分: ${rec.maintemodeName}`,
-          `停止日時: ${rec.startdt}`,
+          `停止日時: ${formatOutageDateLabel(rec.startdt)}`,
           `復旧予定: ${restartLabel}${ongoing ? " <em>(停止中)</em>" : ""}`,
           `停止期間: ${formatDuration(start, end)}${ongoing ? " (継続中)" : ""}`,
           `停止原因: ${rec.factor || "―"}`,
@@ -171,6 +179,8 @@ export default function OutageTimelineChart({
         fontSize: axisFontSize,
         color: labelColor,
       },
+      axisLine: { lineStyle: { color: axisLineColor } },
+      splitLine: { lineStyle: { color: splitLineColor } },
     },
     yAxis: {
       type: "category",
@@ -181,7 +191,10 @@ export default function OutageTimelineChart({
         overflow: "truncate",
         ellipsis: "...",
         color: labelColor,
+        fontWeight: "normal",
       },
+      axisLine: { lineStyle: { color: axisLineColor } },
+      axisTick: { show: false },
       inverse: true,
     },
     series: [
@@ -308,7 +321,7 @@ export default function OutageTimelineChart({
         filterMode: "none",
         height: isMobile ? 28 : 20,
         bottom: 5,
-        borderColor: "#e2e8f0",
+        borderColor: splitLineColor,
         fillerColor: "rgba(59,130,246,0.15)",
         handleSize: isMobile ? "120%" : "80%",
       },
@@ -323,27 +336,30 @@ export default function OutageTimelineChart({
         notMerge
         lazyUpdate
       />
-      <p className="text-xs text-slate-500 dark:text-slate-400 text-right mt-1">
+      <p className="mt-1 text-right text-xs text-subtle">
         {combined.length}件表示中
         {filtered.length > maxItems && `（全${filtered.length}件中）`}
       </p>
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-500 dark:text-slate-400">
+      <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted">
         {!excludePlanned && (
-          <span className="flex items-center gap-1">
-            <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: "#3b82f6" }} />
+          <span className="flex items-center gap-1.5">
+            <span className="inline-block h-3 w-3 rounded-sm" style={{ backgroundColor: MAINTEMODE_COLORS["1"] }} />
             計画停止
           </span>
         )}
-        <span className="flex items-center gap-1">
-          <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: "#ef4444" }} />
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block h-3 w-3 rounded-sm" style={{ backgroundColor: MAINTEMODE_COLORS["2"] }} />
           計画外停止
         </span>
-        <span className="flex items-center gap-1">
-          <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: "#f59e0b" }} />
+        <span className="flex items-center gap-1.5">
+          <span className="inline-block h-3 w-3 rounded-sm" style={{ backgroundColor: MAINTEMODE_COLORS["3"] }} />
           出力低下
         </span>
-        <span className="flex items-center gap-1">
-          <span className="inline-block w-3 h-3 rounded-sm opacity-60 border border-dashed border-slate-400" />
+        <span className="flex items-center gap-1.5">
+          <span
+            className="inline-block h-3 w-3 rounded-sm opacity-60"
+            style={{ border: `1px dashed ${axisLineColor}` }}
+          />
           停止中
         </span>
       </div>

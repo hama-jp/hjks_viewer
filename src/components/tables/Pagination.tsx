@@ -26,18 +26,18 @@ export default function Pagination({
     }, []);
 
   return (
-    <nav aria-label="ページネーション" className="flex items-center justify-center gap-2 mt-6">
+    <nav aria-label="ページネーション" className="mt-6 flex items-center justify-center gap-2">
       <button
         disabled={currentPage <= 1}
         onClick={() => onPageChange(currentPage - 1)}
         aria-label="前のページ"
-        className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+        className="rounded-lg border border-[var(--border-strong)] px-3 py-1.5 text-sm transition-colors hover:bg-[var(--surface-muted)] disabled:opacity-40"
       >
         前へ
       </button>
       {pageNumbers.map((p, i) =>
         p === "..." ? (
-          <span key={`ellipsis-${i}`} className="px-1 text-slate-500 dark:text-slate-400">
+          <span key={`ellipsis-${i}`} className="px-1 text-subtle">
             ...
           </span>
         ) : (
@@ -48,8 +48,8 @@ export default function Pagination({
             aria-label={`${p}ページ`}
             className={`rounded-lg px-3 py-1.5 text-sm transition-colors ${
               p === currentPage
-                ? "bg-blue-600 text-white"
-                : "border border-slate-300 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700"
+                ? "bg-brand-600 font-medium text-white shadow-sm"
+                : "border border-[var(--border-strong)] hover:bg-[var(--surface-muted)]"
             }`}
           >
             {p}
@@ -60,7 +60,7 @@ export default function Pagination({
         disabled={currentPage >= totalPages}
         onClick={() => onPageChange(currentPage + 1)}
         aria-label="次のページ"
-        className="rounded-lg border border-slate-300 dark:border-slate-600 px-3 py-1.5 text-sm disabled:opacity-40 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+        className="rounded-lg border border-[var(--border-strong)] px-3 py-1.5 text-sm transition-colors hover:bg-[var(--surface-muted)] disabled:opacity-40"
       >
         次へ
       </button>

@@ -19,21 +19,21 @@ test.describe("Navigation", () => {
     await page.goto("/");
     const dashboardLink = page.locator("nav").getByRole("link", { name: "ダッシュボード" }).first();
     await expect(dashboardLink).toHaveClass(/font-semibold/);
-    await expect(dashboardLink).toHaveClass(/text-blue-700/);
+    await expect(dashboardLink).toHaveClass(/text-brand-700/);
   });
 
   test("should highlight active navigation link on timeline", async ({ page }) => {
     await page.goto("/timeline");
     const timelineLink = page.locator("nav").getByRole("link", { name: "タイムライン" }).first();
     await expect(timelineLink).toHaveClass(/font-semibold/);
-    await expect(timelineLink).toHaveClass(/text-blue-700/);
+    await expect(timelineLink).toHaveClass(/text-brand-700/);
   });
 
   test("should highlight active navigation link on outages", async ({ page }) => {
     await page.goto("/outages");
     const outagesLink = page.locator("nav").getByRole("link", { name: "停止情報一覧" }).first();
     await expect(outagesLink).toHaveClass(/font-semibold/);
-    await expect(outagesLink).toHaveClass(/text-blue-700/);
+    await expect(outagesLink).toHaveClass(/text-brand-700/);
   });
 
   test("should not highlight non-active links", async ({ page }) => {

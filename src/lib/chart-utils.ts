@@ -5,6 +5,31 @@ type BarChartItem = {
   count: number;
 };
 
+type TooltipTheme = {
+  tooltipBackground: string;
+  tooltipBorder: string;
+  tooltipText: string;
+};
+
+/**
+ * ECharts のツールチップをモダンなカード風に見せる共通スタイル。
+ */
+export function buildTooltipStyle({
+  tooltipBackground,
+  tooltipBorder,
+  tooltipText,
+}: TooltipTheme) {
+  return {
+    backgroundColor: tooltipBackground,
+    borderColor: tooltipBorder,
+    borderWidth: 1,
+    padding: [8, 12] as [number, number],
+    textStyle: { color: tooltipText, fontSize: 12 },
+    extraCssText:
+      "border-radius:12px;box-shadow:0 8px 24px -8px rgba(15,23,42,0.25);backdrop-filter:blur(6px);",
+  };
+}
+
 type BuildBarChartOptionParams = {
   items: BarChartItem[];
   color: string;

@@ -25,7 +25,7 @@ export default function CheckboxGroup({
 
   return (
     <fieldset>
-      <legend className="text-sm font-medium text-slate-700 dark:text-slate-200 mb-2">
+      <legend className="mb-2 text-sm font-medium text-[var(--text)]">
         {label}
       </legend>
       <div className="flex flex-wrap gap-x-4 gap-y-1">
@@ -35,14 +35,14 @@ export default function CheckboxGroup({
             <label
               key={code}
               htmlFor={inputId}
-              className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-300 cursor-pointer"
+              className="flex cursor-pointer items-center gap-1.5 text-sm text-muted transition-colors hover:text-[var(--text)]"
             >
               <input
                 id={inputId}
                 type="checkbox"
                 checked={selected.has(code)}
                 onChange={() => toggle(code)}
-                className="rounded border-slate-300 dark:border-slate-600 text-blue-600 focus:ring-blue-500 dark:bg-slate-700"
+                className="h-4 w-4 shrink-0 rounded border-[var(--border-strong)] accent-brand-600 focus:ring-brand-500"
               />
               {name}
             </label>
