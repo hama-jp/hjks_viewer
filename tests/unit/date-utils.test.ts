@@ -1,5 +1,13 @@
 import { describe, it, expect } from "vitest";
-import { parseOutageDate, parseOutageDateAsJST, formatDuration, formatShortDate } from "@/lib/date-utils";
+import {
+  parseOutageDate,
+  parseOutageDateAsJST,
+  formatDuration,
+  formatShortDate,
+  formatGeneratedAt,
+  isSentinelDate,
+  formatOutageDateLabel,
+} from "@/lib/date-utils";
 
 describe("parseOutageDate", () => {
   it("parses date with time", () => {
@@ -106,5 +114,56 @@ describe("formatShortDate", () => {
 
   it("should format date with time component", () => {
     expect(formatShortDate(new Date(2026, 2, 15, 10, 30).getTime())).toBe("3/15");
+  });
+});
+
+describe("isSentinelDate", () => {
+  it("should treat 9999/xx/xx as sentinel", () => {
+    expect(isSentinelDate("9999/12/31")).toBe(true);
+    expect(isSentinelDate("9999/01/01 00:00")).toBe(true);
+  });
+
+  it("should treat other far-future placeholder years as sentinel", () => {
+    expect(isSentinelDate("9998/11/03 09:00")).toBe(true);
+    expect(isSentinelDate("2999/12/31 00:00")).toBe(true);
+    expect(isSentinelDate("2200/08/01 08:30")).toBe(true);
+  });
+
+  it("should not treat real dates as sentinel", () => {
+    expect(isSentinelDate("2026/10/02 13:00")).toBe(false);
+    expect(isSentinelDate("2030/01/01")).toBe(false);
+  });
+
+  it("should return false for null/undefined/empty", () => {
+    expect(isSentinelDate(null)).toBe(false);
+    expect(isSentinelDate(undefined)).toBe(false);
+    expect(isSentinelDate("")).toBe(false);
+  });
+});
+
+describe("formatOutageDateLabel", () => {
+  it("should replace sentinel dates with 未定", () => {
+    expect(formatOutageDateLabel("9999/12/31 00:00")).toBe("未定");
+    expect(formatOutageDateLabel("9998/11/03")).toBe("未定");
+  });
+
+  it("should keep real dates as-is", () => {
+    expect(formatOutageDateLabel("2026/10/02 13:00")).toBe("2026/10/02 13:00");
+  });
+
+  it("should return null for missing values", () => {
+    expect(formatOutageDateLabel(null)).toBeNull();
+    expect(formatOutageDateLabel(undefined)).toBeNull();
+  });
+});
+
+describe("formatGeneratedAt", () => {
+  it("should format an ISO timestamp in Japanese without redundant suffix", () => {
+    expect(formatGeneratedAt("2026-10-02T04:45:49.040Z")).toContain("2026年");
+    expect(formatGeneratedAt("2026-10-02T04:45:49.040Z")).not.toContain("現在");
+  });
+
+  it("should return the original string when parsing fails", () => {
+    expect(formatGeneratedAt("not-a-date")).toBe("not-a-date");
   });
 });

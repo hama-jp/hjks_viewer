@@ -5,6 +5,7 @@ import type { EChartsOption } from "echarts";
 import type { NormalizedOutage } from "@/types/outage";
 import { MAINTEMODES, MAINTEMODE_COLORS } from "@/lib/constants";
 import { useChartTheme } from "@/hooks/useChartTheme";
+import { buildTooltipStyle } from "@/lib/chart-utils";
 
 const EChartWrapper = dynamic(
   () => import("@/components/charts/EChartWrapper"),
@@ -17,7 +18,7 @@ type Props = {
 };
 
 export default function CapacityByAreaChart({ records, onBarClick }: Props) {
-  const { labelColor, splitLineColor } = useChartTheme();
+  const { labelColor, splitLineColor, tooltipBackground, tooltipBorder, tooltipText } = useChartTheme();
 
   if (records.length === 0) {
     return (
@@ -58,18 +59,25 @@ export default function CapacityByAreaChart({ records, onBarClick }: Props) {
       trigger: "axis",
       axisPointer: { type: "shadow" },
       valueFormatter: (value: unknown) => `${value} MW`,
+      ...buildTooltipStyle({ tooltipBackground, tooltipBorder, tooltipText }),
     },
     legend: {
       data: maintemodes.map((code) => MAINTEMODES[code]),
-      bottom: 0,
-      textStyle: { fontSize: 11, color: labelColor },
+      top: 0,
+      left: "center",
+      itemWidth: 12,
+      itemHeight: 12,
+      itemGap: 16,
+      icon: "roundRect",
+      textStyle: { fontSize: 12, color: labelColor },
     },
     xAxis: {
       type: "category",
       data: areaLabels,
-      axisLabel: { rotate: 30, fontSize: 11, color: labelColor, triggerEvent: true } as never,
+      axisLabel: { rotate: 0, fontSize: 11, color: labelColor, triggerEvent: true, interval: 0 } as never,
       triggerEvent: true,
-      splitLine: { lineStyle: { color: splitLineColor } },
+      axisTick: { show: false },
+      axisLine: { lineStyle: { color: splitLineColor } },
     },
     yAxis: {
       type: "value",
@@ -79,7 +87,7 @@ export default function CapacityByAreaChart({ records, onBarClick }: Props) {
       splitLine: { lineStyle: { color: splitLineColor } },
     },
     series,
-    grid: { left: 60, right: 20, bottom: 50, top: 20 },
+    grid: { left: 60, right: 20, bottom: 30, top: 40 },
     color: Object.values(MAINTEMODE_COLORS),
   };
 

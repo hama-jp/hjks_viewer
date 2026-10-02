@@ -55,14 +55,23 @@ export default function FilterPanel() {
   }, [filters]);
 
   return (
-    <div className="rounded-xl bg-white dark:bg-slate-800 p-6 shadow-sm border border-slate-200 dark:border-slate-700 mb-6">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">
-          フィルター{activeFilterCount > 0 && ` (${activeFilterCount}件適用中)`}
+    <div className={`card mb-6 ${collapsed ? "p-4 sm:p-5" : "p-5 sm:p-6"}`}>
+      <div
+        className={`flex items-center justify-between ${
+          collapsed ? "" : "mb-4"
+        }`}
+      >
+        <h2 className="text-sm font-semibold text-[var(--text)]">
+          フィルター
+          {activeFilterCount > 0 && (
+            <span className="ml-2 inline-flex items-center rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700 dark:bg-brand-500/15 dark:text-brand-400">
+              {activeFilterCount}件適用中
+            </span>
+          )}
         </h2>
         <button
           onClick={() => setUserCollapsed((v) => !(v ?? isMobile))}
-          className="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+          className="text-sm font-medium text-muted transition-colors hover:text-[var(--text)]"
         >
           {collapsed ? "展開" : "折りたたむ"}
         </button>
@@ -70,7 +79,7 @@ export default function FilterPanel() {
 
       <div className={`space-y-4 ${collapsed ? "hidden" : ""}`}>
         <div>
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-200 block mb-1">
+          <label className="mb-1.5 block text-sm font-medium text-[var(--text)]">
             フリーテキスト検索
           </label>
           <input
@@ -78,7 +87,7 @@ export default function FilterPanel() {
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder="事業者名、発電所名、要因など..."
-            className="w-full sm:w-80 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-100 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="field sm:w-80"
           />
         </div>
 
@@ -110,7 +119,7 @@ export default function FilterPanel() {
         {hasActiveFilters && (
           <button
             onClick={resetFilters}
-            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 underline"
+            className="text-sm font-medium text-brand-600 underline decoration-brand-300 underline-offset-2 hover:text-brand-700 dark:text-brand-400"
           >
             フィルターをリセット
           </button>

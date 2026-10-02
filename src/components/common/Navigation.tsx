@@ -21,7 +21,6 @@ export default function Navigation() {
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
-  // Close menu on Escape key
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === "Escape") setMenuOpen(false);
   }, []);
@@ -33,18 +32,23 @@ export default function Navigation() {
     }
   }, [menuOpen, handleKeyDown]);
 
+  const linkBase =
+    "rounded-full px-3 py-1.5 text-sm font-medium transition-colors";
+  const linkActive =
+    "bg-brand-50 font-semibold text-brand-700 dark:bg-brand-500/15 dark:text-brand-400";
+  const linkIdle =
+    "text-muted hover:bg-[var(--surface-muted)] hover:text-[var(--text)]";
+
   return (
     <>
       {/* Desktop nav */}
-      <nav className="hidden sm:flex items-center gap-6">
+      <nav className="hidden items-center gap-1 sm:flex">
         {NAV_ITEMS.map(({ href, label, exact }) => (
           <Link
             key={href}
             href={href}
-            className={`text-sm font-medium transition-colors ${
-              isActive(pathname, href, exact)
-                ? "text-blue-700 dark:text-blue-400 font-semibold"
-                : "text-slate-600 dark:text-slate-300 hover:text-blue-700 dark:hover:text-blue-400"
+            className={`${linkBase} ${
+              isActive(pathname, href, exact) ? linkActive : linkIdle
             }`}
           >
             {label}
@@ -55,7 +59,7 @@ export default function Navigation() {
       {/* Mobile hamburger button */}
       <button
         type="button"
-        className="sm:hidden p-2 rounded-md text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
+        className="rounded-lg p-2 text-muted transition-colors hover:bg-[var(--surface-muted)] hover:text-[var(--text)] sm:hidden"
         onClick={() => setMenuOpen((prev) => !prev)}
         aria-label="メニュー"
         aria-expanded={menuOpen}
@@ -74,7 +78,7 @@ export default function Navigation() {
       {/* Mobile menu overlay */}
       {menuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/30 sm:hidden"
+          className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-sm sm:hidden"
           data-testid="mobile-menu-overlay"
           onClick={() => setMenuOpen(false)}
         />
@@ -83,25 +87,23 @@ export default function Navigation() {
       {/* Mobile menu dropdown */}
       {menuOpen ? (
         <nav
-          className="absolute top-16 left-0 right-0 z-50 bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 shadow-lg sm:hidden"
+          className="absolute left-0 right-0 top-16 z-50 border-b border-[var(--border)] bg-[var(--surface)] p-2 shadow-lg sm:hidden"
           data-testid="mobile-menu"
         >
-          <div className="px-4 py-3 space-y-1">
-            {NAV_ITEMS.map(({ href, label, exact }) => (
-              <Link
-                key={href}
-                href={href}
-                onClick={closeMenu}
-                className={`block rounded-md px-3 py-2 text-sm font-medium transition-colors ${
-                  isActive(pathname, href, exact)
-                    ? "text-blue-700 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 font-semibold"
-                    : "text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
-                }`}
-              >
-                {label}
-              </Link>
-            ))}
-          </div>
+          {NAV_ITEMS.map(({ href, label, exact }) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={closeMenu}
+              className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                isActive(pathname, href, exact)
+                  ? "bg-brand-50 font-semibold text-brand-700 dark:bg-brand-500/15 dark:text-brand-400"
+                  : "text-muted hover:bg-[var(--surface-muted)] hover:text-[var(--text)]"
+              }`}
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
       ) : (
         <nav className="hidden" data-testid="mobile-menu" />
