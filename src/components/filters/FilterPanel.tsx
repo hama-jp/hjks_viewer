@@ -55,40 +55,64 @@ export default function FilterPanel() {
   }, [filters]);
 
   return (
-    <div className={`card mb-6 ${collapsed ? "p-4 sm:p-5" : "p-5 sm:p-6"}`}>
-      <div
-        className={`flex items-center justify-between ${
-          collapsed ? "" : "mb-4"
-        }`}
-      >
-        <h2 className="text-sm font-semibold text-[var(--text)]">
-          フィルター
+    <section className="surface-card mb-6 p-5">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <h2 className="text-sm font-semibold tracking-tight text-slate-800 dark:text-slate-100">
+            フィルター
+          </h2>
           {activeFilterCount > 0 && (
-            <span className="ml-2 inline-flex items-center rounded-full bg-brand-50 px-2 py-0.5 text-xs font-medium text-brand-700 dark:bg-brand-500/15 dark:text-brand-400">
-              {activeFilterCount}件適用中
+            <span className="inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-600 px-1.5 text-[11px] font-semibold text-white">
+              {activeFilterCount}
             </span>
           )}
-        </h2>
+        </div>
         <button
           onClick={() => setUserCollapsed((v) => !(v ?? isMobile))}
-          className="text-sm font-medium text-muted transition-colors hover:text-[var(--text)]"
+          aria-expanded={!collapsed}
+          className="inline-flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-slate-500 transition-colors hover:bg-slate-100 hover:text-slate-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
         >
           {collapsed ? "展開" : "折りたたむ"}
+          <svg
+            className={`h-3.5 w-3.5 transition-transform ${collapsed ? "" : "rotate-180"}`}
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="m6 9 6 6 6-6" />
+          </svg>
         </button>
       </div>
 
-      <div className={`space-y-4 ${collapsed ? "hidden" : ""}`}>
+      <div className={`mt-5 space-y-5 ${collapsed ? "hidden" : ""}`}>
         <div>
-          <label className="mb-1.5 block text-sm font-medium text-[var(--text)]">
-            フリーテキスト検索
-          </label>
-          <input
-            type="text"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            placeholder="事業者名、発電所名、要因など..."
-            className="field sm:w-80"
-          />
+          <label className="eyebrow mb-2 block">フリーテキスト検索</label>
+          <div className="relative w-full sm:w-80">
+            <svg
+              className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              placeholder="事業者名、発電所名、要因など..."
+              className="w-full rounded-xl border border-slate-200 bg-white py-2 pr-3 pl-9 text-sm text-slate-900 transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500 focus:outline-none dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            />
+          </div>
         </div>
 
         <CheckboxGroup
@@ -119,12 +143,12 @@ export default function FilterPanel() {
         {hasActiveFilters && (
           <button
             onClick={resetFilters}
-            className="text-sm font-medium text-brand-600 underline decoration-brand-300 underline-offset-2 hover:text-brand-700 dark:text-brand-400"
+            className="text-xs font-medium text-blue-600 transition-colors hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
           >
             フィルターをリセット
           </button>
         )}
       </div>
-    </div>
+    </section>
   );
 }

@@ -5,7 +5,6 @@ import type { EChartsOption } from "echarts";
 import type { NormalizedOutage } from "@/types/outage";
 import { MAINTEMODES, MAINTEMODE_COLORS } from "@/lib/constants";
 import { useChartTheme } from "@/hooks/useChartTheme";
-import { buildTooltipStyle } from "@/lib/chart-utils";
 
 const EChartWrapper = dynamic(
   () => import("@/components/charts/EChartWrapper"),
@@ -18,7 +17,7 @@ type Props = {
 };
 
 export default function CapacityByAreaChart({ records, onBarClick }: Props) {
-  const { labelColor, splitLineColor, tooltipBackground, tooltipBorder, tooltipText } = useChartTheme();
+  const { axisLabelColor, splitLineColor } = useChartTheme();
 
   if (records.length === 0) {
     return (
@@ -49,6 +48,7 @@ export default function CapacityByAreaChart({ records, onBarClick }: Props) {
     name: MAINTEMODES[code],
     type: "bar" as const,
     stack: "capacity",
+    barMaxWidth: 36,
     data: areas.map((a) => Math.round(capacityMap[code]?.[a] ?? 0)),
     itemStyle: { color: MAINTEMODE_COLORS[code], cursor: onBarClick ? "pointer" as const : "default" as const },
     emphasis: { focus: "series" as const },
@@ -59,35 +59,33 @@ export default function CapacityByAreaChart({ records, onBarClick }: Props) {
       trigger: "axis",
       axisPointer: { type: "shadow" },
       valueFormatter: (value: unknown) => `${value} MW`,
-      ...buildTooltipStyle({ tooltipBackground, tooltipBorder, tooltipText }),
     },
     legend: {
       data: maintemodes.map((code) => MAINTEMODES[code]),
-      top: 0,
-      left: "center",
-      itemWidth: 12,
-      itemHeight: 12,
-      itemGap: 16,
+      bottom: 0,
+      itemWidth: 10,
+      itemHeight: 10,
       icon: "roundRect",
-      textStyle: { fontSize: 12, color: labelColor },
+      textStyle: { fontSize: 11, color: axisLabelColor },
     },
     xAxis: {
       type: "category",
       data: areaLabels,
-      axisLabel: { rotate: 0, fontSize: 11, color: labelColor, triggerEvent: true, interval: 0 } as never,
-      triggerEvent: true,
       axisTick: { show: false },
       axisLine: { lineStyle: { color: splitLineColor } },
+      axisLabel: { rotate: 30, fontSize: 11, color: axisLabelColor, triggerEvent: true } as never,
+      triggerEvent: true,
+      splitLine: { lineStyle: { color: splitLineColor } },
     },
     yAxis: {
       type: "value",
       name: "MW",
-      nameTextStyle: { color: labelColor },
-      axisLabel: { color: labelColor },
+      nameTextStyle: { color: axisLabelColor },
+      axisLabel: { color: axisLabelColor },
       splitLine: { lineStyle: { color: splitLineColor } },
     },
     series,
-    grid: { left: 60, right: 20, bottom: 30, top: 40 },
+    grid: { left: 60, right: 20, bottom: 50, top: 20 },
     color: Object.values(MAINTEMODE_COLORS),
   };
 

@@ -4,9 +4,9 @@ import {
   parseOutageDateAsJST,
   formatDuration,
   formatShortDate,
-  formatGeneratedAt,
-  isSentinelDate,
+  isUndeterminedDate,
   formatOutageDateLabel,
+  formatGeneratedAt,
 } from "@/lib/date-utils";
 
 describe("parseOutageDate", () => {
@@ -99,6 +99,52 @@ describe("formatDuration", () => {
   });
 });
 
+describe("isUndeterminedDate", () => {
+  it("detects the 9999 sentinel", () => {
+    expect(isUndeterminedDate("9999/12/31 00:00")).toBe(true);
+    expect(isUndeterminedDate("9999/04/03 09:00")).toBe(true);
+  });
+
+  it("returns false for normal dates and empty values", () => {
+    expect(isUndeterminedDate("2026/01/01 00:00")).toBe(false);
+    expect(isUndeterminedDate("")).toBe(false);
+    expect(isUndeterminedDate(null)).toBe(false);
+    expect(isUndeterminedDate(undefined)).toBe(false);
+  });
+});
+
+describe("formatOutageDateLabel", () => {
+  it("renders the undetermined sentinel as 未定", () => {
+    expect(formatOutageDateLabel("9999/12/31 00:00")).toBe("未定");
+  });
+
+  it("returns the original string for normal dates", () => {
+    expect(formatOutageDateLabel("2026/01/01 00:00")).toBe("2026/01/01 00:00");
+  });
+
+  it("renders empty values as a dash", () => {
+    expect(formatOutageDateLabel("")).toBe("―");
+    expect(formatOutageDateLabel(null)).toBe("―");
+    expect(formatOutageDateLabel(undefined)).toBe("―");
+  });
+});
+
+describe("formatGeneratedAt", () => {
+  it("formats ISO as yyyy年M月d日 H:mm (local time)", () => {
+    const d = new Date(2026, 9, 2, 13, 45);
+    expect(formatGeneratedAt(d.toISOString())).toBe("2026年10月2日 13:45");
+  });
+
+  it("zero-pads minutes", () => {
+    const d = new Date(2026, 0, 5, 9, 5);
+    expect(formatGeneratedAt(d.toISOString())).toBe("2026年1月5日 9:05");
+  });
+
+  it("returns the original value when unparsable", () => {
+    expect(formatGeneratedAt("invalid")).toBe("invalid");
+  });
+});
+
 describe("formatShortDate", () => {
   it("should format as M/D without zero-padding", () => {
     expect(formatShortDate(new Date(2026, 0, 3).getTime())).toBe("1/3");
@@ -114,56 +160,5 @@ describe("formatShortDate", () => {
 
   it("should format date with time component", () => {
     expect(formatShortDate(new Date(2026, 2, 15, 10, 30).getTime())).toBe("3/15");
-  });
-});
-
-describe("isSentinelDate", () => {
-  it("should treat 9999/xx/xx as sentinel", () => {
-    expect(isSentinelDate("9999/12/31")).toBe(true);
-    expect(isSentinelDate("9999/01/01 00:00")).toBe(true);
-  });
-
-  it("should treat other far-future placeholder years as sentinel", () => {
-    expect(isSentinelDate("9998/11/03 09:00")).toBe(true);
-    expect(isSentinelDate("2999/12/31 00:00")).toBe(true);
-    expect(isSentinelDate("2200/08/01 08:30")).toBe(true);
-  });
-
-  it("should not treat real dates as sentinel", () => {
-    expect(isSentinelDate("2026/10/02 13:00")).toBe(false);
-    expect(isSentinelDate("2030/01/01")).toBe(false);
-  });
-
-  it("should return false for null/undefined/empty", () => {
-    expect(isSentinelDate(null)).toBe(false);
-    expect(isSentinelDate(undefined)).toBe(false);
-    expect(isSentinelDate("")).toBe(false);
-  });
-});
-
-describe("formatOutageDateLabel", () => {
-  it("should replace sentinel dates with 未定", () => {
-    expect(formatOutageDateLabel("9999/12/31 00:00")).toBe("未定");
-    expect(formatOutageDateLabel("9998/11/03")).toBe("未定");
-  });
-
-  it("should keep real dates as-is", () => {
-    expect(formatOutageDateLabel("2026/10/02 13:00")).toBe("2026/10/02 13:00");
-  });
-
-  it("should return null for missing values", () => {
-    expect(formatOutageDateLabel(null)).toBeNull();
-    expect(formatOutageDateLabel(undefined)).toBeNull();
-  });
-});
-
-describe("formatGeneratedAt", () => {
-  it("should format an ISO timestamp in Japanese without redundant suffix", () => {
-    expect(formatGeneratedAt("2026-10-02T04:45:49.040Z")).toContain("2026年");
-    expect(formatGeneratedAt("2026-10-02T04:45:49.040Z")).not.toContain("現在");
-  });
-
-  it("should return the original string when parsing fails", () => {
-    expect(formatGeneratedAt("not-a-date")).toBe("not-a-date");
   });
 });

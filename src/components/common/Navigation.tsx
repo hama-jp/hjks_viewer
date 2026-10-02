@@ -21,6 +21,7 @@ export default function Navigation() {
 
   const closeMenu = useCallback(() => setMenuOpen(false), []);
 
+  // Close menu on Escape key
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === "Escape") setMenuOpen(false);
   }, []);
@@ -32,34 +33,32 @@ export default function Navigation() {
     }
   }, [menuOpen, handleKeyDown]);
 
-  const linkBase =
-    "rounded-full px-3 py-1.5 text-sm font-medium transition-colors";
-  const linkActive =
-    "bg-brand-50 font-semibold text-brand-700 dark:bg-brand-500/15 dark:text-brand-400";
-  const linkIdle =
-    "text-muted hover:bg-[var(--surface-muted)] hover:text-[var(--text)]";
-
   return (
     <>
-      {/* Desktop nav */}
-      <nav className="hidden items-center gap-1 sm:flex">
-        {NAV_ITEMS.map(({ href, label, exact }) => (
-          <Link
-            key={href}
-            href={href}
-            className={`${linkBase} ${
-              isActive(pathname, href, exact) ? linkActive : linkIdle
-            }`}
-          >
-            {label}
-          </Link>
-        ))}
+      {/* Desktop nav — segmented pill control */}
+      <nav className="hidden items-center gap-0.5 rounded-full border border-slate-200/80 bg-slate-100/80 p-1 sm:flex dark:border-slate-800 dark:bg-slate-900/70">
+        {NAV_ITEMS.map(({ href, label, exact }) => {
+          const active = isActive(pathname, href, exact);
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`rounded-full px-3.5 py-1.5 text-sm whitespace-nowrap transition-all ${
+                active
+                  ? "bg-white font-semibold text-blue-700 shadow-sm ring-1 ring-slate-900/5 dark:bg-slate-800 dark:text-blue-400 dark:ring-white/10"
+                  : "font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100"
+              }`}
+            >
+              {label}
+            </Link>
+          );
+        })}
       </nav>
 
       {/* Mobile hamburger button */}
       <button
         type="button"
-        className="rounded-lg p-2 text-muted transition-colors hover:bg-[var(--surface-muted)] hover:text-[var(--text)] sm:hidden"
+        className="ml-auto rounded-lg p-2 text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 sm:hidden dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
         onClick={() => setMenuOpen((prev) => !prev)}
         aria-label="メニュー"
         aria-expanded={menuOpen}
@@ -78,7 +77,7 @@ export default function Navigation() {
       {/* Mobile menu overlay */}
       {menuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-950/40 backdrop-blur-sm sm:hidden"
+          className="absolute inset-x-0 top-16 z-40 h-screen bg-slate-900/20 backdrop-blur-sm sm:hidden"
           data-testid="mobile-menu-overlay"
           onClick={() => setMenuOpen(false)}
         />
@@ -87,23 +86,28 @@ export default function Navigation() {
       {/* Mobile menu dropdown */}
       {menuOpen ? (
         <nav
-          className="absolute left-0 right-0 top-16 z-50 border-b border-[var(--border)] bg-[var(--surface)] p-2 shadow-lg sm:hidden"
+          className="absolute inset-x-0 top-16 z-50 rounded-b-2xl border-b border-slate-200 bg-white px-3 py-3 shadow-xl shadow-slate-900/10 sm:hidden dark:border-slate-800 dark:bg-slate-950 dark:shadow-black/40"
           data-testid="mobile-menu"
         >
-          {NAV_ITEMS.map(({ href, label, exact }) => (
-            <Link
-              key={href}
-              href={href}
-              onClick={closeMenu}
-              className={`block rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                isActive(pathname, href, exact)
-                  ? "bg-brand-50 font-semibold text-brand-700 dark:bg-brand-500/15 dark:text-brand-400"
-                  : "text-muted hover:bg-[var(--surface-muted)] hover:text-[var(--text)]"
-              }`}
-            >
-              {label}
-            </Link>
-          ))}
+          <div className="mx-auto max-w-7xl space-y-1">
+            {NAV_ITEMS.map(({ href, label, exact }) => {
+              const active = isActive(pathname, href, exact);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={closeMenu}
+                  className={`block rounded-xl px-4 py-2.5 text-sm transition-colors ${
+                    active
+                      ? "bg-blue-50 font-semibold text-blue-700 dark:bg-blue-500/10 dark:text-blue-400"
+                      : "font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                  }`}
+                >
+                  {label}
+                </Link>
+              );
+            })}
+          </div>
         </nav>
       ) : (
         <nav className="hidden" data-testid="mobile-menu" />
