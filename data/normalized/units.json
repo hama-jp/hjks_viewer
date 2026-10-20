@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-10-20T04:03:41.951Z",
+    "generatedAt": "2026-10-20T11:08:47.026Z",
     "recordCount": 529
   },
   "records": [
@@ -7260,8 +7260,8 @@
       "nextmaxcapacity": null,
       "nextmaxcapacitystartdt": null,
       "startdt": "1900/01/01",
-      "enddt": "9999/12/31",
-      "upddt": "2018/03/06 16:36"
+      "enddt": "2028/02/29",
+      "upddt": "2026/10/20 17:14"
     },
     {
       "id": "c6f552573a3ba58e",
@@ -7277,8 +7277,8 @@
       "nextmaxcapacity": null,
       "nextmaxcapacitystartdt": null,
       "startdt": "1900/01/01",
-      "enddt": "9999/12/31",
-      "upddt": "2018/03/06 16:36"
+      "enddt": "2028/02/29",
+      "upddt": "2026/10/20 17:14"
     },
     {
       "id": "0d3001f2c7938d43",
