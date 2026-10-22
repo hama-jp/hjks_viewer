@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generatedAt": "2026-10-21T23:06:09.941Z",
+    "generatedAt": "2026-10-22T03:53:05.214Z",
     "recordCount": 529
   },
   "records": [
@@ -5703,7 +5703,7 @@
       "id": "33e63326d222ef52",
       "area": "3",
       "areaName": "東京",
-      "company": "鹿島共同火力株式会社",
+      "company": "東日本共同発電株式会社",
       "plantcd": "60413",
       "name": "鹿島共同発電所",
       "format": "3",
@@ -5714,13 +5714,13 @@
       "nextmaxcapacitystartdt": null,
       "startdt": "1900/01/01",
       "enddt": "9999/12/31",
-      "upddt": "2016/04/26 17:22"
+      "upddt": "2026/10/22 08:25"
     },
     {
       "id": "18292a4de12cc9a9",
       "area": "3",
       "areaName": "東京",
-      "company": "鹿島共同火力株式会社",
+      "company": "東日本共同発電株式会社",
       "plantcd": "60413",
       "name": "鹿島共同発電所",
       "format": "3",
@@ -5731,7 +5731,7 @@
       "nextmaxcapacitystartdt": null,
       "startdt": "1900/01/01",
       "enddt": "9999/12/31",
-      "upddt": "2016/09/03 20:14"
+      "upddt": "2026/10/22 08:24"
     },
     {
       "id": "88a98943e9113f2f",
