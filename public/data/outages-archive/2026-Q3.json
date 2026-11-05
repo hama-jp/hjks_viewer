@@ -1,8 +1,8 @@
 {
   "meta": {
-    "generatedAt": "2026-11-05T14:19:32.191Z",
-    "recordCount": 2197,
-    "source": "csv"
+    "generatedAt": "2026-11-05T21:53:47.703Z",
+    "recordCount": 2198,
+    "source": "toppage"
   },
   "records": [
     {
@@ -50535,6 +50535,29 @@
       "factor": "ボイラ設備点検",
       "upddt": "2026/11/04 17:38",
       "fetchedAt": "2026-11-05T14:19:30.868Z"
+    },
+    {
+      "id": "e46f9659a8136c60",
+      "area": "3",
+      "areaName": "東京",
+      "company": "東京電力リニューアブルパワー株式会社",
+      "plantcd": "31007",
+      "name": "玉原発電所",
+      "format": "5",
+      "formatName": "水力",
+      "unitname": "3号機",
+      "maxcapacity": 300000,
+      "downcapacity": 300000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "1",
+      "assortmentName": "停止・定期検査等",
+      "startdt": "2026/09/01 10:00",
+      "restartschdt": "2026/11/06",
+      "outlook": "あり",
+      "factor": "機器取替・修理",
+      "upddt": "2026/03/17 18:49",
+      "fetchedAt": "2026-08-31T00:17:56.911Z"
     }
   ]
 }
