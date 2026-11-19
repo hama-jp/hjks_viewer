@@ -1,8 +1,8 @@
 {
   "meta": {
-    "generatedAt": "2026-11-19T12:39:24.249Z",
-    "recordCount": 2854,
-    "source": "csv"
+    "generatedAt": "2026-11-19T22:02:54.097Z",
+    "recordCount": 2856,
+    "source": "toppage"
   },
   "records": [
     {
@@ -65645,6 +65645,52 @@
       "outlook": "あり",
       "factor": "定期検査",
       "upddt": "2026/11/09 16:03",
+      "fetchedAt": "2026-11-19T12:39:23.035Z"
+    },
+    {
+      "id": "96ab1dcf415c145b",
+      "area": "4",
+      "areaName": "中部",
+      "company": "株式会社JERA",
+      "plantcd": "45140",
+      "name": "新名古屋火力発電所",
+      "format": "3",
+      "formatName": "火力(ガス)",
+      "unitname": "新名古屋８－１号",
+      "maxcapacity": 400000,
+      "downcapacity": 400000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "1",
+      "assortmentName": "停止・定期検査等",
+      "startdt": "2026/05/27 00:00",
+      "restartschdt": "2026/11/20",
+      "outlook": "あり",
+      "factor": "定検 / JERA内管理ID: W260136-1",
+      "upddt": "2026/11/18 19:15",
+      "fetchedAt": "2026-11-19T12:39:23.035Z"
+    },
+    {
+      "id": "8f15e8bfc68df15b",
+      "area": "1",
+      "areaName": "北海道",
+      "company": "北海道電力株式会社",
+      "plantcd": "16212",
+      "name": "高見発電所",
+      "format": "5",
+      "formatName": "水力",
+      "unitname": "１号機",
+      "maxcapacity": 100000,
+      "downcapacity": 100000,
+      "maintemode": "1",
+      "maintemodeName": "計画停止",
+      "assortment": "1",
+      "assortmentName": "停止・定期検査等",
+      "startdt": "2026/05/07 09:00",
+      "restartschdt": "2026/11/20",
+      "outlook": "あり",
+      "factor": "定期事業者検査",
+      "upddt": "2025/02/21 08:26",
       "fetchedAt": "2026-11-19T12:39:23.035Z"
     }
   ]
